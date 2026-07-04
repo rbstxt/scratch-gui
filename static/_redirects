@@ -1,11 +1,10 @@
-# Pretty URLs (rewrite, not redirect) for SPA routes.
-# Pattern based on https://github.com/12zend/scratch-gpu
-/addons         /addons.html     200
-/credits        /credits.html    200
-/editor         /editor.html     200
-/fullscreen     /fullscreen.html 200
-/embed          /embed.html      200
-/:id/editor     /editor.html     200
-/:id/fullscreen /fullscreen.html 200
-/:id/embed      /embed.html      200
-/*              /index.html      200
+/addons /addon-settings-page.htm 200
+/credits /credits-page.htm 200
+/editor /editor-page.htm 200
+/fullscreen /fullscreen-page.htm 200
+/embed /embed-page.htm 200
+/:id/editor /editor-page.htm 200
+/:id/fullscreen /fullscreen-page.htm 200
+/:id/embed /embed-page.htm 200
+/999999999 /index.html 200
+/* /index.html 200
