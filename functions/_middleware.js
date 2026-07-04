@@ -1,5 +1,5 @@
 // Cloudflare Pages middleware for wildcard routing
-// Rewrites URLs like /123/editor to /editor.html, /123/fullscreen to /fullscreen.html, etc.
+// Rewrites URLs like /12345/editor to /editor.html, /12345/fullscreen to /fullscreen.html, etc.
 
 const HTML_MAP = {
     '/editor.html': /^\/\d+\/editor\/?$/,
@@ -31,7 +31,7 @@ export const onRequest = context => {
         const newUrl = new URL(target, url.origin);
         newUrl.search = url.search;
         newUrl.hash = url.hash;
-        return env.ASSETS.fetch(new Request(newUrl, request));
+        return env.ASSETS.fetch(newUrl.pathname + newUrl.search);
     }
 
     // Check wildcard routes like /12345/editor, /12345/fullscreen
@@ -40,7 +40,7 @@ export const onRequest = context => {
             const newUrl = new URL(htmlFile, url.origin);
             newUrl.search = url.search;
             newUrl.hash = url.hash;
-            return env.ASSETS.fetch(new Request(newUrl, request));
+            return env.ASSETS.fetch(newUrl.pathname + newUrl.search);
         }
     }
 

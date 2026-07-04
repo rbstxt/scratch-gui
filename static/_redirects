@@ -1,0 +1,12 @@
+# Override Cloudflare Pages built-in pretty-URLs auto-strip for HTML files.
+# Without these rules, env.ASSETS.fetch('/foo.html') in middleware
+# gets 308-redirected to '/foo' by the Pages edge.
+/editor.html       /editor.html       200
+/fullscreen.html   /fullscreen.html   200
+/embed.html        /embed.html        200
+/index.html        /index.html        200
+/addons.html       /addons.html       200
+/credits.html      /credits.html      200
+/privacy.html      /privacy.html      200
+/embedtest.html    /embedtest.html    200
+/embedtestbad.html /embedtestbad.html 200
