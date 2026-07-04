@@ -177,7 +177,7 @@ class WildcardRouter extends Router {
 
     parseURL (detectPageType) {
         const path = location.pathname.substr(this.root.length);
-        const parts = path.split('/');
+        const parts = path.replace(/\/+$/, '').split('/').filter(p => p.length > 0);
 
         const parseProjectId = id => {
             if (id) {
