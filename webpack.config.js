@@ -230,6 +230,10 @@ module.exports = [
                     {
                         from: 'static',
                         to: ''
+                    },
+                    {
+                        from: 'functions',
+                        to: 'functions'
                     }
                 ]
             }),
