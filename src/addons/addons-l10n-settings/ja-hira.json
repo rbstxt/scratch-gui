@@ -1,0 +1,10 @@
+{
+    "paint-object-editor/@name": "もののへんしゅう",
+    "paint-object-editor/@description": "みためのなかのもののかたち、かさなり、かさねかた、せんのせっていをただしいあたいでへんしゅうします。",
+    "block-pins/@name": "ぶろっくのぴんどめ",
+    "block-pins/@description": "よくつかうぶろっくをぶろっくいちらんのいちばんうえにぴんどめします。",
+    "block-pins/@info-checkbox-notice": "ちぇっくらんがあるぴんどめされたぶろっくは、ちぇっくしたときによそうとちがううごきをすることがあります。",
+    "reorder-custom-inputs/@name": "ならべかえられるじぶんのぶろっくのにゅうりょく",
+    "reorder-custom-inputs/@description": "「ぶろっくをつくる」がめんで、じぶんのぶろっくのにゅうりょくをならべかえられるようにします。",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "えらんだにゅうりょくのあとにあたらしいにゅうりょくをいれる"
+}

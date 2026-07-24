@@ -333,5 +333,13 @@
     "hide-stage/@name": "A Színpad és a Szereplőmező elrejtése",
     "editor-stepping/@description": "Hozzáad egy színes körvonalat azon blokkokhoz, amik éppen futnak egy projektben.",
     "editor-stepping/@name": "Futó blokkok körvonalai",
-    "editor-stepping/@settings-name-highlight-color": "Kiemelés színe"
+    "editor-stepping/@settings-name-highlight-color": "Kiemelés színe",
+    "paint-object-editor/@name": "Objektumszerkesztő",
+    "paint-object-editor/@description": "A jelmez objektumainak átalakításait, rétegeit, keverési módjait és vonaltulajdonságait pontos értékekkel szerkeszti.",
+    "block-pins/@name": "Blokkok kitűzése",
+    "block-pins/@description": "A gyakran használt blokkokat a blokkválasztó tetejére tűzi.",
+    "block-pins/@info-checkbox-notice": "A jelölőnégyzetet tartalmazó kitűzött blokkok bejelöléskor váratlanul viselkedhetnek.",
+    "reorder-custom-inputs/@name": "Átrendezhető sajátblokk-bemenetek",
+    "reorder-custom-inputs/@description": "Lehetővé teszi a saját blokkok paramétereinek átrendezését a „Blokk létrehozása” képernyőn.",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "Új bemenetek beszúrása a kijelölt bemenet után"
 }

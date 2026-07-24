@@ -1,0 +1,10 @@
+{
+    "paint-object-editor/@name": "עורך אובייקטים",
+    "paint-object-editor/@description": "עריכת טרנספורמציות, שכבות, מיזוג ומאפייני קו של אובייקטים בתלבושת באמצעות ערכים מדויקים.",
+    "block-pins/@name": "נעיצת לבנים",
+    "block-pins/@description": "נעיצת לבנים שנמצאות בשימוש תכוף בראש לוח הלבנים.",
+    "block-pins/@info-checkbox-notice": "לבנים נעוצות עם תיבות סימון עלולות להתנהג באופן בלתי צפוי כאשר מסמנים אותן.",
+    "reorder-custom-inputs/@name": "קלטים ניתנים לסידור בלבנים מותאמות אישית",
+    "reorder-custom-inputs/@description": "מאפשר לסדר מחדש פרמטרים של לבנים מותאמות אישית במסך „יצירת לבנה”.",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "הוספת קלטים חדשים אחרי הקלט שנבחר"
+}

@@ -14,33 +14,9 @@ const BLEND_MODES = [
     'color-dodge', 'color-burn', 'darken', 'lighten', 'difference',
     'exclusion', 'hue', 'saturation', 'color', 'luminosity'
 ];
-const OPTION_LABELS = {
-    normal: '通常',
-    multiply: '乗算',
-    screen: 'スクリーン',
-    overlay: 'オーバーレイ',
-    'soft-light': 'ソフトライト',
-    'hard-light': 'ハードライト',
-    'color-dodge': '覆い焼きカラー',
-    'color-burn': '焼き込みカラー',
-    darken: '比較（暗）',
-    lighten: '比較（明）',
-    difference: '差の絶対値',
-    exclusion: '除外',
-    hue: '色相',
-    saturation: '彩度',
-    color: 'カラー',
-    luminosity: '輝度',
-    round: '丸',
-    butt: '切り落とし',
-    square: '四角',
-    miter: 'マイター',
-    bevel: 'ベベル'
-};
-
 const roundValue = value => Math.round(value * 100) / 100;
 
-export default async function ({addon}) {
+export default async function ({addon, msg}) {
     const paper = await addon.tab.traps.getPaper();
     const store = window.ReduxStore;
     const runtime = addon.tab.traps.vm.runtime;
@@ -155,7 +131,7 @@ export default async function ({addon}) {
             for (const value of options.values) {
                 const option = document.createElement('option');
                 option.value = value;
-                option.textContent = OPTION_LABELS[value] || value;
+                option.textContent = msg(`option-${value}`);
                 input.appendChild(option);
             }
         } else {
@@ -179,11 +155,11 @@ export default async function ({addon}) {
 
         const header = document.createElement('div');
         header.className = 'object-editor-header';
-        header.textContent = 'オブジェクト編集';
+        header.textContent = msg('panel-title');
         const close = document.createElement('button');
         close.className = 'object-editor-close';
         close.type = 'button';
-        close.title = '閉じる';
+        close.title = msg('close');
         close.textContent = '\u00d7';
         close.addEventListener('click', () => {
             panel.remove();
@@ -195,19 +171,19 @@ export default async function ({addon}) {
         container.className = 'object-editor-fields';
         fields = {};
 
-        addField(container, 'x', 'X座標', {
+        addField(container, 'x', msg('field-x'), {
             onChange: event => setSelectionValue((items, bounds) => {
                 const target = Number(event.target.value) + runtime.stageWidth;
                 for (const item of items) item.translate(target - bounds.center.x, 0);
             })
         });
-        addField(container, 'y', 'Y座標', {
+        addField(container, 'y', msg('field-y'), {
             onChange: event => setSelectionValue((items, bounds) => {
                 const target = runtime.stageHeight - Number(event.target.value);
                 for (const item of items) item.translate(0, target - bounds.center.y);
             })
         });
-        addField(container, 'rotation', '回転角度', {
+        addField(container, 'rotation', msg('field-rotation'), {
             onChange: event => setSelectionValue((items, bounds) => {
                 const target = Number(event.target.value);
                 for (const item of items) {
@@ -217,7 +193,7 @@ export default async function ({addon}) {
                 }
             })
         });
-        addField(container, 'layer', 'レイヤー', {
+        addField(container, 'layer', msg('field-layer'), {
             min: 1,
             step: '1',
             onChange: event => setSelectionValue(items => {
@@ -228,7 +204,7 @@ export default async function ({addon}) {
                 parent.insertChild(target, item);
             })
         });
-        addField(container, 'scaleX', 'X方向の拡大率（%）', {
+        addField(container, 'scaleX', msg('field-scale-x'), {
             onChange: event => setSelectionValue((items, bounds) => {
                 const target = Number(event.target.value) || 0.01;
                 for (const item of items) {
@@ -238,7 +214,7 @@ export default async function ({addon}) {
                 }
             })
         });
-        addField(container, 'scaleY', 'Y方向の拡大率（%）', {
+        addField(container, 'scaleY', msg('field-scale-y'), {
             onChange: event => setSelectionValue((items, bounds) => {
                 const target = Number(event.target.value) || 0.01;
                 for (const item of items) {
@@ -248,21 +224,21 @@ export default async function ({addon}) {
                 }
             })
         });
-        addField(container, 'width', '幅', {
+        addField(container, 'width', msg('field-width'), {
             min: 0,
             onChange: event => setSelectionValue((items, bounds) => {
                 const ratio = Math.max(0.01, Number(event.target.value) * 2) / Math.max(0.01, bounds.width);
                 for (const item of items) item.scale(ratio, 1, bounds.center);
             })
         });
-        addField(container, 'height', '高さ', {
+        addField(container, 'height', msg('field-height'), {
             min: 0,
             onChange: event => setSelectionValue((items, bounds) => {
                 const ratio = Math.max(0.01, Number(event.target.value) * 2) / Math.max(0.01, bounds.height);
                 for (const item of items) item.scale(1, ratio, bounds.center);
             })
         });
-        addField(container, 'skewX', 'X方向の傾斜（度）', {
+        addField(container, 'skewX', msg('field-skew-x'), {
             onChange: event => setSelectionValue((items, bounds) => {
                 const target = Number(event.target.value);
                 for (const item of items) {
@@ -272,7 +248,7 @@ export default async function ({addon}) {
                 }
             })
         });
-        addField(container, 'skewY', 'Y方向の傾斜（度）', {
+        addField(container, 'skewY', msg('field-skew-y'), {
             onChange: event => setSelectionValue((items, bounds) => {
                 const target = Number(event.target.value);
                 for (const item of items) {
@@ -282,26 +258,26 @@ export default async function ({addon}) {
                 }
             })
         });
-        addField(container, 'blend', '合成モード', {
+        addField(container, 'blend', msg('field-blend'), {
             values: BLEND_MODES,
             wide: true,
             onChange: event => setSelectionValue(items => {
                 for (const item of items) item.blendMode = event.target.value;
             })
         });
-        addField(container, 'cap', '線端の形状', {
+        addField(container, 'cap', msg('field-cap'), {
             values: ['round', 'butt', 'square'],
             onChange: event => setSelectionValue(items => {
                 for (const item of items) item.strokeCap = event.target.value;
             })
         });
-        addField(container, 'join', '線の結合', {
+        addField(container, 'join', msg('field-join'), {
             values: ['round', 'miter', 'bevel'],
             onChange: event => setSelectionValue(items => {
                 for (const item of items) item.strokeJoin = event.target.value;
             })
         });
-        addField(container, 'dash', '破線の長さ', {
+        addField(container, 'dash', msg('field-dash'), {
             min: 0,
             wide: true,
             onChange: event => setSelectionValue(items => {
@@ -344,8 +320,11 @@ export default async function ({addon}) {
             button.id = BUTTON_ID;
             button.type = 'button';
             button.className = 'object-editor-button';
-            button.title = 'オブジェクト編集を開く';
-            button.innerHTML = `${PANEL_ICON}<span>オブジェクト</span>`;
+            button.title = msg('open-tooltip');
+            button.innerHTML = PANEL_ICON;
+            const label = document.createElement('span');
+            label.textContent = msg('toolbar-label');
+            button.appendChild(label);
             button.addEventListener('click', () => {
                 if (getSelection().length) createPanel();
             });

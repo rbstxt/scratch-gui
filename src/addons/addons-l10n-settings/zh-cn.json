@@ -401,5 +401,10 @@
     "hide-stage/@name": "隐藏舞台和角色窗格",
     "editor-stepping/@description": "项目运行时高亮正在运行的积木",
     "editor-stepping/@name": "给运行中的积木显示边框",
-    "editor-stepping/@settings-name-highlight-color": "高亮色"
+    "editor-stepping/@settings-name-highlight-color": "高亮色",
+    "paint-object-editor/@name": "对象编辑器",
+    "paint-object-editor/@description": "使用精确数值编辑造型对象的变换、图层顺序、混合模式和轮廓属性。",
+    "block-pins/@name": "固定积木",
+    "block-pins/@description": "将常用积木固定在积木栏顶部。",
+    "block-pins/@info-checkbox-notice": "带复选框的固定积木在勾选后可能出现意外行为。"
 }

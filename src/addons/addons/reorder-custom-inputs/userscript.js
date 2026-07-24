@@ -1,8 +1,10 @@
 import { modifiedCreateAllInputs, modifiedUpdateDeclarationProcCode } from "./modified-funcs.js";
 
-export default async function ({ addon, console }) {
+export default async function ({ addon, msg }) {
   function createArrow(direction, callback) {
     const path = direction === "left" ? "M 17 13 L 9 21 L 17 30" : "M 9 13 L 17 21 L 9 30";
+    const shortcut = direction === "left" ? "Ctrl+Shift+[" : "Ctrl+Shift+]";
+    const label = msg(direction === "left" ? "move-left" : "move-right", { shortcut });
 
     Blockly.WidgetDiv.DIV.insertAdjacentHTML(
       "beforeend",
@@ -14,7 +16,11 @@ export default async function ({ addon, console }) {
             </svg>`
     );
 
-    Blockly.WidgetDiv.DIV.lastChild.addEventListener("click", callback);
+    const arrow = Blockly.WidgetDiv.DIV.lastChild;
+    arrow.setAttribute("aria-label", label);
+    arrow.setAttribute("role", "button");
+    arrow.setAttribute("title", label);
+    arrow.addEventListener("click", callback);
   }
 
   //https://github.com/scratchfoundation/scratch-blocks/blob/f210e042988b91bcdc2abeca7a2d85e178edadb2/blocks_vertical/procedures.js#L674
@@ -93,11 +99,12 @@ export default async function ({ addon, console }) {
     const initialInputListLength = procedureBlock.inputList.length;
 
     // return if inputNameToShift and newPosition are not valid
-    if (!(inputNameToShift && newPosition >= 0 && newPosition <= initialInputListLength)) {
+    if (!(inputNameToShift && newPosition >= 0 && newPosition < initialInputListLength)) {
       return false;
     }
 
     const originalPosition = procedureBlock.inputList.findIndex((input) => input.name === inputNameToShift);
+    if (originalPosition === -1 || originalPosition === newPosition) return false;
     const itemToMove = procedureBlock.inputList.splice(originalPosition, 1)[0];
     procedureBlock.inputList.splice(newPosition, 0, itemToMove);
 
@@ -110,6 +117,7 @@ export default async function ({ addon, console }) {
     }
 
     focusOnInput(procedureBlock.inputList[newPosition]);
+    return true;
   }
 
   function focusOnInput(input) {
@@ -126,11 +134,41 @@ export default async function ({ addon, console }) {
     const proc = sourceBlock.parentBlock_ ? sourceBlock.parentBlock_ : sourceBlock;
 
     // if inputList length is 1 there's nowhere to shift the input so we can simply return
-    if (proc.inputList.length <= 1) return;
+    if (proc.inputList.length <= 1) return false;
 
-    const { name, index } = getFieldInputNameAndIndex(field, proc.inputList);
+    const fieldInput = getFieldInputNameAndIndex(field, proc.inputList);
+    if (!fieldInput) return false;
+    const { name, index } = fieldInput;
     const newPosition = direction === "left" ? index - 1 : index + 1;
-    shiftInput(proc, name, newPosition);
+    return shiftInput(proc, name, newPosition);
+  }
+
+  function handleShortcut(event, field) {
+    if (
+      event.isComposing || event.keyCode === 229 ||
+      !event.ctrlKey || !event.shiftKey || event.altKey || event.metaKey ||
+      (event.code !== "BracketLeft" && event.code !== "BracketRight")
+    ) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    const input = event.currentTarget;
+    const selection = {
+      start: input.selectionStart,
+      end: input.selectionEnd,
+      direction: input.selectionDirection,
+    };
+    const direction = event.code === "BracketLeft" ? "left" : "right";
+    if (!shiftFieldCallback(field.sourceBlock_, field, direction)) return;
+
+    const nextInput = Blockly.FieldTextInput.htmlInput_;
+    if (!nextInput) return;
+    const length = nextInput.value.length;
+    nextInput.setSelectionRange(
+      Math.min(selection.start, length),
+      Math.min(selection.end, length),
+      selection.direction
+    );
   }
 
   function polluteProcedureDeclaration(procedureDeclaration, save_original = true) {
@@ -177,6 +215,8 @@ export default async function ({ addon, console }) {
       originalShowEditor.call(this);
       createArrow("left", () => shiftFieldCallback(this.sourceBlock_, this, "left"));
       createArrow("right", () => shiftFieldCallback(this.sourceBlock_, this, "right"));
+      const input = Blockly.FieldTextInput.htmlInput_;
+      if (input) input.addEventListener("keydown", (event) => handleShortcut(event, this));
       selectedField = this;
     };
   }

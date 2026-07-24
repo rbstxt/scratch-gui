@@ -1,0 +1,10 @@
+{
+    "paint-object-editor/@name": "Objektų rengyklė",
+    "paint-object-editor/@description": "Leidžia tiksliomis reikšmėmis redaguoti kostiumo objektų transformacijas, sluoksnius, maišymo veiksenas ir linijos savybes.",
+    "block-pins/@name": "Blokų prisegimas",
+    "block-pins/@description": "Prisega dažnai naudojamus blokus blokų paletės viršuje.",
+    "block-pins/@info-checkbox-notice": "Prisegti blokai su žymimaisiais langeliais gali netikėtai veikti juos pažymėjus.",
+    "reorder-custom-inputs/@name": "Pertvarkomos pasirinktinių blokų įvestys",
+    "reorder-custom-inputs/@description": "Leidžia pertvarkyti pasirinktinių blokų parametrus lange „Sukurti bloką“.",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "Įterpti naujas įvestis po pasirinktos įvesties"
+}

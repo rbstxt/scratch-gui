@@ -1,0 +1,10 @@
+{
+    "paint-object-editor/@name": "Objektredigerare",
+    "paint-object-editor/@description": "Redigera kostymobjekts transformering, lagerordning, blandning och linjeegenskaper med exakta värden.",
+    "block-pins/@name": "Fäst block",
+    "block-pins/@description": "Fäst block som används ofta högst upp i verktygslådan.",
+    "block-pins/@info-checkbox-notice": "Fästa block med kryssrutor kan fungera oväntat när de markeras.",
+    "reorder-custom-inputs/@name": "Flyttbara inmatningar i egna block",
+    "reorder-custom-inputs/@description": "Gör det möjligt att ändra ordningen på parametrar för egna block på skärmen ”Skapa ett block”.",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "Infoga nya inmatningar efter den valda inmatningen"
+}

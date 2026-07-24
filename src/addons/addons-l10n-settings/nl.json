@@ -404,5 +404,10 @@
     "hide-stage/@name": "Speelveld en spritevenster verbergen",
     "editor-stepping/@description": "Voegt een gekleurde markering toe aan de blokken die op dit moment worden uitgevoerd in een project.",
     "editor-stepping/@name": "Rand om uitvoerende blokken",
-    "editor-stepping/@settings-name-highlight-color": "Markeringskleur"
+    "editor-stepping/@settings-name-highlight-color": "Markeringskleur",
+    "paint-object-editor/@name": "Objecteditor",
+    "paint-object-editor/@description": "Bewerk transformaties, lagen, overvloeimodi en lijneigenschappen van objecten in een uiterlijk met exacte waarden.",
+    "block-pins/@name": "Blokken vastzetten",
+    "block-pins/@description": "Zet vaak gebruikte blokken bovenaan het blokpalet vast.",
+    "block-pins/@info-checkbox-notice": "Vastgezette blokken met selectievakjes kunnen onverwacht reageren wanneer ze worden aangevinkt."
 }

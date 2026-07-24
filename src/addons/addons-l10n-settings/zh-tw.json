@@ -288,5 +288,13 @@
     "hide-stage/@name": "添加隱藏舞台與角色面板按鈕",
     "editor-stepping/@description": "專案運行時，以顏色高亮正在執行的程式積木。",
     "editor-stepping/@name": "高亮執行中的程式",
-    "editor-stepping/@settings-name-highlight-color": "高亮顏色"
+    "editor-stepping/@settings-name-highlight-color": "高亮顏色",
+    "paint-object-editor/@name": "物件編輯器",
+    "paint-object-editor/@description": "使用精確數值編輯造型物件的變形、圖層順序、混合模式與外框屬性。",
+    "block-pins/@name": "釘選積木",
+    "block-pins/@description": "將常用積木釘選在工具箱頂端。",
+    "block-pins/@info-checkbox-notice": "含有核取方塊的釘選積木在勾選後可能會有非預期的行為。",
+    "reorder-custom-inputs/@name": "可重新排列的自訂積木輸入欄位",
+    "reorder-custom-inputs/@description": "可在「建立一個積木」畫面重新排列自訂積木的參數。",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "在所選輸入欄位後插入新的輸入欄位"
 }

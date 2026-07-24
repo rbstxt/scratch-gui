@@ -120,10 +120,11 @@ const getEditorMode = () => {
  */
 const getLocale = () => {
     const locale = reduxInstance.state.locales.locale;
-    if (Object.prototype.hasOwnProperty.call(l10nEntries, locale)) {
-        return locale;
-    }
-    return locale.split('-')[0];
+    const supportedLocale = Object.keys(l10nEntries).find(
+        candidate => candidate.toLowerCase() === locale.toLowerCase()
+    );
+    if (supportedLocale) return supportedLocale;
+    return locale.split('-')[0].toLowerCase();
 };
 const language = getLocale();
 

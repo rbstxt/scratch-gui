@@ -1,6 +1,15 @@
 import {detectLocale} from '../../../src/lib/detect-locale.js';
 
-const supportedLocales = ['en', 'es', 'pt-br', 'de', 'it'];
+const supportedLocales = ['en', 'es', 'pt-br', 'de', 'it', 'ja-Hira'];
+
+global.window = {
+    location: {},
+    navigator: {}
+};
+global.location = window.location;
+global.localStorage = {
+    getItem: () => null
+};
 
 Object.defineProperty(window.location,
     'search',
@@ -26,6 +35,14 @@ describe('detectLocale', () => {
             {value: '?locale=pt-BR'}
         );
         expect(detectLocale(supportedLocales)).toEqual('pt-br');
+    });
+
+    test('preserves canonical locale casing', () => {
+        Object.defineProperty(window.location,
+            'search',
+            {value: '?lang=ja-hira'}
+        );
+        expect(detectLocale(supportedLocales)).toEqual('ja-Hira');
     });
 
     test('also accepts lang from the URL when present', () => {

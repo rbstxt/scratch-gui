@@ -1,0 +1,10 @@
+{
+    "paint-object-editor/@name": "محرر الكائنات",
+    "paint-object-editor/@description": "عدّل تحويلات كائنات المظهر وطبقاتها ومزجها وخصائص حدودها باستخدام قيم دقيقة.",
+    "block-pins/@name": "تثبيت اللبنات",
+    "block-pins/@description": "ثبّت اللبنات كثيرة الاستخدام في أعلى صندوق الأدوات.",
+    "block-pins/@info-checkbox-notice": "قد تعمل اللبنات المثبتة التي تحتوي على مربعات اختيار بشكل غير متوقع عند تحديدها.",
+    "reorder-custom-inputs/@name": "مدخلات لبنات مخصصة قابلة لإعادة الترتيب",
+    "reorder-custom-inputs/@description": "يتيح إعادة ترتيب معاملات اللبنات المخصصة في شاشة «إنشاء لبنة».",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "إدراج المدخلات الجديدة بعد المدخل المحدد"
+}

@@ -1,0 +1,10 @@
+{
+    "paint-object-editor/@name": "Editor de objetos",
+    "paint-object-editor/@description": "Edite com valores precisos as transformações, camadas, modos de mesclagem e propriedades do contorno dos objetos da fantasia.",
+    "block-pins/@name": "Fixação de blocos",
+    "block-pins/@description": "Fixe os blocos usados com frequência no topo da paleta de blocos.",
+    "block-pins/@info-checkbox-notice": "Blocos fixados com caixas de seleção podem se comportar de forma inesperada quando marcados.",
+    "reorder-custom-inputs/@name": "Entradas reorganizáveis de blocos personalizados",
+    "reorder-custom-inputs/@description": "Permite reorganizar os parâmetros de blocos personalizados na tela \"Criar um bloco\".",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "Inserir novas entradas depois da entrada selecionada"
+}

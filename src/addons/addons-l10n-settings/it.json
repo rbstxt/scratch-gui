@@ -400,5 +400,10 @@
     "hide-stage/@name": "Nasconde lo stage e l'area degli sprite",
     "editor-stepping/@description": "Aggiunge un bordo colorato ai blocchi in esecuzione nel progetto.",
     "editor-stepping/@name": "Bordo blocchi in esecuzione",
-    "editor-stepping/@settings-name-highlight-color": "Colore evidenziazione"
+    "editor-stepping/@settings-name-highlight-color": "Colore evidenziazione",
+    "paint-object-editor/@name": "Editor oggetti",
+    "paint-object-editor/@description": "Modifica con valori precisi trasformazioni, livelli, metodi di fusione e proprietà del tratto degli oggetti del costume.",
+    "block-pins/@name": "Blocchi fissati",
+    "block-pins/@description": "Fissa i blocchi usati più spesso in cima al pannello dei blocchi.",
+    "block-pins/@info-checkbox-notice": "I blocchi fissati con caselle di controllo possono comportarsi in modo imprevisto quando vengono selezionati."
 }

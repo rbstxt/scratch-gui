@@ -7,6 +7,7 @@ const addons = [
     'middle-click-popup',
     'jump-to-def',
     'reorder-custom-inputs',
+    'block-pins',
     'editor-searchable-dropdowns',
     'data-category-tweaks-v2',
     'block-palette-icons',

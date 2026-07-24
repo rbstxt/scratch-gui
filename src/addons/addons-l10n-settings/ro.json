@@ -1,4 +1,12 @@
 {
+    "paint-object-editor/@name": "Editor de obiecte",
+    "paint-object-editor/@description": "Editează cu valori precise transformările, stratificarea, modurile de combinare și proprietățile conturului obiectelor costumului.",
+    "block-pins/@name": "Fixarea blocurilor",
+    "block-pins/@description": "Fixează blocurile folosite frecvent în partea de sus a paletei.",
+    "block-pins/@info-checkbox-notice": "Blocurile fixate care conțin casete de selectare se pot comporta neașteptat când sunt bifate.",
+    "reorder-custom-inputs/@name": "Intrări reordonabile pentru blocuri personalizate",
+    "reorder-custom-inputs/@description": "Permite reordonarea parametrilor blocurilor personalizate în ecranul „Creează un bloc”.",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "Inserează intrările noi după intrarea selectată",
     "cat-blocks/@name": "Blocuri Pisică",
     "editor-devtools/@name": "Instrumente pentru dezvoltatori",
     "editor-searchable-dropdowns/@name": "Căutare în listele de opțiuni",

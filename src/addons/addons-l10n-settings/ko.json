@@ -334,5 +334,13 @@
     "hide-stage/@name": "무대와 스프라이트 탭 숨기기",
     "editor-stepping/@description": "프로젝트에서 현재 실행 중인 블록을 색으로 강조합니다.",
     "editor-stepping/@name": "실행 블록 테두리",
-    "editor-stepping/@settings-name-highlight-color": "강조색"
+    "editor-stepping/@settings-name-highlight-color": "강조색",
+    "paint-object-editor/@name": "개체 편집기",
+    "paint-object-editor/@description": "모양 개체의 변형, 레이어, 혼합 모드 및 선 속성을 정확한 값으로 편집합니다.",
+    "block-pins/@name": "블록 고정",
+    "block-pins/@description": "자주 사용하는 블록을 블록 팔레트 맨 위에 고정합니다.",
+    "block-pins/@info-checkbox-notice": "체크 상자가 있는 고정된 블록은 체크할 때 예기치 않게 동작할 수 있습니다.",
+    "reorder-custom-inputs/@name": "순서를 바꿀 수 있는 사용자 정의 블록 입력",
+    "reorder-custom-inputs/@description": "'블록 만들기' 화면에서 사용자 정의 블록의 매개변수 순서를 바꿀 수 있습니다.",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "선택한 입력 뒤에 새 입력 삽입"
 }

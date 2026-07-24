@@ -1,0 +1,10 @@
+{
+    "paint-object-editor/@name": "Editor d'objectes",
+    "paint-object-editor/@description": "Edita amb valors precisos les transformacions, les capes, la fusió i les propietats del traç dels objectes del vestit.",
+    "block-pins/@name": "Fixació de blocs",
+    "block-pins/@description": "Fixa els blocs que fas servir sovint a la part superior de la paleta de blocs.",
+    "block-pins/@info-checkbox-notice": "Els blocs fixats amb caselles de selecció poden comportar-se de manera inesperada quan es marquen.",
+    "reorder-custom-inputs/@name": "Entrades de blocs personalitzats reordenables",
+    "reorder-custom-inputs/@description": "Permet reordenar els paràmetres dels blocs personalitzats a la pantalla «Crea un bloc».",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "Insereix les entrades noves després de l'entrada seleccionada"
+}

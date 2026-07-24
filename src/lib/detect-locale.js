@@ -15,11 +15,15 @@ export const LANGUAGE_KEY = 'tw:language';
  * @return {string} the preferred locale
  */
 const detectLocale = supportedLocales => {
+    const getSupportedLocale = candidate => supportedLocales.find(
+        supported => supported.toLowerCase() === candidate.toLowerCase()
+    );
     // tw: read language from localStorage
     try {
         const storedLanguage = localStorage.getItem(LANGUAGE_KEY);
-        if (storedLanguage && supportedLocales.includes(storedLanguage)) {
-            return storedLanguage;
+        const supportedStoredLanguage = storedLanguage && getSupportedLocale(storedLanguage);
+        if (supportedStoredLanguage) {
+            return supportedStoredLanguage;
         }
     } catch (e) { /* ignore */ }
 
@@ -27,12 +31,14 @@ const detectLocale = supportedLocales => {
     let browserLocale = window.navigator.userLanguage || window.navigator.language;
     browserLocale = browserLocale.toLowerCase();
     // try to set locale from browserLocale
-    if (supportedLocales.includes(browserLocale)) {
-        locale = browserLocale;
+    const supportedBrowserLocale = getSupportedLocale(browserLocale);
+    if (supportedBrowserLocale) {
+        locale = supportedBrowserLocale;
     } else {
         browserLocale = browserLocale.split('-')[0];
-        if (supportedLocales.includes(browserLocale)) {
-            locale = browserLocale;
+        const supportedBaseLocale = getSupportedLocale(browserLocale);
+        if (supportedBaseLocale) {
+            locale = supportedBaseLocale;
         }
     }
 
@@ -44,8 +50,9 @@ const detectLocale = supportedLocales => {
     }
 
     const urlLocale = potentialLocales[0].toLowerCase();
-    if (supportedLocales.includes(urlLocale)) {
-        return urlLocale;
+    const supportedUrlLocale = getSupportedLocale(urlLocale);
+    if (supportedUrlLocale) {
+        return supportedUrlLocale;
     }
 
     return locale;

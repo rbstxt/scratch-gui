@@ -21,6 +21,7 @@
     "jump-to-def/@name": "Özel blok tanımına git",
     "reorder-custom-inputs/@description": "\"Bir Blok Oluştur\" ekranında özel blok değişkenlerinin yeniden düzenlenmesine olanak sağlar.",
     "reorder-custom-inputs/@name": "Yeniden düzenlenebilir özel blok girişleri",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "Yeni girdileri seçili girdiden sonra ekle",
     "editor-searchable-dropdowns/@description": "Blok açılır menülerinde seçenekleri aratmanıza olanak tanır.",
     "editor-searchable-dropdowns/@name": "Açılır blok aratma",
     "data-category-tweaks-v2/@description": "Verideki (\"Değişkenler\") blok kategorisi için ince ayarlar sağlar.",
@@ -391,5 +392,10 @@
     "hide-stage/@name": "Sahneyi ve kukla bölmesini gizle",
     "editor-stepping/@description": "Projede çalışmakta olan bloklara renkli bir vurgu ekler.",
     "editor-stepping/@name": "Çalışan blok kenarlığı",
-    "editor-stepping/@settings-name-highlight-color": "Vurgu rengi"
+    "editor-stepping/@settings-name-highlight-color": "Vurgu rengi",
+    "paint-object-editor/@name": "Nesne Düzenleyici",
+    "paint-object-editor/@description": "Kostüm nesnelerinin dönüşümünü, katman sırasını, karışımını ve çizgi özelliklerini kesin değerlerle düzenleyin.",
+    "block-pins/@name": "Blok Sabitleme",
+    "block-pins/@description": "Sık kullanılan blokları araç kutusunun en üstüne sabitleyin.",
+    "block-pins/@info-checkbox-notice": "Onay kutusu içeren sabitlenmiş bloklar işaretlendiğinde beklenmedik şekilde davranabilir."
 }

@@ -1,0 +1,10 @@
+{
+    "paint-object-editor/@name": "Editor objektov",
+    "paint-object-editor/@description": "Umožňuje presne upravovať transformácie, vrstvy, prelínanie a vlastnosti obrysu objektov kostýmu.",
+    "block-pins/@name": "Pripínanie blokov",
+    "block-pins/@description": "Pripína často používané bloky navrch palety.",
+    "block-pins/@info-checkbox-notice": "Pripnuté bloky so začiarkavacími políčkami sa môžu po začiarknutí správať neočakávane.",
+    "reorder-custom-inputs/@name": "Zoraditeľné vstupy vlastných blokov",
+    "reorder-custom-inputs/@description": "Umožňuje meniť poradie parametrov vlastných blokov na obrazovke „Vytvor blok“.",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "Vkladať nové vstupy za vybraný vstup"
+}

@@ -1,0 +1,10 @@
+{
+    "paint-object-editor/@name": "Trình chỉnh sửa đối tượng",
+    "paint-object-editor/@description": "Chỉnh sửa chính xác phép biến đổi, thứ tự lớp, chế độ hòa trộn và thuộc tính nét của đối tượng trong trang phục.",
+    "block-pins/@name": "Ghim khối",
+    "block-pins/@description": "Ghim các khối thường dùng lên đầu hộp công cụ.",
+    "block-pins/@info-checkbox-notice": "Các khối được ghim có hộp kiểm có thể hoạt động ngoài dự kiến khi được đánh dấu.",
+    "reorder-custom-inputs/@name": "Tham số khối tùy chỉnh có thể sắp xếp lại",
+    "reorder-custom-inputs/@description": "Cho phép sắp xếp lại các tham số của khối tùy chỉnh trên màn hình “Tạo một khối”.",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "Chèn tham số mới sau tham số đã chọn"
+}

@@ -1,0 +1,10 @@
+{
+    "paint-object-editor/@name": "Objektredigering",
+    "paint-object-editor/@description": "Rediger transformasjoner, lag, blandemoduser og linjeegenskaper for draktobjekter med nøyaktige verdier.",
+    "block-pins/@name": "Festing av blokker",
+    "block-pins/@description": "Fester ofte brukte blokker øverst i blokkpaletten.",
+    "block-pins/@info-checkbox-notice": "Festede blokker med avkrysningsbokser kan oppføre seg uventet når de krysses av.",
+    "reorder-custom-inputs/@name": "Omorganiserbare inndata i egne blokker",
+    "reorder-custom-inputs/@description": "Lar deg endre rekkefølgen på parameterne til egne blokker i vinduet «Lag en kloss».",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "Sett inn nye inndata etter valgt inndata"
+}
