@@ -7,7 +7,14 @@ export default class MockAudioEffects {
             SOFTER: 'lower',
             FASTER: 'faster',
             SLOWER: 'slower',
-            ECHO: 'echo'
+            ECHO: 'echo',
+            LOWPASS: 'low pass',
+            HIGHPASS: 'high pass',
+            LOWPASS_FADEIN: 'low pass fade in',
+            LOWPASS_FADEOUT: 'low pass fade out',
+            HIGHPASS_FADEIN: 'high pass fade in',
+            HIGHPASS_FADEOUT: 'high pass fade out',
+            MODIFY: 'modify'
         };
     }
     constructor (buffer, name) {

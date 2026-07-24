@@ -1,0 +1,38 @@
+:global([class*="tool-select-base_is-selected_"]) {
+    background-color: var(--looks-secondary) !important;
+}
+
+:global([class*="input_input-form_"]:focus) {
+    border-color: var(--looks-secondary) !important;
+    box-shadow: 0 0 0 0.25rem var(--looks-transparent) !important;
+}
+
+:global([class*="dropdown_dropdown_"]) {
+    color: var(--looks-secondary) !important;
+}
+
+:global([class*="font-dropdown_mod-menu-item_"]:hover),
+:global([class*="paint-editor_bitmap-button_"]) {
+    background-color: var(--looks-secondary) !important;
+}
+
+:global([class*="button_button_"]:active),
+:global([class*="button_highlighted_"]),
+:global([class*="fixed-tools_mod-menu-item_"]:hover) {
+    background-color: var(--looks-transparent) !important;
+}
+
+:global([class*="color-picker_active-swatch_"]) {
+    border-color: var(--looks-secondary) !important;
+    box-shadow: 0 0 0 3px var(--looks-transparent) !important;
+}
+
+:global(body[theme="dark"] .Popover-body) {
+    background: var(--paint-popover-background, var(--popover-background));
+    border-color: var(--paint-ui-pane-border, var(--ui-black-transparent));
+}
+
+:global(body[theme="dark"] .Popover-tipShape) {
+    fill: var(--paint-popover-background, var(--popover-background));
+    stroke: var(--paint-ui-pane-border, var(--ui-black-transparent));
+}

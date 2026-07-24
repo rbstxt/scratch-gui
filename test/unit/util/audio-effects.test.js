@@ -8,6 +8,7 @@ import AudioEffects from '../../../src/lib/audio/audio-effects';
 import RobotEffect from '../../../src/lib/audio/effects/robot-effect';
 import EchoEffect from '../../../src/lib/audio/effects/echo-effect';
 import VolumeEffect from '../../../src/lib/audio/effects/volume-effect';
+import FilterEffect from '../../../src/lib/audio/effects/filter-effect';
 
 describe('Audio Effects manager', () => {
     const audioContext = new AudioContext();
@@ -21,6 +22,17 @@ describe('Audio Effects manager', () => {
     test('changes buffer length  and playback rate for slower effect', () => {
         const audioEffects = new AudioEffects(audioBuffer, 'slower', 0, 1);
         expect(audioEffects.audioContext._.length).toBeGreaterThan(400);
+    });
+
+    test('modify pitch changes buffer length while preserving stereo channels', () => {
+        const stereoBuffer = audioContext.createBuffer(2, 400, 44100);
+        const audioEffects = new AudioEffects(stereoBuffer, {
+            preset: AudioEffects.effectTypes.MODIFY,
+            pitch: 1200,
+            volume: 1
+        }, 0, 1);
+        expect(audioEffects.audioContext._.length).toBe(200);
+        expect(audioEffects.audioContext._.numberOfChannels).toBe(2);
     });
 
     test('changes buffer length for echo effect', () => {
@@ -87,5 +99,15 @@ describe('Effects', () => {
         const volumeEffect = new VolumeEffect(audioContext, 0.5, 0, 1);
         expect(volumeEffect.input).toBeInstanceOf(AudioNode);
         expect(volumeEffect.output).toBeInstanceOf(AudioNode);
+
+        const lowPassEffect = new FilterEffect(audioContext, 'lowpass', null, 0, 1);
+        expect(lowPassEffect.input).toBeInstanceOf(AudioNode);
+        expect(lowPassEffect.output).toBeInstanceOf(AudioNode);
+        expect(lowPassEffect.filter.type).toBe('lowpass');
+
+        const highPassFade = new FilterEffect(audioContext, 'highpass', 'fadeIn', 0, 1);
+        expect(highPassFade.input).toBeInstanceOf(AudioNode);
+        expect(highPassFade.output).toBeInstanceOf(AudioNode);
+        expect(highPassFade.filter.type).toBe('highpass');
     });
 });

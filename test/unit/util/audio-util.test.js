@@ -1,6 +1,7 @@
 import {
     computeRMS,
     computeChunkedRMS,
+    computeChunkedRMSForChannels,
     downsampleIfNeeded,
     dropEveryOtherSample
 } from '../../../src/lib/audio/audio-util';
@@ -55,6 +56,14 @@ describe('computeChunkedRMS', () => {
     });
 });
 
+describe('computeChunkedRMSForChannels', () => {
+    test('shows audio present in either stereo channel', () => {
+        const left = new Float32Array([0, 0, 0, 0]);
+        const right = new Float32Array([1, 1, 0.5, 0.5]);
+        expect(computeChunkedRMSForChannels([left, right], 2)).toEqual(computeChunkedRMS(right, 2));
+    });
+});
+
 describe('downsampleIfNeeded', () => {
     const samples = {length: 1};
     const sampleRate = 44100;
@@ -70,6 +79,14 @@ describe('downsampleIfNeeded', () => {
         const res = await downsampleIfNeeded({samples, sampleRate}, resampler);
         expect(resampler).toHaveBeenCalledWith({samples, sampleRate}, 22050);
         expect(res).toEqual('TEST');
+    });
+    test('includes every channel when estimating encoded size', async () => {
+        const channelData = [{length: 2500001}, {length: 2500001}];
+        const buffer = {channelData, sampleRate};
+        const resampler = jest.fn(() => 'STEREO');
+        const res = await downsampleIfNeeded(buffer, resampler);
+        expect(resampler).toHaveBeenCalledWith(buffer, 22050);
+        expect(res).toEqual('STEREO');
     });
     // TW: We allow resampling even if it would exceed the limit because our GUI handles this better.
     test.skip('fails if resampling would not put it under the limit', async () => {
@@ -98,5 +115,19 @@ describe('dropEveryOtherSample', () => {
     test('result sampleRate is given sampleRate / 2', () => {
         const {sampleRate} = dropEveryOtherSample(buffer);
         expect(sampleRate).toEqual(buffer.sampleRate / 2);
+    });
+    test('preserves all channels', () => {
+        const stereoBuffer = {
+            channelData: [
+                new Float32Array([1, 0, 2, 0]),
+                new Float32Array([-1, 0, -2, 0])
+            ],
+            sampleRate: 4
+        };
+        const result = dropEveryOtherSample(stereoBuffer);
+        expect(result.channelData).toHaveLength(2);
+        expect(result.channelData[0]).toEqual(new Float32Array([1, 2]));
+        expect(result.channelData[1]).toEqual(new Float32Array([-1, -2]));
+        expect(result.sampleRate).toEqual(2);
     });
 });

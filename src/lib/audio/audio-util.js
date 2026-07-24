@@ -28,16 +28,23 @@ const computeChunkedRMS = function (samples, chunkSize = 1024) {
     return chunkLevels;
 };
 
+const computeChunkedRMSForChannels = function (channelData, chunkSize = 1024) {
+    const channelLevels = channelData.map(samples => computeChunkedRMS(samples, chunkSize));
+    return channelLevels[0].map((level, index) =>
+        Math.max(level, ...channelLevels.slice(1).map(levels => levels[index])));
+};
+
 const encodeAndAddSoundToVM = function (vm, samples, sampleRate, name, callback) {
+    const channelData = Array.isArray(samples) ? samples : [samples];
     WavEncoder.encode({
         sampleRate: sampleRate,
-        channelData: [samples]
-    }).then(wavBuffer => {
+        channelData
+    }, {float: true}).then(wavBuffer => {
         const vmSound = {
             format: '',
             dataFormat: 'wav',
             rate: sampleRate,
-            sampleCount: samples.length
+            sampleCount: channelData[0].length
         };
 
         // Create an asset from the encoded .wav and get resulting md5
@@ -76,15 +83,16 @@ const encodeAndAddSoundToVM = function (vm, samples, sampleRate, name, callback)
  * @returns {SoundBuffer} Downsampled buffer with half the sample rate
  */
 const downsampleIfNeeded = (buffer, resampler) => {
-    const {samples, sampleRate} = buffer;
-    const encodedByteLength = samples.length * 2; /* bitDepth 16 bit */
+    const {samples, channelData, sampleRate} = buffer;
+    const channels = channelData || [samples];
+    const encodedByteLength = channels[0].length * channels.length * 2; /* bitDepth 16 bit */
     // Resolve immediately if already within byte limit
     if (encodedByteLength < SOUND_BYTE_LIMIT) {
-        return Promise.resolve({samples, sampleRate});
+        return Promise.resolve(channelData ? {channelData, sampleRate} : {samples, sampleRate});
     }
     // TW: Don't check if the sound will still fit at this reduced sample rate.
     // Instead the GUI will show a warning if it's too large.
-    return resampler({samples, sampleRate}, 22050);
+    return resampler(channelData ? {channelData, sampleRate} : {samples, sampleRate}, 22050);
 };
 
 /**
@@ -93,20 +101,28 @@ const downsampleIfNeeded = (buffer, resampler) => {
  * @returns {SoundBuffer} Downsampled buffer with half the sample rate
  */
 const dropEveryOtherSample = buffer => {
-    const newLength = Math.floor(buffer.samples.length / 2);
-    const newSamples = new Float32Array(newLength);
-    for (let i = 0; i < newLength; i++) {
-        newSamples[i] = buffer.samples[i * 2];
+    const channels = buffer.channelData || [buffer.samples];
+    const newLength = Math.floor(channels[0].length / 2);
+    const newChannelData = channels.map(samples => {
+        const newSamples = new Float32Array(newLength);
+        for (let i = 0; i < newLength; i++) {
+            newSamples[i] = samples[i * 2];
+        }
+        return newSamples;
+    });
+    const result = {sampleRate: buffer.sampleRate / 2};
+    if (buffer.channelData) {
+        result.channelData = newChannelData;
+    } else {
+        result.samples = newChannelData[0];
     }
-    return {
-        samples: newSamples,
-        sampleRate: buffer.sampleRate / 2
-    };
+    return result;
 };
 
 export {
     computeRMS,
     computeChunkedRMS,
+    computeChunkedRMSForChannels,
     encodeAndAddSoundToVM,
     downsampleIfNeeded,
     dropEveryOtherSample

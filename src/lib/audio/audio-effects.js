@@ -1,8 +1,11 @@
+/* global globalThis */
+
 import EchoEffect from './effects/echo-effect.js';
 import RobotEffect from './effects/robot-effect.js';
 import VolumeEffect from './effects/volume-effect.js';
 import FadeEffect from './effects/fade-effect.js';
 import MuteEffect from './effects/mute-effect.js';
+import FilterEffect from './effects/filter-effect.js';
 
 const effectTypes = {
     ROBOT: 'robot',
@@ -14,14 +17,23 @@ const effectTypes = {
     ECHO: 'echo',
     FADEIN: 'fade in',
     FADEOUT: 'fade out',
-    MUTE: 'mute'
+    MUTE: 'mute',
+    LOWPASS: 'low pass',
+    HIGHPASS: 'high pass',
+    LOWPASS_FADEIN: 'low pass fade in',
+    LOWPASS_FADEOUT: 'low pass fade out',
+    HIGHPASS_FADEIN: 'high pass fade in',
+    HIGHPASS_FADEOUT: 'high pass fade out',
+    MODIFY: 'modify'
 };
 
 class AudioEffects {
     static get effectTypes () {
         return effectTypes;
     }
-    constructor (buffer, name, trimStart, trimEnd) {
+    constructor (buffer, effect, trimStart, trimEnd) {
+        this.options = typeof effect === 'string' ? {preset: effect} : effect;
+        const name = this.options.preset;
         this.trimStartSeconds = (trimStart * buffer.length) / buffer.sampleRate;
         this.trimEndSeconds = (trimEnd * buffer.length) / buffer.sampleRate;
         this.adjustedTrimStartSeconds = this.trimStartSeconds;
@@ -53,6 +65,11 @@ class AudioEffects {
             adjustedAffectedSampleCount = Math.floor(affectedSampleCount / this.playbackRate);
             sampleCount = unaffectedSampleCount + adjustedAffectedSampleCount;
             break;
+        case effectTypes.MODIFY:
+            this.playbackRate = Math.pow(2, (this.options.pitch || 0) / 1200);
+            adjustedAffectedSampleCount = Math.floor(affectedSampleCount / this.playbackRate);
+            sampleCount = unaffectedSampleCount + adjustedAffectedSampleCount;
+            break;
         }
 
         const durationSeconds = sampleCount / buffer.sampleRate;
@@ -61,33 +78,47 @@ class AudioEffects {
         this.adjustedTrimStart = this.adjustedTrimStartSeconds / durationSeconds;
         this.adjustedTrimEnd = this.adjustedTrimEndSeconds / durationSeconds;
 
-        if (window.OfflineAudioContext) {
-            this.audioContext = new window.OfflineAudioContext(1, sampleCount, buffer.sampleRate);
+        if (globalThis.OfflineAudioContext) {
+            this.audioContext = new globalThis.OfflineAudioContext(
+                buffer.numberOfChannels,
+                sampleCount,
+                buffer.sampleRate
+            );
         } else {
             // Need to use webkitOfflineAudioContext, which doesn't support all sample rates.
             // Resample by adjusting sample count to make room and set offline context to desired sample rate.
             const sampleScale = 44100 / buffer.sampleRate;
-            this.audioContext = new window.webkitOfflineAudioContext(1, sampleScale * sampleCount, 44100);
+            this.audioContext = new globalThis.webkitOfflineAudioContext(
+                buffer.numberOfChannels,
+                sampleScale * sampleCount,
+                44100
+            );
         }
 
         // For the reverse effect we need to manually reverse the data into a new audio buffer
         // to prevent overwriting the original, so that the undo stack works correctly.
         // Doing buffer.reverse() would mutate the original data.
         if (name === effectTypes.REVERSE) {
-            const originalBufferData = buffer.getChannelData(0);
-            const newBuffer = this.audioContext.createBuffer(1, buffer.length, buffer.sampleRate);
-            const newBufferData = newBuffer.getChannelData(0);
+            const newBuffer = this.audioContext.createBuffer(
+                buffer.numberOfChannels,
+                buffer.length,
+                buffer.sampleRate
+            );
             const bufferLength = buffer.length;
 
             const startSamples = Math.floor(this.trimStartSeconds * buffer.sampleRate);
             const endSamples = Math.floor(this.trimEndSeconds * buffer.sampleRate);
-            let counter = 0;
-            for (let i = 0; i < bufferLength; i++) {
-                if (i >= startSamples && i < endSamples) {
-                    newBufferData[i] = originalBufferData[endSamples - counter - 1];
-                    counter++;
-                } else {
-                    newBufferData[i] = originalBufferData[i];
+            for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+                const originalBufferData = buffer.getChannelData(channel);
+                const newBufferData = newBuffer.getChannelData(channel);
+                let counter = 0;
+                for (let i = 0; i < bufferLength; i++) {
+                    if (i >= startSamples && i < endSamples) {
+                        newBufferData[i] = originalBufferData[endSamples - counter - 1];
+                        counter++;
+                    } else {
+                        newBufferData[i] = originalBufferData[i];
+                    }
                 }
             }
             this.buffer = newBuffer;
@@ -107,8 +138,13 @@ class AudioEffects {
         switch (this.name) {
         case effectTypes.FASTER:
         case effectTypes.SLOWER:
+        case effectTypes.MODIFY:
             this.source.playbackRate.setValueAtTime(this.playbackRate, this.adjustedTrimStartSeconds);
             this.source.playbackRate.setValueAtTime(1.0, this.adjustedTrimEndSeconds);
+            if (this.name === effectTypes.MODIFY && this.options.volume !== 1) {
+                ({input, output} = new VolumeEffect(this.audioContext, this.options.volume,
+                    this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
+            }
             break;
         case effectTypes.LOUDER:
             ({input, output} = new VolumeEffect(this.audioContext, 1.25,
@@ -136,6 +172,30 @@ class AudioEffects {
             break;
         case effectTypes.MUTE:
             ({input, output} = new MuteEffect(this.audioContext,
+                this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
+            break;
+        case effectTypes.LOWPASS:
+            ({input, output} = new FilterEffect(this.audioContext, 'lowpass', null,
+                this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
+            break;
+        case effectTypes.HIGHPASS:
+            ({input, output} = new FilterEffect(this.audioContext, 'highpass', null,
+                this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
+            break;
+        case effectTypes.LOWPASS_FADEIN:
+            ({input, output} = new FilterEffect(this.audioContext, 'lowpass', 'fadeIn',
+                this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
+            break;
+        case effectTypes.LOWPASS_FADEOUT:
+            ({input, output} = new FilterEffect(this.audioContext, 'lowpass', 'fadeOut',
+                this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
+            break;
+        case effectTypes.HIGHPASS_FADEIN:
+            ({input, output} = new FilterEffect(this.audioContext, 'highpass', 'fadeIn',
+                this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
+            break;
+        case effectTypes.HIGHPASS_FADEOUT:
+            ({input, output} = new FilterEffect(this.audioContext, 'highpass', 'fadeOut',
                 this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
             break;
         }

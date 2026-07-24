@@ -26,6 +26,7 @@ import _default_costume_editor_color from "../addons/default-costume-editor-colo
 import _bitmap_copy from "../addons/bitmap-copy/_manifest_entry.js";
 import _2d_color_picker from "../addons/2d-color-picker/_manifest_entry.js";
 import _paint_skew from "../addons/paint-skew/_manifest_entry.js";
+import _paint_object_editor from "../addons/paint-object-editor/_manifest_entry.js";
 import _better_img_uploads from "../addons/better-img-uploads/_manifest_entry.js";
 import _pick_colors_from_stage from "../addons/pick-colors-from-stage/_manifest_entry.js";
 import _custom_block_shape from "../addons/custom-block-shape/_manifest_entry.js";
@@ -108,6 +109,7 @@ export default {
   "bitmap-copy": _bitmap_copy,
   "2d-color-picker": _2d_color_picker,
   "paint-skew": _paint_skew,
+  "paint-object-editor": _paint_object_editor,
   "better-img-uploads": _better_img_uploads,
   "pick-colors-from-stage": _pick_colors_from_stage,
   "custom-block-shape": _custom_block_shape,

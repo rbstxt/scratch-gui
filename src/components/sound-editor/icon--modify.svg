@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <title>Modify</title>
+  <g fill="#CF63CF">
+    <rect x="8" y="1" width="4" height="18" rx="2"/>
+    <circle cx="10" cy="9" r="5" fill="var(--ui-primary, #fff)"/>
+    <circle cx="10" cy="9" r="3.5"/>
+  </g>
+</svg>

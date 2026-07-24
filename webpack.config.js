@@ -26,7 +26,7 @@ const htmlWebpackPluginCommon = {
 };
 
 // When this changes, the path for all JS files will change, bypassing any HTTP caches
-const CACHE_EPOCH = 'pentapod';
+const CACHE_EPOCH = 'unsand-20260724';
 
 const base = {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
@@ -40,11 +40,19 @@ const base = {
         // allows ROUTING_STYLE=wildcard to work properly
         historyApiFallback: {
             rewrites: [
+                {from: /^\/$/, to: '/index-page.htm'},
+                {from: /^\/editor\/?$/, to: '/editor-page.htm'},
+                {from: /^\/editor\.html$/, to: '/editor-page.htm'},
+                {from: /^\/fullscreen\/?$/, to: '/fullscreen-page.htm'},
+                {from: /^\/fullscreen\.html$/, to: '/fullscreen-page.htm'},
+                {from: /^\/embed\/?$/, to: '/embed-page.htm'},
+                {from: /^\/embed\.html$/, to: '/embed-page.htm'},
                 {from: /^\/\d+\/?$/, to: '/index-page.htm'},
                 {from: /^\/\d+\/fullscreen\/?$/, to: '/fullscreen-page.htm'},
                 {from: /^\/\d+\/editor\/?$/, to: '/editor-page.htm'},
                 {from: /^\/\d+\/embed\/?$/, to: '/embed-page.htm'},
-                {from: /^\/addons\/?$/, to: '/addons-page.htm'}
+                {from: /^\/addons\/?$/, to: '/addon-settings-page.htm'},
+                {from: /^\/credits\/?$/, to: '/credits-page.htm'}
             ]
         }
     },
@@ -111,6 +119,12 @@ const base = {
                     }
                 }
             }]
+        },
+        {
+            test: /\.svg$/,
+            include: path.resolve(__dirname, 'node_modules/scratch-paint/src'),
+            enforce: 'pre',
+            loader: path.resolve(__dirname, 'scripts/unsand-paint-svg-loader.js')
         }]
     },
     plugins: [
@@ -230,6 +244,10 @@ module.exports = [
                     {
                         from: 'static',
                         to: ''
+                    },
+                    {
+                        from: 'static/manifest.webmanifest',
+                        to: 'static/manifest.webmanifest'
                     }
                 ]
             }),

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <title>Low Pass</title>
+  <g fill="none" stroke="#CF63CF" stroke-linecap="round" stroke-width="1.5">
+    <path d="M2 2v16h16M2 10h16"/>
+    <path d="m8.5 3 4 4m0-4-4 4"/>
+  </g>
+  <path fill="#CF63CF" fill-opacity=".5" d="M2 10h16v8H2z"/>
+</svg>

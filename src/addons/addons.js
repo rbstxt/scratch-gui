@@ -28,6 +28,7 @@ const addons = [
     'bitmap-copy',
     '2d-color-picker',
     'paint-skew',
+    'paint-object-editor',
     'better-img-uploads',
     'pick-colors-from-stage',
     'custom-block-shape',

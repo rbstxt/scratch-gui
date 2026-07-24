@@ -10,6 +10,8 @@ import {openFontsModal} from '../reducers/modals';
 import {connect} from 'react-redux';
 import {Theme} from '../lib/themes/index.js';
 
+import './paint-editor-wrapper.css';
+
 class PaintEditorWrapper extends React.Component {
     constructor (props) {
         super(props);
@@ -25,6 +27,8 @@ class PaintEditorWrapper extends React.Component {
     }
     componentDidMount () {
         this.props.vm.runtime.fontManager.on('change', this.handleUpdateFonts);
+        this.previousBodyTheme = document.body.getAttribute('theme');
+        document.body.setAttribute('theme', this.props.theme.isDark() ? 'dark' : 'light');
     }
     shouldComponentUpdate (nextProps, nextState) {
         return this.props.imageId !== nextProps.imageId ||
@@ -34,8 +38,18 @@ class PaintEditorWrapper extends React.Component {
             this.props.customStageSize !== nextProps.customStageSize ||
             this.state.fonts !== nextState.fonts;
     }
+    componentDidUpdate (previousProps) {
+        if (previousProps.theme !== this.props.theme) {
+            document.body.setAttribute('theme', this.props.theme.isDark() ? 'dark' : 'light');
+        }
+    }
     componentWillUnmount () {
         this.props.vm.runtime.fontManager.off('change', this.handleUpdateFonts);
+        if (this.previousBodyTheme === null) {
+            document.body.removeAttribute('theme');
+        } else {
+            document.body.setAttribute('theme', this.previousBodyTheme);
+        }
     }
     handleUpdateFonts () {
         this.setState({

@@ -29,6 +29,10 @@ import reverseIcon from './icon--reverse.svg';
 import fadeOutIcon from './icon--fade-out.svg';
 import fadeInIcon from './icon--fade-in.svg';
 import muteIcon from './icon--mute.svg';
+import lowPassIcon from './icon--lowpass.svg';
+import highPassIcon from './icon--highpass.svg';
+import modifyIcon from './icon--modify.svg';
+import formatIcon from './icon--format.svg';
 
 import deleteIcon from '!../../lib/tw-recolor/build!./icon--delete.svg';
 import copyIcon from '!../../lib/tw-recolor/build!./icon--copy.svg';
@@ -137,6 +141,71 @@ const messages = defineMessages({
         id: 'gui.soundEditor.mute',
         description: 'Title of the button to apply the mute effect',
         defaultMessage: 'Mute'
+    },
+    lowPass: {
+        id: 'unsand.soundEditor.lowPass',
+        description: 'Title of the button to apply a low-pass filter',
+        defaultMessage: 'Low Pass'
+    },
+    highPass: {
+        id: 'unsand.soundEditor.highPass',
+        description: 'Title of the button to apply a high-pass filter',
+        defaultMessage: 'High Pass'
+    },
+    lowPassFadeIn: {
+        id: 'unsand.soundEditor.lowPassFadeIn',
+        description: 'Title of the button to fade a low-pass filter out',
+        defaultMessage: 'Low Pass Fade In'
+    },
+    lowPassFadeOut: {
+        id: 'unsand.soundEditor.lowPassFadeOut',
+        description: 'Title of the button to fade a low-pass filter in',
+        defaultMessage: 'Low Pass Fade Out'
+    },
+    highPassFadeIn: {
+        id: 'unsand.soundEditor.highPassFadeIn',
+        description: 'Title of the button to fade a high-pass filter out',
+        defaultMessage: 'High Pass Fade In'
+    },
+    highPassFadeOut: {
+        id: 'unsand.soundEditor.highPassFadeOut',
+        description: 'Title of the button to fade a high-pass filter in',
+        defaultMessage: 'High Pass Fade Out'
+    },
+    modify: {
+        id: 'unsand.soundEditor.modify',
+        description: 'Title of the button to modify pitch and volume',
+        defaultMessage: 'Modify'
+    },
+    format: {
+        id: 'unsand.soundEditor.format',
+        description: 'Title of the button to change sample rate',
+        defaultMessage: 'Format'
+    },
+    filters: {
+        id: 'unsand.soundEditor.filters',
+        description: 'Title of the menu containing audio filters',
+        defaultMessage: 'Filters'
+    },
+    apply: {
+        id: 'unsand.soundEditor.apply',
+        description: 'Label for applying an audio filter',
+        defaultMessage: 'Apply'
+    },
+    fadeFilterIn: {
+        id: 'unsand.soundEditor.fadeFilterIn',
+        description: 'Label for gradually removing an audio filter',
+        defaultMessage: 'Fade out filter'
+    },
+    fadeFilterOut: {
+        id: 'unsand.soundEditor.fadeFilterOut',
+        description: 'Label for gradually applying an audio filter',
+        defaultMessage: 'Fade in filter'
+    },
+    sampleRate: {
+        id: 'unsand.soundEditor.sampleRate',
+        description: 'Label for changing a sound sample rate',
+        defaultMessage: 'Sample rate'
     }
 });
 
@@ -174,6 +243,158 @@ const formatSoundSize = bytes => {
         return `${(bytes / 1000 / 1000).toFixed(2)}MB`;
     }
     return `${(bytes / 1000).toFixed(2)}KB`;
+};
+
+class FilterMenu extends React.Component {
+    constructor (props) {
+        super(props);
+        this.state = {open: false};
+        this.handleAction = this.handleAction.bind(this);
+        this.handleDocumentMouseDown = this.handleDocumentMouseDown.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.handleToggle = this.handleToggle.bind(this);
+        this.setMenuRef = this.setMenuRef.bind(this);
+    }
+    componentDidMount () {
+        document.addEventListener('mousedown', this.handleDocumentMouseDown);
+    }
+    componentWillUnmount () {
+        document.removeEventListener('mousedown', this.handleDocumentMouseDown);
+    }
+    setMenuRef (element) {
+        this.menu = element;
+    }
+    handleDocumentMouseDown (event) {
+        if (this.state.open && this.menu && !this.menu.contains(event.target)) {
+            this.setState({open: false});
+        }
+    }
+    handleKeyDown (event) {
+        if (event.key === 'Escape') {
+            this.setState({open: false});
+        }
+    }
+    handleToggle () {
+        this.setState(({open}) => ({open: !open}));
+    }
+    handleAction (event) {
+        const actions = {
+            format: this.props.onFormatSound,
+            highPass: this.props.onHighPass,
+            highPassFadeIn: this.props.onHighPassFadeIn,
+            highPassFadeOut: this.props.onHighPassFadeOut,
+            lowPass: this.props.onLowPass,
+            lowPassFadeIn: this.props.onLowPassFadeIn,
+            lowPassFadeOut: this.props.onLowPassFadeOut
+        };
+        const action = actions[event.currentTarget.dataset.action];
+        this.setState({open: false}, action);
+    }
+    renderFilterGroup (icon, title, applyAction, fadeInAction, fadeOutAction) {
+        const {intl} = this.props;
+        return (
+            <div className={styles.filterGroup}>
+                <div className={styles.filterGroupTitle}>
+                    <TWRenderRecoloredImage
+                        draggable={false}
+                        src={icon}
+                    />
+                    <span>{intl.formatMessage(title)}</span>
+                </div>
+                <div className={styles.filterActions}>
+                    <button
+                        data-action={applyAction}
+                        onClick={this.handleAction}
+                    >
+                        {intl.formatMessage(messages.apply)}
+                    </button>
+                    <button
+                        data-action={fadeInAction}
+                        onClick={this.handleAction}
+                    >
+                        {intl.formatMessage(messages.fadeFilterIn)}
+                    </button>
+                    <button
+                        data-action={fadeOutAction}
+                        onClick={this.handleAction}
+                    >
+                        {intl.formatMessage(messages.fadeFilterOut)}
+                    </button>
+                </div>
+            </div>
+        );
+    }
+    render () {
+        const {intl} = this.props;
+        return (
+            <div
+                className={styles.filterMenu}
+                ref={this.setMenuRef}
+                onKeyDown={this.handleKeyDown}
+            >
+                <button
+                    aria-expanded={this.state.open}
+                    aria-haspopup="menu"
+                    className={styles.filterMenuTrigger}
+                    type="button"
+                    onClick={this.handleToggle}
+                >
+                    <TWRenderRecoloredImage
+                        draggable={false}
+                        src={lowPassIcon}
+                    />
+                    <span>{intl.formatMessage(messages.filters)}</span>
+                    <span className={styles.filterMenuChevron}>{'▴'}</span>
+                </button>
+                {this.state.open && (
+                    <div
+                        className={styles.filterMenuPopover}
+                        role="menu"
+                    >
+                        <div className={styles.filterMenuHeading}>
+                            {intl.formatMessage(messages.filters)}
+                        </div>
+                        {this.renderFilterGroup(
+                            lowPassIcon,
+                            messages.lowPass,
+                            'lowPass',
+                            'lowPassFadeIn',
+                            'lowPassFadeOut'
+                        )}
+                        {this.renderFilterGroup(
+                            highPassIcon,
+                            messages.highPass,
+                            'highPass',
+                            'highPassFadeIn',
+                            'highPassFadeOut'
+                        )}
+                        <button
+                            className={styles.formatMenuItem}
+                            data-action="format"
+                            onClick={this.handleAction}
+                        >
+                            <TWRenderRecoloredImage
+                                draggable={false}
+                                src={formatIcon}
+                            />
+                            <span>{intl.formatMessage(messages.sampleRate)}</span>
+                        </button>
+                    </div>
+                )}
+            </div>
+        );
+    }
+}
+
+FilterMenu.propTypes = {
+    intl: intlShape.isRequired,
+    onFormatSound: PropTypes.func.isRequired,
+    onHighPass: PropTypes.func.isRequired,
+    onHighPassFadeIn: PropTypes.func.isRequired,
+    onHighPassFadeOut: PropTypes.func.isRequired,
+    onLowPass: PropTypes.func.isRequired,
+    onLowPassFadeIn: PropTypes.func.isRequired,
+    onLowPassFadeOut: PropTypes.func.isRequired
 };
 
 const SoundEditor = props => (
@@ -295,6 +516,12 @@ const SoundEditor = props => (
             <div className={styles.effects}>
                 <IconButton
                     className={styles.effectButton}
+                    img={modifyIcon}
+                    title={<FormattedMessage {...messages.modify} />}
+                    onClick={props.onModifySound}
+                />
+                <IconButton
+                    className={styles.effectButton}
                     img={fasterIcon}
                     title={<FormattedMessage {...messages.faster} />}
                     onClick={props.onFaster}
@@ -354,6 +581,16 @@ const SoundEditor = props => (
                     title={<FormattedMessage {...messages.echo} />}
                     onClick={props.onEcho}
                 />
+                <FilterMenu
+                    intl={props.intl}
+                    onFormatSound={props.onFormatSound}
+                    onHighPass={props.onHighPass}
+                    onHighPassFadeIn={props.onHighPassFadeIn}
+                    onHighPassFadeOut={props.onHighPassFadeOut}
+                    onLowPass={props.onLowPass}
+                    onLowPassFadeIn={props.onLowPassFadeIn}
+                    onLowPassFadeOut={props.onLowPassFadeOut}
+                />
             </div>
         </div>
         <div className={styles.infoRow}>
@@ -387,15 +624,6 @@ const SoundEditor = props => (
                 />
             </div>
         )}
-        {props.isStereo && (
-            <div className={classNames(styles.alert, styles.stereo)}>
-                <FormattedMessage
-                    defaultMessage="Editing this stereo sound will irreversibly convert it to mono."
-                    description="Message that appears when editing a stereo sound."
-                    id="tw.stereoAlert"
-                />
-            </div>
-        )}
     </div>
 );
 
@@ -415,11 +643,19 @@ SoundEditor.propTypes = {
     onCopyToNew: PropTypes.func.isRequired,
     onDelete: PropTypes.func,
     onEcho: PropTypes.func.isRequired,
+    onFormatSound: PropTypes.func.isRequired,
     onFadeIn: PropTypes.func.isRequired,
     onFadeOut: PropTypes.func.isRequired,
     onFaster: PropTypes.func.isRequired,
+    onHighPass: PropTypes.func.isRequired,
+    onHighPassFadeIn: PropTypes.func.isRequired,
+    onHighPassFadeOut: PropTypes.func.isRequired,
     onLouder: PropTypes.func.isRequired,
     onMute: PropTypes.func.isRequired,
+    onLowPass: PropTypes.func.isRequired,
+    onLowPassFadeIn: PropTypes.func.isRequired,
+    onLowPassFadeOut: PropTypes.func.isRequired,
+    onModifySound: PropTypes.func.isRequired,
     onPaste: PropTypes.func.isRequired,
     onPlay: PropTypes.func.isRequired,
     onRedo: PropTypes.func.isRequired,
