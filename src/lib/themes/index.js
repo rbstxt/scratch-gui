@@ -4,7 +4,7 @@ import * as accentPurple from './accent/purple';
 import * as accentBlue from './accent/blue';
 import * as accentRed from './accent/red';
 import * as accentRainbow from './accent/rainbow';
-import * as accentUnsand from './accent/unsand';
+import * as accentTurbest from './accent/turbest';
 
 import * as guiLight from './gui/light';
 import * as guiDark from './gui/dark';
@@ -17,15 +17,18 @@ const ACCENT_PURPLE = 'purple';
 const ACCENT_BLUE = 'blue';
 const ACCENT_RED = 'red';
 const ACCENT_RAINBOW = 'rainbow';
+const ACCENT_TURBEST = 'turbest';
 const ACCENT_UNSAND = 'unsand';
 const ACCENT_MAP = {
     [ACCENT_PURPLE]: accentPurple,
     [ACCENT_BLUE]: accentBlue,
     [ACCENT_RED]: accentRed,
     [ACCENT_RAINBOW]: accentRainbow,
-    [ACCENT_UNSAND]: accentUnsand
+    [ACCENT_TURBEST]: accentTurbest,
+    // Keep the old value readable for at least one release.
+    [ACCENT_UNSAND]: accentTurbest
 };
-const ACCENT_DEFAULT = ACCENT_UNSAND;
+const ACCENT_DEFAULT = ACCENT_TURBEST;
 
 const GUI_LIGHT = 'light';
 const GUI_DARK = 'dark';
@@ -77,6 +80,7 @@ let themeObjectsCreated = 0;
 
 class Theme {
     constructor (accent, gui, blocks) {
+        if (accent === ACCENT_UNSAND) accent = ACCENT_TURBEST;
         // do not modify these directly
         /** @readonly */
         this.id = ++themeObjectsCreated;
@@ -153,6 +157,7 @@ export {
     ACCENT_PURPLE,
     ACCENT_BLUE,
     ACCENT_RAINBOW,
+    ACCENT_TURBEST,
     ACCENT_UNSAND,
     ACCENT_MAP,
 

@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
-const BUTTON_ID = 'unsand-object-editor-button';
-const PANEL_ID = 'unsand-object-editor-panel';
+const BUTTON_ID = 'turbest-object-editor-button';
+const PANEL_ID = 'turbest-object-editor-panel';
 
 const PANEL_ICON = `
     <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

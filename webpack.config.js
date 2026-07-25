@@ -26,7 +26,7 @@ const htmlWebpackPluginCommon = {
 };
 
 // When this changes, the path for all JS files will change, bypassing any HTTP caches
-const CACHE_EPOCH = 'unsand-20260724';
+const CACHE_EPOCH = 'turbest-20260725';
 
 const base = {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
@@ -124,7 +124,7 @@ const base = {
             test: /\.svg$/,
             include: path.resolve(__dirname, 'node_modules/scratch-paint/src'),
             enforce: 'pre',
-            loader: path.resolve(__dirname, 'scripts/unsand-paint-svg-loader.js')
+            loader: path.resolve(__dirname, 'scripts/turbest-paint-svg-loader.js')
         }]
     },
     plugins: [

@@ -9,47 +9,47 @@ import styles from './audio-effect-dialog.css';
 
 const messages = defineMessages({
     modifyTitle: {
-        id: 'unsand.soundEditor.modifyTitle',
+        id: 'turbest.soundEditor.modifyTitle',
         description: 'Title of the sound pitch and volume dialog',
         defaultMessage: 'Adjust sound'
     },
     pitch: {
-        id: 'unsand.soundEditor.pitch',
+        id: 'turbest.soundEditor.pitch',
         description: 'Label for sound pitch input',
         defaultMessage: 'Pitch'
     },
     volume: {
-        id: 'unsand.soundEditor.volume',
+        id: 'turbest.soundEditor.volume',
         description: 'Label for sound volume input',
         defaultMessage: 'Volume'
     },
     sampleRateTitle: {
-        id: 'unsand.soundEditor.sampleRateTitle',
+        id: 'turbest.soundEditor.sampleRateTitle',
         description: 'Title of the sound sample rate dialog',
         defaultMessage: 'Sample rate'
     },
     sampleRate: {
-        id: 'unsand.soundEditor.sampleRateInput',
+        id: 'turbest.soundEditor.sampleRateInput',
         description: 'Label for sound sample rate input',
         defaultMessage: 'Sample rate'
     },
     range: {
-        id: 'unsand.soundEditor.range',
+        id: 'turbest.soundEditor.range',
         description: 'Label for choosing which part of a sound to modify',
         defaultMessage: 'Apply to'
     },
     wholeSound: {
-        id: 'unsand.soundEditor.wholeSound',
+        id: 'turbest.soundEditor.wholeSound',
         description: 'Option to modify an entire sound',
         defaultMessage: 'Entire sound'
     },
     selection: {
-        id: 'unsand.soundEditor.selection',
+        id: 'turbest.soundEditor.selection',
         description: 'Option to modify only the selected part of a sound',
         defaultMessage: 'Selection only'
     },
     invalidValue: {
-        id: 'unsand.soundEditor.invalidValue',
+        id: 'turbest.soundEditor.invalidValue',
         description: 'Error shown when a sound setting is outside its allowed range',
         defaultMessage: 'Enter a value within the allowed range.'
     }

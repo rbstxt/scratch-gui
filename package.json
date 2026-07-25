@@ -1,13 +1,13 @@
 {
-  "name": "unsand",
+  "name": "turbest",
   "version": "3.2.37",
-  "description": "Unsand - a Scratch mod with security restrictions removed",
+  "description": "turbest - a Scratch mod with security restrictions removed",
   "author": "rbstxt",
   "license": "GPL-3.0",
-  "homepage": "https://github.com/rbstxt/unsand#readme",
+  "homepage": "https://turbest.1zworks.com/editor",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rbstxt/unsand.git"
+    "url": "https://github.com/turbest/scratch-gui.git"
   },
   "main": "./dist/scratch-gui.js",
   "scripts": {
@@ -87,7 +87,7 @@
     "redux-throttle": "0.1.1",
     "scratch-audio": "github:TurboWarp/scratch-audio#develop",
     "scratch-blocks": "github:TurboWarp/scratch-blocks#develop-builds",
-    "scratch-paint": "github:PenguinMod/PenguinMod-Paint#6083d544dc5ae6ac0bb8f05e0e2b5a7e8c6bf55b",
+    "scratch-paint": "github:turbest/scratch-paint#a1661290a737948ac58b18e6f3bb334775dcf1b0",
     "scratch-render": "github:TurboWarp/scratch-render#develop",
     "scratch-vm": "github:TurboWarp/scratch-vm#develop",
     "style-loader": "^0.23.0",

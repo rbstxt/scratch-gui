@@ -143,67 +143,67 @@ const messages = defineMessages({
         defaultMessage: 'Mute'
     },
     lowPass: {
-        id: 'unsand.soundEditor.lowPass',
+        id: 'turbest.soundEditor.lowPass',
         description: 'Title of the button to apply a low-pass filter',
         defaultMessage: 'Low Pass'
     },
     highPass: {
-        id: 'unsand.soundEditor.highPass',
+        id: 'turbest.soundEditor.highPass',
         description: 'Title of the button to apply a high-pass filter',
         defaultMessage: 'High Pass'
     },
     lowPassFadeIn: {
-        id: 'unsand.soundEditor.lowPassFadeIn',
+        id: 'turbest.soundEditor.lowPassFadeIn',
         description: 'Title of the button to fade a low-pass filter out',
         defaultMessage: 'Low Pass Fade In'
     },
     lowPassFadeOut: {
-        id: 'unsand.soundEditor.lowPassFadeOut',
+        id: 'turbest.soundEditor.lowPassFadeOut',
         description: 'Title of the button to fade a low-pass filter in',
         defaultMessage: 'Low Pass Fade Out'
     },
     highPassFadeIn: {
-        id: 'unsand.soundEditor.highPassFadeIn',
+        id: 'turbest.soundEditor.highPassFadeIn',
         description: 'Title of the button to fade a high-pass filter out',
         defaultMessage: 'High Pass Fade In'
     },
     highPassFadeOut: {
-        id: 'unsand.soundEditor.highPassFadeOut',
+        id: 'turbest.soundEditor.highPassFadeOut',
         description: 'Title of the button to fade a high-pass filter in',
         defaultMessage: 'High Pass Fade Out'
     },
     modify: {
-        id: 'unsand.soundEditor.modify',
+        id: 'turbest.soundEditor.modify',
         description: 'Title of the button to modify pitch and volume',
         defaultMessage: 'Modify'
     },
     format: {
-        id: 'unsand.soundEditor.format',
+        id: 'turbest.soundEditor.format',
         description: 'Title of the button to change sample rate',
         defaultMessage: 'Format'
     },
     filters: {
-        id: 'unsand.soundEditor.filters',
+        id: 'turbest.soundEditor.filters',
         description: 'Title of the menu containing audio filters',
         defaultMessage: 'Filters'
     },
     apply: {
-        id: 'unsand.soundEditor.apply',
+        id: 'turbest.soundEditor.apply',
         description: 'Label for applying an audio filter',
         defaultMessage: 'Apply'
     },
     fadeFilterIn: {
-        id: 'unsand.soundEditor.fadeFilterIn',
+        id: 'turbest.soundEditor.fadeFilterIn',
         description: 'Label for gradually removing an audio filter',
         defaultMessage: 'Fade out filter'
     },
     fadeFilterOut: {
-        id: 'unsand.soundEditor.fadeFilterOut',
+        id: 'turbest.soundEditor.fadeFilterOut',
         description: 'Label for gradually applying an audio filter',
         defaultMessage: 'Fade in filter'
     },
     sampleRate: {
-        id: 'unsand.soundEditor.sampleRate',
+        id: 'turbest.soundEditor.sampleRate',
         description: 'Label for changing a sound sample rate',
         defaultMessage: 'Sample rate'
     }

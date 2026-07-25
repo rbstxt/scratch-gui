@@ -1,6 +1,6 @@
-# Unsand
+# turbest
 
-Unsand is a Scratch mod based on TurboWarp with major security restrictions removed. Extensions always load unsandboxed and security confirmation dialogs are disabled.
+turbest is a Scratch mod based on TurboWarp with major security restrictions removed. Extensions always load unsandboxed and security confirmation dialogs are disabled.
 
 ## Setup
 
@@ -36,6 +36,6 @@ The `build/_redirects` file (copied from `static/_redirects`) handles SPA-style 
 
 ## License
 
-Unsand's modifications are licensed under the GNU General Public License v3.0. See LICENSE or https://www.gnu.org/licenses/ for details.
+turbest's modifications are licensed under the GNU General Public License v3.0. See LICENSE or https://www.gnu.org/licenses/ for details.
 
-Scratch is a project of the Scratch Foundation. Unsand is not affiliated with Scratch, the Scratch Team, or the Scratch Foundation.
+Scratch is a project of the Scratch Foundation. turbest is not affiliated with Scratch, the Scratch Team, or the Scratch Foundation.

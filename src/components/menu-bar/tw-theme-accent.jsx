@@ -13,7 +13,7 @@ import {
     ACCENT_PURPLE,
     ACCENT_RED,
     ACCENT_RAINBOW,
-    ACCENT_UNSAND,
+    ACCENT_TURBEST,
     Theme
 } from '../../lib/themes/index.js';
 import {openAccentMenu, accentMenuOpen, closeSettingsMenu} from '../../reducers/menus.js';
@@ -43,10 +43,10 @@ const options = defineMessages({
         description: 'Name of color scheme that uses a rainbow.',
         id: 'tw.accent.rainbow'
     },
-    [ACCENT_UNSAND]: {
-        defaultMessage: 'Unsand',
-        description: 'Name of the unsand color scheme.',
-        id: 'tw.accent.unsand'
+    [ACCENT_TURBEST]: {
+        defaultMessage: 'turbest',
+        description: 'Name of the turbest color scheme.',
+        id: 'tw.accent.turbest'
     }
 });
 
