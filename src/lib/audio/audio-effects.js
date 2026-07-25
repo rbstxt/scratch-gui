@@ -24,16 +24,19 @@ const effectTypes = {
     LOWPASS_FADEOUT: 'low pass fade out',
     HIGHPASS_FADEIN: 'high pass fade in',
     HIGHPASS_FADEOUT: 'high pass fade out',
-    MODIFY: 'modify'
+    MODIFY: 'modify',
+    FLIP: 'flip',
+    BITCRUSH: 'bitcrush'
 };
 
 class AudioEffects {
     static get effectTypes () {
         return effectTypes;
     }
-    constructor (buffer, effect, trimStart, trimEnd) {
+    constructor (buffer, effect, trimStart, trimEnd, trimChannels = [false, false]) {
         this.options = typeof effect === 'string' ? {preset: effect} : effect;
         const name = this.options.preset;
+        this.selectedChannel = trimChannels[0] === trimChannels[1] ? null : Number(trimChannels[1]);
         this.trimStartSeconds = (trimStart * buffer.length) / buffer.sampleRate;
         this.trimEndSeconds = (trimEnd * buffer.length) / buffer.sampleRate;
         this.adjustedTrimStartSeconds = this.trimStartSeconds;
@@ -98,7 +101,7 @@ class AudioEffects {
         // For the reverse effect we need to manually reverse the data into a new audio buffer
         // to prevent overwriting the original, so that the undo stack works correctly.
         // Doing buffer.reverse() would mutate the original data.
-        if (name === effectTypes.REVERSE) {
+        if (name === effectTypes.REVERSE || name === effectTypes.FLIP || name === effectTypes.BITCRUSH) {
             const newBuffer = this.audioContext.createBuffer(
                 buffer.numberOfChannels,
                 buffer.length,
@@ -108,14 +111,25 @@ class AudioEffects {
 
             const startSamples = Math.floor(this.trimStartSeconds * buffer.sampleRate);
             const endSamples = Math.floor(this.trimEndSeconds * buffer.sampleRate);
+            const crushStep = Math.max(1, Math.round(buffer.sampleRate / (this.options.sampleRate || 11025)));
+            const crushScale = Math.max(1, Math.pow(2, this.options.bitDepth || 4) - 1);
             for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
                 const originalBufferData = buffer.getChannelData(channel);
                 const newBufferData = newBuffer.getChannelData(channel);
                 let counter = 0;
                 for (let i = 0; i < bufferLength; i++) {
-                    if (i >= startSamples && i < endSamples) {
+                    if (name === effectTypes.REVERSE && i >= startSamples && i < endSamples &&
+                        (this.selectedChannel === null || this.selectedChannel === channel)) {
                         newBufferData[i] = originalBufferData[endSamples - counter - 1];
                         counter++;
+                    } else if (name === effectTypes.FLIP && i >= startSamples && i < endSamples &&
+                        buffer.numberOfChannels > 1) {
+                        newBufferData[i] = buffer.getChannelData(buffer.numberOfChannels - channel - 1)[i];
+                    } else if (name === effectTypes.BITCRUSH && i >= startSamples && i < endSamples &&
+                        (this.selectedChannel === null || this.selectedChannel === channel)) {
+                        const heldSample = originalBufferData[startSamples +
+                            (Math.floor((i - startSamples) / crushStep) * crushStep)];
+                        newBufferData[i] = Math.round(heldSample * crushScale) / crushScale;
                     } else {
                         newBufferData[i] = originalBufferData[i];
                     }
@@ -200,7 +214,15 @@ class AudioEffects {
             break;
         }
 
-        if (input && output) {
+        if (input && output && this.selectedChannel !== null && this.buffer.numberOfChannels > 1) {
+            const splitter = this.audioContext.createChannelSplitter(2);
+            const merger = this.audioContext.createChannelMerger(2);
+            this.source.connect(splitter);
+            splitter.connect(input, this.selectedChannel);
+            output.connect(merger, 0, this.selectedChannel);
+            splitter.connect(merger, 1 - this.selectedChannel, 1 - this.selectedChannel);
+            merger.connect(this.audioContext.destination);
+        } else if (input && output) {
             this.source.connect(input);
             output.connect(this.audioContext.destination);
         } else {

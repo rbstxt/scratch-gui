@@ -5,7 +5,8 @@ import {connect} from 'react-redux';
 import log from '../lib/log';
 import CustomExtensionModalComponent from '../components/tw-custom-extension-modal/custom-extension-modal.jsx';
 import {closeCustomExtensionModal} from '../reducers/modals';
-import {manuallyTrustExtension} from './tw-security-manager.jsx';
+import {manuallyTrustExtension, isTrustedExtension} from './tw-security-manager.jsx';
+import {getPersistedUnsandboxed, setPersistedUnsandboxed} from '../lib/tw-persisted-unsandboxed.js';
 
 /**
  * @param {Blob} blob Blob
@@ -34,14 +35,16 @@ class CustomExtensionModal extends React.Component {
             'handleChangeText',
             'handleDragOver',
             'handleDragLeave',
-            'handleDrop'
+            'handleDrop',
+            'handleChangeUnsandboxed'
         ]);
 
         this.state = {
             type: 'url',
             url: '',
             files: null,
-            text: ''
+            text: '',
+            unsandboxed: getPersistedUnsandboxed()
         };
     }
 
@@ -122,8 +125,13 @@ class CustomExtensionModal extends React.Component {
         try {
             const urls = await this.getExtensionURLs();
 
-            for (const url of urls) {
-                manuallyTrustExtension(url);
+            if (!this.props.developerMode && this.state.type !== 'url') {
+                setPersistedUnsandboxed(this.state.unsandboxed);
+                if (this.state.unsandboxed) {
+                    for (const url of urls) {
+                        manuallyTrustExtension(url);
+                    }
+                }
             }
 
             for (const url of urls) {
@@ -182,6 +190,24 @@ class CustomExtensionModal extends React.Component {
         }
     }
 
+    isUnsandboxed () {
+        if (this.props.developerMode) return true;
+        if (this.state.type === 'url') {
+            return isTrustedExtension(this.state.url);
+        }
+        return this.state.unsandboxed;
+    }
+
+    canChangeUnsandboxed () {
+        return !this.props.developerMode && this.state.type !== 'url';
+    }
+
+    handleChangeUnsandboxed (e) {
+        this.setState({
+            unsandboxed: e.target.checked
+        });
+    }
+
     render () {
         return (
             <CustomExtensionModalComponent
@@ -200,6 +226,9 @@ class CustomExtensionModal extends React.Component {
                 onKeyDown={this.handleKeyDown}
                 text={this.state.text}
                 onChangeText={this.handleChangeText}
+                developerMode={this.props.developerMode}
+                unsandboxed={this.isUnsandboxed()}
+                onChangeUnsandboxed={this.canChangeUnsandboxed() ? this.handleChangeUnsandboxed : null}
                 onLoadExtension={this.handleLoadExtension}
                 onClose={this.handleClose}
             />
@@ -208,6 +237,7 @@ class CustomExtensionModal extends React.Component {
 }
 
 CustomExtensionModal.propTypes = {
+    developerMode: PropTypes.bool.isRequired,
     onClose: PropTypes.func,
     vm: PropTypes.shape({
         extensionManager: PropTypes.shape({
@@ -217,6 +247,7 @@ CustomExtensionModal.propTypes = {
 };
 
 const mapStateToProps = state => ({
+    developerMode: state.scratchGui.tw.developerMode,
     vm: state.scratchGui.vm
 });
 

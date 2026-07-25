@@ -34,6 +34,10 @@ const computeChunkedRMSForChannels = function (channelData, chunkSize = 1024) {
         Math.max(level, ...channelLevels.slice(1).map(levels => levels[index])));
 };
 
+const computeChunkedRMSByChannel = function (channelData, chunkSize = 1024) {
+    return channelData.map(samples => computeChunkedRMS(samples, chunkSize));
+};
+
 const encodeAndAddSoundToVM = function (vm, samples, sampleRate, name, callback) {
     const channelData = Array.isArray(samples) ? samples : [samples];
     WavEncoder.encode({
@@ -123,6 +127,7 @@ export {
     computeRMS,
     computeChunkedRMS,
     computeChunkedRMSForChannels,
+    computeChunkedRMSByChannel,
     encodeAndAddSoundToVM,
     downsampleIfNeeded,
     dropEveryOtherSample

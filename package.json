@@ -11,6 +11,9 @@
   },
   "main": "./dist/scratch-gui.js",
   "scripts": {
+    "postinstall": "node scripts/apply-scratch-paint-lasso.mjs",
+    "prebuild": "node scripts/apply-scratch-paint-lasso.mjs",
+    "prestart": "node scripts/apply-scratch-paint-lasso.mjs",
     "build": "npm run clean && webpack --colors --bail",
     "clean": "rimraf ./build && mkdirp build && rimraf ./dist && mkdirp dist",
     "prepublish": "node scripts/prepublish.mjs",

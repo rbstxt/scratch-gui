@@ -455,3 +455,181 @@ $border-radius: 0.25rem;
     background-color: rgba(255, 119, 0, 0.3);
     border-color: rgb(255, 119, 0);
 }
+
+/* NitroBolt-style multichannel editor */
+.audio-row {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    margin-top: calc(2 * $space);
+}
+
+.meter {
+    display: flex;
+    align-items: flex-end;
+    padding: 22px 10px 0 0;
+}
+
+.audio-container {
+    min-width: 0;
+    flex: 1;
+}
+
+.time-steps {
+    position: relative;
+    height: 22px;
+    margin: 0 5px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.time-step {
+    position: absolute;
+    bottom: 0;
+    width: 1px;
+    height: 8px;
+    background: $ui-black-transparent;
+}
+
+.time-step span {
+    position: absolute;
+    bottom: 8px;
+    color: $text-primary-transparent;
+    font-size: 0.55rem;
+    white-space: nowrap;
+    transform: translateX(-50%);
+}
+
+.time-step:first-child span {
+    transform: none;
+}
+
+.time-step:last-child span {
+    transform: translateX(-100%);
+}
+
+.waveform-container {
+    align-items: stretch;
+    min-height: 162px;
+    margin-top: 0;
+    margin-bottom: 0;
+    overflow: hidden;
+}
+
+.waveform-inside {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+.waveform-channel {
+    position: relative;
+    display: flex;
+    min-height: 80px;
+    align-items: center;
+}
+
+.waveform-channel + .waveform-channel {
+    border-top: 1px solid $ui-black-transparent;
+}
+
+.waveform-channel > svg {
+    flex: 1;
+    width: 100%;
+}
+
+.channel-label {
+    position: absolute;
+    top: 4px;
+    left: 6px;
+    z-index: 2;
+    padding: 1px 4px;
+    border-radius: 3px;
+    color: $text-primary-transparent;
+    background: $ui-white-transparent;
+    font-size: 0.55rem;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.transport-row {
+    align-items: flex-start;
+    margin-top: calc(2 * $space);
+}
+
+.transport {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.4rem;
+    padding-right: calc(2 * $space);
+    border-right: 1px dashed $ui-black-transparent;
+}
+
+.transport .round-button {
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0.7rem;
+}
+
+.transport .stop-button {
+    width: 2rem;
+    height: 2rem;
+    padding: 0.55rem;
+    background: $ui-white;
+    border: 1px solid $ui-black-transparent;
+}
+
+.transport .stop-button img {
+    opacity: 0.75;
+}
+
+.parameter-effect {
+    position: relative;
+    display: flex;
+    flex: 0 0 68px;
+    flex-direction: column;
+    align-items: stretch;
+    padding-bottom: 1.4rem;
+}
+
+.parameter-effect .effect-button {
+    flex-basis: auto;
+}
+
+.effect-select {
+    position: absolute;
+    right: 4px;
+    bottom: 0;
+    left: 4px;
+    width: calc(100% - 8px);
+    height: 1.35rem;
+    padding: 0 0.15rem;
+    border: 1px solid $ui-black-transparent;
+    border-radius: 0.25rem;
+    color: $text-primary;
+    background: $input-background;
+    font-size: 0.55rem;
+}
+
+.bitcrush-settings {
+    position: absolute;
+    right: 2px;
+    bottom: -1.4rem;
+    left: 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.bitcrush-settings .effect-select {
+    position: static;
+    width: 100%;
+}
+
+.effects {
+    min-width: 0;
+    padding-left: calc(2 * $space);
+}

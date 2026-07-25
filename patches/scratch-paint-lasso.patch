@@ -1,0 +1,651 @@
+diff --git a/node_modules/scratch-paint/src/components/mode-tools/icons/lasso.svg b/src/components/mode-tools/icons/lasso.svg
+new file mode 100644
+index 000000000..06a8df3b0
+--- /dev/null
++++ b/src/components/mode-tools/icons/lasso.svg
+@@ -0,0 +1,4 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 -960 960 960">
++    <title>lasso</title>
++    <path fill="#575E75" d="m141-518-60-6q5-46 20-90t40-82l51 33q-19 34-32 70.5T141-518Zm55 317q-32-31-56.5-69T101-353l58-19q13 37 33 69t47 59l-43 43Zm102-568-33-51q40-25 82.5-39.5T438-880l6 60q-41 5-75.5 17.5T298-769ZM488-82q-38 0-74-6t-68-17l22-58q27 10 59 15t61 6v60Zm232-635q-29-29-62-50.5T587-802l21-57q47 16 85.5 41.5T763-760l-43 43Zm93 600L682-248v130h-60v-232h232v60H724l131 131-42 42Zm6-367q-1-29-5.5-59T797-600l58-18q12 32 18 65.5t6 68.5h-60Z"/>
++</svg>
+diff --git a/src/components/mode-tools/mode-tools.jsx b/src/components/mode-tools/mode-tools.jsx
+index 473c6df0a..e54b662b9 100644
+--- a/src/components/mode-tools/mode-tools.jsx
++++ b/src/components/mode-tools/mode-tools.jsx
+@@ -21,0 +22,4 @@ import { setTextAlignment } from '../../reducers/text-alignment';
++import {
++    changeBitmapLassoEnabled,
++    changeVectorLassoEnabled
++} from '../../reducers/selection-mode';
+@@ -71,0 +76 @@ import centerSelectionIcon from './icons/centerSelection.svg';
++import lassoIcon from './icons/lasso.svg';
+@@ -249,0 +255,5 @@ const ModeToolsComponent = props => {
++        },
++        lasso: {
++            defaultMessage: 'Lasso',
++            description: 'Label for the button that toggles freehand selection',
++            id: 'paint.modeTools.lasso'
+@@ -674,0 +685,4 @@ const ModeToolsComponent = props => {
++            const lassoEnabled = props.mode === Modes.SELECT ?
++                props.vectorLassoEnabled : props.bitmapLassoEnabled;
++            const onLassoEnabledChange = props.mode === Modes.SELECT ?
++                props.onVectorLassoEnabledChange : props.onBitmapLassoEnabledChange;
+@@ -759,0 +774,9 @@ const ModeToolsComponent = props => {
++                    <InputGroup className={classNames(styles.modDashedBorder, styles.modLabeledIconHeight)}>
++                        <LabeledIconButton
++                            hideLabel={hideLabel(props.intl.locale)}
++                            highlighted={lassoEnabled}
++                            imgSrc={lassoIcon}
++                            title={props.intl.formatMessage(messages.lasso)}
++                            onClick={() => onLassoEnabledChange(!lassoEnabled)}
++                        />
++                    </InputGroup>
+@@ -907,0 +931 @@ ModeToolsComponent.propTypes = {
++    bitmapLassoEnabled: PropTypes.bool,
+@@ -930,0 +955 @@ ModeToolsComponent.propTypes = {
++    onBitmapLassoEnabledChange: PropTypes.func.isRequired,
+@@ -949,0 +975 @@ ModeToolsComponent.propTypes = {
++    onVectorLassoEnabledChange: PropTypes.func.isRequired,
+@@ -954 +980,2 @@ ModeToolsComponent.propTypes = {
+-    onExcludeShape: PropTypes.func.isRequired
++    onExcludeShape: PropTypes.func.isRequired,
++    vectorLassoEnabled: PropTypes.bool
+@@ -962,0 +990 @@ const mapStateToProps = state => ({
++    bitmapLassoEnabled: state.scratchPaint.selectionMode.bitmapLassoEnabled,
+@@ -974 +1002,2 @@ const mapStateToProps = state => ({
+-    currentlySelectedShape: state.scratchPaint.sussyMode.shape
++    currentlySelectedShape: state.scratchPaint.sussyMode.shape,
++    vectorLassoEnabled: state.scratchPaint.selectionMode.vectorLassoEnabled
+@@ -1003,0 +1033,3 @@ const mapDispatchToProps = dispatch => ({
++    onBitmapLassoEnabledChange: enabled => {
++        dispatch(changeBitmapLassoEnabled(enabled));
++    },
+@@ -1030,0 +1063,3 @@ const mapDispatchToProps = dispatch => ({
++    onVectorLassoEnabledChange: enabled => {
++        dispatch(changeVectorLassoEnabled(enabled));
++    },
+diff --git a/src/containers/bit-select-mode.jsx b/src/containers/bit-select-mode.jsx
+index 277aca540..594c2bfb7 100644
+--- a/src/containers/bit-select-mode.jsx
++++ b/src/containers/bit-select-mode.jsx
+@@ -33,0 +34,3 @@ class BitSelectMode extends React.Component {
++        if (this.tool && nextProps.bitmapLassoEnabled !== this.props.bitmapLassoEnabled) {
++            this.tool.setLassoEnabled(nextProps.bitmapLassoEnabled);
++        }
+@@ -55 +58,2 @@ class BitSelectMode extends React.Component {
+-            this.props.onUpdateImage
++            this.props.onUpdateImage,
++            this.props.bitmapLassoEnabled
+@@ -74,0 +79 @@ BitSelectMode.propTypes = {
++    bitmapLassoEnabled: PropTypes.bool.isRequired,
+@@ -87 +92,2 @@ const mapStateToProps = state => ({
+-    selectedItems: state.scratchPaint.selectedItems
++    selectedItems: state.scratchPaint.selectedItems,
++    bitmapLassoEnabled: state.scratchPaint.selectionMode.bitmapLassoEnabled
+diff --git a/src/containers/select-mode.jsx b/src/containers/select-mode.jsx
+index 99c38b309..daba381ea 100644
+--- a/src/containers/select-mode.jsx
++++ b/src/containers/select-mode.jsx
+@@ -36,0 +37,3 @@ class SelectMode extends React.Component {
++        if (this.tool && nextProps.vectorLassoEnabled !== this.props.vectorLassoEnabled) {
++            this.tool.setLassoEnabled(nextProps.vectorLassoEnabled);
++        }
+@@ -60 +63,2 @@ class SelectMode extends React.Component {
+-            this.props.switchToTextTool
++            this.props.switchToTextTool,
++            this.props.vectorLassoEnabled
+@@ -90 +94,2 @@ SelectMode.propTypes = {
+-    switchToTextTool: PropTypes.func.isRequired
++    switchToTextTool: PropTypes.func.isRequired,
++    vectorLassoEnabled: PropTypes.bool.isRequired
+@@ -96 +101,2 @@ const mapStateToProps = state => ({
+-    selectedItems: state.scratchPaint.selectedItems
++    selectedItems: state.scratchPaint.selectedItems,
++    vectorLassoEnabled: state.scratchPaint.selectionMode.vectorLassoEnabled
+diff --git a/src/helper/bit-tools/select-tool.js b/src/helper/bit-tools/select-tool.js
+index d7b17af2e..4b267ebac 100644
+--- a/src/helper/bit-tools/select-tool.js
++++ b/src/helper/bit-tools/select-tool.js
+@@ -27,0 +28 @@ class SelectTool extends paper.Tool {
++     * @param {boolean} lassoEnabled Whether freehand lasso selection is enabled
+@@ -29 +30 @@ class SelectTool extends paper.Tool {
+-    constructor (setSelectedItems, clearSelectedItems, setCursor, onUpdateImage) {
++    constructor (setSelectedItems, clearSelectedItems, setCursor, onUpdateImage, lassoEnabled) {
+@@ -40 +41,6 @@ class SelectTool extends paper.Tool {
+-        this.selectionBoxTool = new SelectionBoxTool(Modes.BIT_SELECT, setSelectedItems, clearSelectedItems);
++        this.selectionBoxTool = new SelectionBoxTool(
++            Modes.BIT_SELECT,
++            setSelectedItems,
++            clearSelectedItems,
++            lassoEnabled
++        );
+@@ -71,0 +78,3 @@ class SelectTool extends paper.Tool {
++    setLassoEnabled (enabled) {
++        if (this.selectionBoxTool) this.selectionBoxTool.setLassoEnabled(enabled);
++    }
+@@ -108 +117 @@ class SelectTool extends paper.Tool {
+-            this.selectionBoxTool.onMouseDown(event.modifiers.shift);
++            this.selectionBoxTool.onMouseDown(event.modifiers.shift, event);
+diff --git a/src/helper/guides.js b/src/helper/guides.js
+index 0d3fba65d..be94dbfa5 100644
+--- a/src/helper/guides.js
++++ b/src/helper/guides.js
+@@ -66,0 +67,18 @@ const rectSelect = function (event, color) {
++const lassoSelect = function (point, color) {
++    const path = new paper.Path({insert: false});
++    const zoom = 1 / paper.view.zoom;
++    setDefaultGuideStyle(path);
++    if (!color) color = GUIDE_GREY;
++    path.parent = getGuideLayer();
++    path.strokeColor = color;
++    path.fillColor = null;
++    path.strokeCap = 'round';
++    path.strokeJoin = 'round';
++    path.strokeWidth = 2 / paper.view.zoom;
++    path.data.isLassoSelect = true;
++    path.data.isHelperItem = true;
++    path.dashArray = [7 * zoom, 5 * zoom];
++    path.add(point);
++    return path;
++};
++
+@@ -124,0 +143 @@ export {
++    lassoSelect,
+diff --git a/src/helper/selection-tools/select-tool.js b/src/helper/selection-tools/select-tool.js
+index e475cdc2a..0f065457e 100644
+--- a/src/helper/selection-tools/select-tool.js
++++ b/src/helper/selection-tools/select-tool.js
+@@ -33,0 +34 @@ class SelectTool extends paper.Tool {
++     * @param {boolean} lassoEnabled Whether freehand lasso selection is enabled
+@@ -36 +37 @@ class SelectTool extends paper.Tool {
+-        switchToTextTool) {
++        switchToTextTool, lassoEnabled) {
+@@ -50 +51,6 @@ class SelectTool extends paper.Tool {
+-        this.selectionBoxTool = new SelectionBoxTool(Modes.SELECT, setSelectedItems, clearSelectedItems);
++        this.selectionBoxTool = new SelectionBoxTool(
++            Modes.SELECT,
++            setSelectedItems,
++            clearSelectedItems,
++            lassoEnabled
++        );
+@@ -84,0 +91,3 @@ class SelectTool extends paper.Tool {
++    setLassoEnabled (enabled) {
++        if (this.selectionBoxTool) this.selectionBoxTool.setLassoEnabled(enabled);
++    }
+@@ -137 +146 @@ class SelectTool extends paper.Tool {
+-            this.selectionBoxTool.onMouseDown(event.modifiers.shift);
++            this.selectionBoxTool.onMouseDown(event.modifiers.shift, event);
+diff --git a/src/helper/selection-tools/selection-box-tool.js b/src/helper/selection-tools/selection-box-tool.js
+index 39de8bdc5..af5472760 100644
+--- a/src/helper/selection-tools/selection-box-tool.js
++++ b/src/helper/selection-tools/selection-box-tool.js
+@@ -2 +2 @@ import paper from '@turbowarp/paper';
+-import {rectSelect} from '../guides';
++import {lassoSelect, rectSelect} from '../guides';
+@@ -4 +4 @@ import {clearSelection, processRectangularSelection} from '../selection';
+-import {getRaster} from '../layer';
++import {createCanvas, getRaster} from '../layer';
+@@ -6,0 +7 @@ import {getHitBounds} from '../../helper/bitmap';
++import Modes from '../../lib/modes';
+@@ -8 +9 @@ import {getHitBounds} from '../../helper/bitmap';
+-/** Tool to handle drag selection. A dotted line box appears and everything enclosed is selected. */
++/** Tool to handle rectangular and freehand selection. */
+@@ -13,0 +15 @@ class SelectionBoxTool {
++     * @param {boolean} lassoEnabled Whether freehand lasso selection is enabled
+@@ -15 +17,2 @@ class SelectionBoxTool {
+-    constructor (mode, setSelectedItems, clearSelectedItems) {
++    constructor (mode, setSelectedItems, clearSelectedItems, lassoEnabled) {
++        this.lassoEnabled = Boolean(lassoEnabled);
+@@ -16,0 +20 @@ class SelectionBoxTool {
++        this.selectionPath = null;
+@@ -20,0 +25,279 @@ class SelectionBoxTool {
++    setLassoEnabled (enabled) {
++        this.lassoEnabled = Boolean(enabled);
++        this._removeSelectionGuide();
++    }
++    _removeSelectionGuide () {
++        if (this.selectionRect) {
++            this.selectionRect.remove();
++            this.selectionRect = null;
++        }
++        if (this.selectionPath) {
++            this.selectionPath.remove();
++            this.selectionPath = null;
++        }
++    }
++    _getClampedBounds (bounds) {
++        const clamped = new paper.Rectangle({
++            from: new paper.Point(
++                Math.max(0, Math.floor(bounds.left)),
++                Math.max(0, Math.floor(bounds.top))
++            ),
++            to: new paper.Point(
++                Math.min(ART_BOARD_WIDTH, Math.ceil(bounds.right)),
++                Math.min(ART_BOARD_HEIGHT, Math.ceil(bounds.bottom))
++            )
++        });
++        return clamped.area ? clamped : null;
++    }
++    _closeSelectionPath (event) {
++        if (!this.selectionPath) return null;
++        const lastSegment = this.selectionPath.lastSegment;
++        const spacing = this._getLassoMinimumSpacing();
++        if (lastSegment && lastSegment.point.getDistance(event.point) >= spacing) {
++            this.selectionPath.add(event.point);
++        }
++        if (this.selectionPath.segments.length < 3 || this.selectionPath.bounds.area <= 0) {
++            return null;
++        }
++        this.selectionPath.closed = true;
++        if (this.mode === Modes.BIT_SELECT && this.selectionPath.segments.length > 24) {
++            this.selectionPath.simplify(Math.max(1, 2 / paper.view.zoom));
++        }
++        return this.selectionPath;
++    }
++    _getLassoMinimumSpacing () {
++        const baseSpacing = this.mode === Modes.BIT_SELECT ? 3 : 1;
++        const segmentCount = this.selectionPath ? this.selectionPath.segments.length : 0;
++        const extraSpacing = this.mode === Modes.BIT_SELECT ?
++            Math.min(3, Math.floor(segmentCount / 120)) : 0;
++        return (baseSpacing + extraSpacing) / paper.view.zoom;
++    }
++    _fillCanvasPath (context, path, bounds) {
++        if (!path || path.segments.length < 3) return false;
++        bounds = bounds || new paper.Rectangle(0, 0, context.canvas.width, context.canvas.height);
++        const scaleX = bounds.width ? context.canvas.width / bounds.width : 1;
++        const scaleY = bounds.height ? context.canvas.height / bounds.height : 1;
++        context.beginPath();
++        context.moveTo(
++            (path.segments[0].point.x - bounds.left) * scaleX,
++            (path.segments[0].point.y - bounds.top) * scaleY
++        );
++        for (let i = 1; i < path.segments.length; i++) {
++            context.lineTo(
++                (path.segments[i].point.x - bounds.left) * scaleX,
++                (path.segments[i].point.y - bounds.top) * scaleY
++            );
++        }
++        context.closePath();
++        context.fillStyle = '#000000';
++        context.fill();
++        return true;
++    }
++    _applyBitmapMask (raster, path, bounds) {
++        const mask = this._createBitmapMaskCanvas(
++            path,
++            bounds,
++            raster.canvas.width,
++            raster.canvas.height
++        );
++        raster.canvas.getContext('2d').imageSmoothingEnabled = false;
++        const context = raster.getContext(true /* modify */);
++        context.save();
++        context.globalCompositeOperation = 'destination-in';
++        context.drawImage(mask, 0, 0);
++        context.restore();
++    }
++    _createBitmapMaskCanvas (path, bounds, width, height) {
++        const canvas = createCanvas(width, height);
++        const context = canvas.getContext('2d');
++        context.imageSmoothingEnabled = false;
++        if (!path || path.segments.length < 3 || width <= 0 || height <= 0) return canvas;
++        if (!this._fillCanvasPath(context, path, bounds)) return canvas;
++
++        // Keep bitmap selection edges crisp instead of antialiased.
++        const imageData = context.getImageData(0, 0, width, height);
++        const pixels = imageData.data;
++        for (let i = 3; i < pixels.length; i += 4) {
++            const alpha = pixels[i];
++            pixels[i - 3] = 0;
++            pixels[i - 2] = 0;
++            pixels[i - 1] = 0;
++            pixels[i] = alpha >= 128 ? 255 : 0;
++        }
++        context.putImageData(imageData, 0, 0);
++        return canvas;
++    }
++    _getCanvasHitBounds (canvas) {
++        const imageData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
++        let top = 0;
++        let bottom = imageData.height;
++        let left = 0;
++        let right = imageData.width;
++        const isEmptyRow = y => {
++            for (let x = left; x < right; x++) {
++                if (imageData.data[(4 * ((y * imageData.width) + x)) + 3] !== 0) return false;
++            }
++            return true;
++        };
++        const isEmptyColumn = x => {
++            for (let y = top; y < bottom; y++) {
++                if (imageData.data[(4 * ((y * imageData.width) + x)) + 3] !== 0) return false;
++            }
++            return true;
++        };
++        while (top < bottom && isEmptyRow(top)) top++;
++        while (bottom - 1 > top && isEmptyRow(bottom - 1)) bottom--;
++        while (left < right && isEmptyColumn(left)) left++;
++        while (right - 1 > left && isEmptyColumn(right - 1)) right--;
++        return right > left && bottom > top ? {
++            left,
++            top,
++            width: right - left,
++            height: bottom - top
++        } : null;
++    }
++    _getSourcePixelBounds (raster, bounds) {
++        const rasterBounds = raster.bounds;
++        const scaleX = rasterBounds.width ? raster.canvas.width / rasterBounds.width : 1;
++        const scaleY = rasterBounds.height ? raster.canvas.height / rasterBounds.height : 1;
++        const left = Math.max(0, Math.floor((bounds.left - rasterBounds.left) * scaleX));
++        const top = Math.max(0, Math.floor((bounds.top - rasterBounds.top) * scaleY));
++        const right = Math.min(
++            raster.canvas.width,
++            Math.ceil((bounds.right - rasterBounds.left) * scaleX)
++        );
++        const bottom = Math.min(
++            raster.canvas.height,
++            Math.ceil((bounds.bottom - rasterBounds.top) * scaleY)
++        );
++        return right > left && bottom > top ? {
++            left,
++            top,
++            width: right - left,
++            height: bottom - top
++        } : null;
++    }
++    _getProjectBoundsFromPixelBounds (bounds, pixelBounds, hitBounds) {
++        const scaleX = pixelBounds.width / bounds.width;
++        const scaleY = pixelBounds.height / bounds.height;
++        return new paper.Rectangle(
++            bounds.left + (hitBounds.left / scaleX),
++            bounds.top + (hitBounds.top / scaleY),
++            hitBounds.width / scaleX,
++            hitBounds.height / scaleY
++        );
++    }
++    _extractCanvasRegion (canvas, bounds) {
++        if (!canvas || !bounds) return null;
++        const extracted = createCanvas(bounds.width, bounds.height);
++        const context = extracted.getContext('2d');
++        context.imageSmoothingEnabled = false;
++        context.drawImage(
++            canvas,
++            bounds.left,
++            bounds.top,
++            bounds.width,
++            bounds.height,
++            0,
++            0,
++            bounds.width,
++            bounds.height
++        );
++        return extracted;
++    }
++    _createBitmapSelectionRaster (canvas, bounds, parent) {
++        if (!canvas || !bounds || !bounds.width || !bounds.height) return null;
++        const raster = new paper.Raster(paper.Item.NO_INSERT);
++        raster.canvas = canvas;
++        raster.position = bounds.center;
++        raster.parent = parent || paper.project.activeLayer;
++        raster.canvas.getContext('2d').imageSmoothingEnabled = false;
++        return raster;
++    }
++    _createBitmapSelectionFromPath (path) {
++        const sourceRaster = getRaster();
++        const pathBounds = this._getClampedBounds(path.bounds);
++        if (!pathBounds) return false;
++        const sourcePixelBounds = this._getSourcePixelBounds(sourceRaster, pathBounds);
++        if (!sourcePixelBounds) return false;
++
++        const maskedCanvas = createCanvas(sourcePixelBounds.width, sourcePixelBounds.height);
++        const maskedContext = maskedCanvas.getContext('2d');
++        maskedContext.imageSmoothingEnabled = false;
++        const mask = this._createBitmapMaskCanvas(
++            path,
++            pathBounds,
++            sourcePixelBounds.width,
++            sourcePixelBounds.height
++        );
++        maskedContext.drawImage(
++            sourceRaster.canvas,
++            sourcePixelBounds.left,
++            sourcePixelBounds.top,
++            sourcePixelBounds.width,
++            sourcePixelBounds.height,
++            0,
++            0,
++            sourcePixelBounds.width,
++            sourcePixelBounds.height
++        );
++        maskedContext.save();
++        maskedContext.globalCompositeOperation = 'destination-in';
++        maskedContext.drawImage(mask, 0, 0);
++        maskedContext.restore();
++
++        const hitBounds = this._getCanvasHitBounds(maskedCanvas);
++        if (!hitBounds) return false;
++        let selectionBounds = this._getProjectBoundsFromPixelBounds(
++            pathBounds,
++            sourcePixelBounds,
++            hitBounds
++        );
++        selectionBounds = this._getClampedBounds(selectionBounds);
++        if (!selectionBounds) return false;
++
++        const selectionCanvas = createCanvas(hitBounds.width, hitBounds.height);
++        const selectionContext = selectionCanvas.getContext('2d');
++        selectionContext.imageSmoothingEnabled = false;
++        selectionContext.drawImage(
++            maskedCanvas,
++            hitBounds.left,
++            hitBounds.top,
++            hitBounds.width,
++            hitBounds.height,
++            0,
++            0,
++            hitBounds.width,
++            hitBounds.height
++        );
++        const selectionRaster = this._createBitmapSelectionRaster(
++            selectionCanvas,
++            selectionBounds,
++            paper.project.activeLayer
++        );
++        if (!selectionRaster) return false;
++        selectionRaster.selected = true;
++
++        const expandedBounds = this._getClampedBounds(selectionBounds.expand(4));
++        if (expandedBounds) {
++            const expandedPixelBounds = this._getSourcePixelBounds(sourceRaster, expandedBounds);
++            const expandedCanvas = this._extractCanvasRegion(sourceRaster.canvas, expandedPixelBounds);
++            if (expandedCanvas) {
++                const expandedRaster = this._createBitmapSelectionRaster(expandedCanvas, expandedBounds);
++                this._applyBitmapMask(expandedRaster, path, expandedBounds);
++                expandedRaster.remove();
++                selectionRaster.data = {
++                    ...(selectionRaster.data || {}),
++                    expanded: expandedRaster
++                };
++            }
++        }
++
++        const sourceContext = sourceRaster.getContext(true /* modify */);
++        sourceContext.save();
++        sourceContext.globalCompositeOperation = 'destination-out';
++        sourceContext.drawImage(mask, sourcePixelBounds.left, sourcePixelBounds.top);
++        sourceContext.restore();
++        this.setSelectedItems();
++        return true;
++    }
+@@ -22,0 +306 @@ class SelectionBoxTool {
++     * @param {paper.ToolEvent} event Current mouse event
+@@ -24 +308 @@ class SelectionBoxTool {
+-    onMouseDown (multiselect) {
++    onMouseDown (multiselect, event) {
+@@ -28,0 +313,4 @@ class SelectionBoxTool {
++        if (this.lassoEnabled && event) {
++            this._removeSelectionGuide();
++            this.selectionPath = lassoSelect(event.point);
++        }
+@@ -32,2 +320,8 @@ class SelectionBoxTool {
+-        if (this.selectionRect) {
+-            this.selectionRect.remove();
++        if (this.lassoEnabled) {
++            if (!this.selectionPath) this.selectionPath = lassoSelect(event.downPoint);
++            const lastSegment = this.selectionPath.lastSegment;
++            const spacing = this._getLassoMinimumSpacing();
++            if (!lastSegment || lastSegment.point.getDistance(event.point) >= spacing) {
++                this.selectionPath.add(event.point);
++            }
++            return;
+@@ -34,0 +329 @@ class SelectionBoxTool {
++        if (this.selectionRect) this.selectionRect.remove();
+@@ -38,0 +334,9 @@ class SelectionBoxTool {
++        if (this.lassoEnabled) {
++            const selectionPath = this._closeSelectionPath(event);
++            if (selectionPath) {
++                processRectangularSelection(event, selectionPath, this.mode);
++                this.setSelectedItems();
++            }
++            this._removeSelectionGuide();
++            return;
++        }
+@@ -41,2 +345 @@ class SelectionBoxTool {
+-            this.selectionRect.remove();
+-            this.selectionRect = null;
++            this._removeSelectionGuide();
+@@ -47,0 +351,6 @@ class SelectionBoxTool {
++        if (this.lassoEnabled) {
++            const selectionPath = this._closeSelectionPath(event);
++            if (selectionPath) this._createBitmapSelectionFromPath(selectionPath);
++            this._removeSelectionGuide();
++            return;
++        }
+@@ -52 +361,2 @@ class SelectionBoxTool {
+-                    Math.max(0, Math.round(this.selectionRect.bounds.topLeft.y))),
++                    Math.max(0, Math.round(this.selectionRect.bounds.topLeft.y))
++                ),
+@@ -55 +365,2 @@ class SelectionBoxTool {
+-                    Math.min(ART_BOARD_HEIGHT, Math.round(this.selectionRect.bounds.bottomRight.y)))
++                    Math.min(ART_BOARD_HEIGHT, Math.round(this.selectionRect.bounds.bottomRight.y))
++                )
+@@ -57,2 +367,0 @@ class SelectionBoxTool {
+-
+-            // Trim/tighten selection bounds inwards to only the opaque region, excluding transparent pixels
+@@ -60 +368,0 @@ class SelectionBoxTool {
+-
+@@ -62,4 +370,16 @@ class SelectionBoxTool {
+-                // Pull selected raster to active layer
+-                const raster = getRaster().getSubRaster(rect);
+-                raster.parent = paper.project.activeLayer;
+-                raster.canvas.getContext('2d').imageSmoothingEnabled = false;
++                const sourceRaster = getRaster();
++                const sourcePixelBounds = this._getSourcePixelBounds(sourceRaster, rect);
++                if (!sourcePixelBounds) {
++                    this._removeSelectionGuide();
++                    return;
++                }
++                const selectionCanvas = this._extractCanvasRegion(sourceRaster.canvas, sourcePixelBounds);
++                const raster = this._createBitmapSelectionRaster(
++                    selectionCanvas,
++                    rect,
++                    paper.project.activeLayer
++                );
++                if (!raster) {
++                    this._removeSelectionGuide();
++                    return;
++                }
+@@ -67,8 +387,22 @@ class SelectionBoxTool {
+-                // Gather a bit of extra data so that we can avoid aliasing at edges
+-                const expanded = getRaster().getSubRaster(rect.expand(4));
+-                expanded.remove();
+-                raster.data = {expanded: expanded};
+-
+-                // Clear area from raster layer
+-                const context = getRaster().getContext(true /* modify */);
+-                context.clearRect(rect.x, rect.y, rect.width, rect.height);
++                const expandedBounds = this._getClampedBounds(rect.expand(4));
++                if (expandedBounds) {
++                    const expandedPixelBounds = this._getSourcePixelBounds(sourceRaster, expandedBounds);
++                    const expandedCanvas = this._extractCanvasRegion(
++                        sourceRaster.canvas,
++                        expandedPixelBounds
++                    );
++                    if (expandedCanvas) {
++                        const expanded = this._createBitmapSelectionRaster(
++                            expandedCanvas,
++                            expandedBounds
++                        );
++                        expanded.remove();
++                        raster.data = {expanded};
++                    }
++                }
++                sourceRaster.getContext(true /* modify */).clearRect(
++                    sourcePixelBounds.left,
++                    sourcePixelBounds.top,
++                    sourcePixelBounds.width,
++                    sourcePixelBounds.height
++                );
+@@ -77,4 +411 @@ class SelectionBoxTool {
+-
+-            // Remove dotted rectangle
+-            this.selectionRect.remove();
+-            this.selectionRect = null;
++            this._removeSelectionGuide();
+diff --git a/src/reducers/scratch-paint-reducer.js b/src/reducers/scratch-paint-reducer.js
+index feb5cdb64..d1913235a 100644
+--- a/src/reducers/scratch-paint-reducer.js
++++ b/src/reducers/scratch-paint-reducer.js
+@@ -24,0 +25 @@ import selectedItemReducer from './selected-items';
++import selectionModeReducer from './selection-mode';
+@@ -55,0 +57 @@ export default combineReducers({
++    selectionMode: selectionModeReducer,
+diff --git a/node_modules/scratch-paint/src/reducers/selection-mode.js b/src/reducers/selection-mode.js
+new file mode 100644
+index 000000000..c2d28b337
+--- /dev/null
++++ b/src/reducers/selection-mode.js
+@@ -0,0 +1,42 @@
++const CHANGE_VECTOR_LASSO_ENABLED = 'scratch-paint/selection-mode/CHANGE_VECTOR_LASSO_ENABLED';
++const CHANGE_BITMAP_LASSO_ENABLED = 'scratch-paint/selection-mode/CHANGE_BITMAP_LASSO_ENABLED';
++
++const initialState = {
++    bitmapLassoEnabled: false,
++    vectorLassoEnabled: false
++};
++
++const reducer = (state, action) => {
++    if (typeof state === 'undefined') state = initialState;
++    switch (action.type) {
++    case CHANGE_VECTOR_LASSO_ENABLED:
++        return {
++            ...state,
++            vectorLassoEnabled: Boolean(action.enabled)
++        };
++    case CHANGE_BITMAP_LASSO_ENABLED:
++        return {
++            ...state,
++            bitmapLassoEnabled: Boolean(action.enabled)
++        };
++    default:
++        return state;
++    }
++};
++
++const changeVectorLassoEnabled = enabled => ({
++    type: CHANGE_VECTOR_LASSO_ENABLED,
++    enabled
++});
++
++const changeBitmapLassoEnabled = enabled => ({
++    type: CHANGE_BITMAP_LASSO_ENABLED,
++    enabled
++});
++
++export {
++    reducer as default,
++    initialState,
++    changeVectorLassoEnabled,
++    changeBitmapLassoEnabled
++};

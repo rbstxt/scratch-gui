@@ -6,12 +6,12 @@ import {getEventXY} from '../lib/touch-utils';
 import DragRecognizer from '../lib/drag-recognizer';
 
 const MIN_LENGTH = 0.01;
-const MIN_DURATION = 500;
 
 class AudioSelector extends React.Component {
     constructor (props) {
         super(props);
         bindAll(this, [
+            'handleNewSelectionClick',
             'handleNewSelectionMouseDown',
             'handleTrimStartMouseDown',
             'handleTrimEndMouseDown',
@@ -27,24 +27,27 @@ class AudioSelector extends React.Component {
             trimEnd: props.trimEnd
         };
 
-        this.clickStartTime = 0;
+        this.creatingNewSelection = false;
+        this.newSelectionWasDragged = false;
 
         this.trimStartDragRecognizer = new DragRecognizer({
             onDrag: this.handleTrimStartMouseMove,
             onDragEnd: this.handleTrimStartMouseUp,
-            touchDragAngle: 90,
-            distanceThreshold: 0
+            touchDragAngle: 90
         });
         this.trimEndDragRecognizer = new DragRecognizer({
             onDrag: this.handleTrimEndMouseMove,
             onDragEnd: this.handleTrimEndMouseUp,
-            touchDragAngle: 90,
-            distanceThreshold: 0
+            touchDragAngle: 90
         });
     }
     componentWillReceiveProps (newProps) {
-        const {trimStart, trimEnd} = this.props;
-        if (newProps.trimStart === trimStart && newProps.trimEnd === trimEnd) return;
+        if (this.creatingNewSelection ||
+            this.trimStartDragRecognizer.gestureInProgress() ||
+            this.trimEndDragRecognizer.gestureInProgress()) {
+            return;
+        }
+        if (newProps.trimStart === this.state.trimStart && newProps.trimEnd === this.state.trimEnd) return;
         this.setState({
             trimStart: newProps.trimStart,
             trimEnd: newProps.trimEnd
@@ -53,13 +56,27 @@ class AudioSelector extends React.Component {
     clearSelection () {
         this.props.onSetTrim(null, null);
     }
+    handleNewSelectionClick () {
+        // DragRecognizer normally finishes on window.mouseup. Keep an onClick
+        // fallback for environments where that event is not delivered.
+        if (this.creatingNewSelection) {
+            this.trimEndDragRecognizer.reset();
+            this.handleTrimEndMouseUp();
+        }
+    }
     handleNewSelectionMouseDown (e) {
-        const {width, left} = this.containerElement.getBoundingClientRect();
-        this.initialTrimEnd = (getEventXY(e).x - left) / width;
+        const {width, height, left, top} = this.containerElement.getBoundingClientRect();
+        const {x, y} = getEventXY(e);
+        this.initialTrimEnd = (x - left) / width;
         this.initialTrimStart = this.initialTrimEnd;
-        this.props.onSetTrim(this.initialTrimStart, this.initialTrimEnd);
+        this.props.onUpdatePlayhead(this.initialTrimStart);
+        this.props.onSetTrimChannel(this.props.channelCount === 1 ? [false, false] : [
+            y - top < height / 3,
+            y - top > height * (2 / 3)
+        ]);
 
-        this.clickStartTime = Date.now();
+        this.creatingNewSelection = true;
+        this.newSelectionWasDragged = false;
 
         this.containerSize = width;
         this.trimEndDragRecognizer.start(e);
@@ -82,6 +99,9 @@ class AudioSelector extends React.Component {
         }
     }
     handleTrimEndMouseMove (currentOffset, initialOffset) {
+        if (this.creatingNewSelection) {
+            this.newSelectionWasDragged = true;
+        }
         const dx = (currentOffset.x - initialOffset.x) / this.containerSize;
         const newTrim = Math.min(1, Math.max(0, this.initialTrimEnd + dx));
         if (newTrim < this.initialTrimStart) {
@@ -100,19 +120,23 @@ class AudioSelector extends React.Component {
         this.props.onSetTrim(this.state.trimStart, this.state.trimEnd);
     }
     handleTrimEndMouseUp () {
-        // If the selection was made quickly (tooFast) and is small (tooShort),
-        // deselect instead. This allows click-to-deselect even if you drag
-        // a little bit by accident. It also allows very quickly making a
-        // selection, as long as it is above a minimum length.
-        const tooFast = (Date.now() - this.clickStartTime) < MIN_DURATION;
-        const tooShort = (this.state.trimEnd - this.state.trimStart) < MIN_LENGTH;
-        if (tooFast && tooShort) {
+        const selectionIsTooShort = this.state.trimStart === null ||
+            (this.state.trimEnd - this.state.trimStart) < MIN_LENGTH;
+        if (this.creatingNewSelection && (!this.newSelectionWasDragged || selectionIsTooShort)) {
+            this.setState({
+                trimStart: null,
+                trimEnd: null
+            });
             this.clearSelection();
+            this.props.onUpdatePlayhead(this.initialTrimStart);
         } else {
             this.props.onSetTrim(this.state.trimStart, this.state.trimEnd);
         }
+        this.creatingNewSelection = false;
+        this.newSelectionWasDragged = false;
     }
     handleTrimStartMouseDown (e) {
+        this.creatingNewSelection = false;
         this.containerSize = this.containerElement.getBoundingClientRect().width;
         this.trimStartDragRecognizer.start(e);
         this.initialTrimStart = this.props.trimStart;
@@ -121,6 +145,7 @@ class AudioSelector extends React.Component {
         e.preventDefault();
     }
     handleTrimEndMouseDown (e) {
+        this.creatingNewSelection = false;
         this.containerSize = this.containerElement.getBoundingClientRect().width;
         this.trimEndDragRecognizer.start(e);
         this.initialTrimEnd = this.props.trimEnd;
@@ -138,6 +163,8 @@ class AudioSelector extends React.Component {
                 playhead={this.props.playhead}
                 trimEnd={this.state.trimEnd}
                 trimStart={this.state.trimStart}
+                trimChannel={this.props.trimChannel}
+                onNewSelectionClick={this.handleNewSelectionClick}
                 onNewSelectionMouseDown={this.handleNewSelectionMouseDown}
                 onTrimEndMouseDown={this.handleTrimEndMouseDown}
                 onTrimStartMouseDown={this.handleTrimStartMouseDown}
@@ -147,10 +174,14 @@ class AudioSelector extends React.Component {
 }
 
 AudioSelector.propTypes = {
+    channelCount: PropTypes.number.isRequired,
     onSetTrim: PropTypes.func,
+    onSetTrimChannel: PropTypes.func.isRequired,
+    onUpdatePlayhead: PropTypes.func.isRequired,
     playhead: PropTypes.number,
     trimEnd: PropTypes.number,
-    trimStart: PropTypes.number
+    trimStart: PropTypes.number,
+    trimChannel: PropTypes.arrayOf(PropTypes.bool).isRequired
 };
 
 export default AudioSelector;

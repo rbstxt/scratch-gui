@@ -78,6 +78,36 @@ describe('Audio Effects manager', () => {
         const selectionReversed = [1, 2, 6, 5, 4, 3, 7, 8];
         expect(Array.from(reverseSelection.buffer.getChannelData(0))).toEqual(selectionReversed);
     });
+
+    test('flip effect swaps the left and right channels', () => {
+        const stereoBuffer = audioContext.createBuffer(2, 3, 44100);
+        stereoBuffer.getChannelData(0).set([0.1, 0.2, 0.3]);
+        stereoBuffer.getChannelData(1).set([-0.1, -0.2, -0.3]);
+        const flipEffect = new AudioEffects(stereoBuffer, AudioEffects.effectTypes.FLIP, 0, 1);
+        expect(Array.from(flipEffect.buffer.getChannelData(0))).toEqual(
+            Array.from(stereoBuffer.getChannelData(1))
+        );
+        expect(Array.from(flipEffect.buffer.getChannelData(1))).toEqual(
+            Array.from(stereoBuffer.getChannelData(0))
+        );
+    });
+
+    test('bitcrush can affect only the selected stereo channel', () => {
+        const stereoBuffer = audioContext.createBuffer(2, 4, 44100);
+        stereoBuffer.getChannelData(0).set([0.1, 0.2, 0.3, 0.4]);
+        stereoBuffer.getChannelData(1).set([-0.1, -0.2, -0.3, -0.4]);
+        const bitcrushEffect = new AudioEffects(stereoBuffer, {
+            preset: AudioEffects.effectTypes.BITCRUSH,
+            sampleRate: 11025,
+            bitDepth: 2
+        }, 0, 1, [true, false]);
+        expect(Array.from(bitcrushEffect.buffer.getChannelData(0))).not.toEqual(
+            Array.from(stereoBuffer.getChannelData(0))
+        );
+        expect(Array.from(bitcrushEffect.buffer.getChannelData(1))).toEqual(
+            Array.from(stereoBuffer.getChannelData(1))
+        );
+    });
 });
 
 describe('Effects', () => {

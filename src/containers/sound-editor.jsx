@@ -7,7 +7,7 @@ import VM from 'scratch-vm';
 import {connect} from 'react-redux';
 
 import {
-    computeChunkedRMSForChannels,
+    computeChunkedRMSByChannel,
     encodeAndAddSoundToVM,
     dropEveryOtherSample
 } from '../lib/audio/audio-util.js';
@@ -31,10 +31,16 @@ class SoundEditor extends React.Component {
             'handleStoppedPlaying',
             'handleChangeName',
             'handlePlay',
+            'handlePause',
             'handleStopPlaying',
             'handleUpdatePlayhead',
             'handleDelete',
+            'handleDeleteInverse',
             'handleUpdateTrim',
+            'handleSetTrimChannel',
+            'handleTimeStepMouseDown',
+            'handleTimeStepMouseMove',
+            'handleBitcrush',
             'handleEffect',
             'handleModifyMenu',
             'handleFormatMenu',
@@ -50,13 +56,16 @@ class SoundEditor extends React.Component {
             'handleKeyPress',
             'handleContainerClick',
             'setRef',
+            'setTimeStepsRef',
             'resampleBufferToRate'
         ]);
         this.state = {
             copyBuffer: null,
-            chunkLevels: computeChunkedRMSForChannels(this.props.channelData),
+            chunkLevels: computeChunkedRMSByChannel(this.props.channelData),
             effectDialog: null,
-            playhead: null, // null is not playing, [0 -> 1] is playing percent
+            playhead: 0,
+            playing: false,
+            trimChannel: [false, false],
             trimStart: null,
             trimEnd: null
         };
@@ -65,6 +74,7 @@ class SoundEditor extends React.Component {
         this.undoStack = [];
 
         this.ref = null;
+        this.timeStepsRef = null;
     }
     componentDidMount () {
         this.audioBufferPlayer = new AudioBufferPlayer(this.props.channelData, this.props.sampleRate);
@@ -77,6 +87,9 @@ class SoundEditor extends React.Component {
             this.undoStack = [];
             this.resetState(newProps.channelData, newProps.sampleRate);
             this.setState({
+                playhead: 0,
+                playing: false,
+                trimChannel: [false, false],
                 trimStart: null,
                 trimEnd: null
             });
@@ -98,8 +111,8 @@ class SoundEditor extends React.Component {
         }
         if (event.key === ' ') {
             event.preventDefault();
-            if (this.state.playhead) {
-                this.handleStopPlaying();
+            if (this.state.playing) {
+                this.handlePause();
             } else {
                 this.handlePlay();
             }
@@ -143,8 +156,9 @@ class SoundEditor extends React.Component {
         this.audioBufferPlayer.stop();
         this.audioBufferPlayer = new AudioBufferPlayer(channelData, sampleRate);
         this.setState({
-            chunkLevels: computeChunkedRMSForChannels(channelData),
-            playhead: null
+            chunkLevels: computeChunkedRMSByChannel(channelData),
+            playhead: 0,
+            playing: false
         });
     }
     submitNewSamples (channelData, sampleRate, skipUndo) {
@@ -175,18 +189,33 @@ class SoundEditor extends React.Component {
     }
     handlePlay () {
         this.audioBufferPlayer.stop();
+        const selectionStart = this.state.trimStart === null ? 0 : this.state.trimStart;
+        const selectionEnd = this.state.trimEnd === null ? 1 : this.state.trimEnd;
+        const clampedPlayhead = Math.max(selectionStart, Math.min(selectionEnd, this.state.playhead));
+        const playhead = clampedPlayhead >= selectionEnd ? selectionStart : clampedPlayhead;
         this.audioBufferPlayer.play(
-            this.state.trimStart || 0,
-            this.state.trimEnd || 1,
+            playhead,
+            selectionEnd,
             this.handleUpdatePlayhead,
             this.handleStoppedPlaying);
+        this.setState({playing: true, playhead});
+    }
+    handlePause () {
+        this.audioBufferPlayer.stop();
+        this.setState({playing: false});
     }
     handleStopPlaying () {
         this.audioBufferPlayer.stop();
-        this.handleStoppedPlaying();
+        this.setState({
+            playing: false,
+            playhead: this.state.trimStart === null ? 0 : this.state.trimStart
+        });
     }
     handleStoppedPlaying () {
-        this.setState({playhead: null});
+        this.setState({
+            playing: false,
+            playhead: this.state.trimStart === null ? 0 : this.state.trimStart
+        });
     }
     handleUpdatePlayhead (playhead) {
         this.setState({playhead});
@@ -235,8 +264,41 @@ class SoundEditor extends React.Component {
         });
     }
     handleUpdateTrim (trimStart, trimEnd) {
-        this.setState({trimStart, trimEnd});
-        this.handleStopPlaying();
+        this.audioBufferPlayer.stop();
+        this.setState({
+            trimStart,
+            trimEnd,
+            playhead: trimStart === null ? 0 : trimStart,
+            playing: false
+        });
+    }
+    handleSetTrimChannel (trimChannel) {
+        this.setState({trimChannel});
+    }
+    handleTimeStepMouseDown (event) {
+        if (!this.timeStepsRef) return;
+        const {left, width} = this.timeStepsRef.getBoundingClientRect();
+        const selectionStart = this.state.trimStart === null ? 0 : this.state.trimStart;
+        const selectionEnd = this.state.trimEnd === null ? 1 : this.state.trimEnd;
+        const playhead = Math.max(selectionStart, Math.min(
+            selectionEnd,
+            (event.clientX - left) / width
+        ));
+        const wasPlaying = this.state.playing;
+        this.audioBufferPlayer.stop();
+        this.setState({playhead, playing: false}, wasPlaying ? this.handlePlay : null);
+    }
+    handleTimeStepMouseMove (event) {
+        if (event.buttons === 1) {
+            this.handleTimeStepMouseDown(event);
+        }
+    }
+    handleBitcrush (sampleRate, bitDepth) {
+        this.handleEffect({
+            preset: AudioEffects.effectTypes.BITCRUSH,
+            sampleRate,
+            bitDepth
+        });
     }
     effectFactory (name) {
         return () => this.handleEffect(name);
@@ -306,7 +368,13 @@ class SoundEditor extends React.Component {
             return;
         }
 
-        const effects = new AudioEffects(this.audioBufferPlayer.buffer, name, trimStart, trimEnd);
+        const effects = new AudioEffects(
+            this.audioBufferPlayer.buffer,
+            name,
+            trimStart,
+            trimEnd,
+            this.state.trimChannel
+        );
         effects.process((renderedBuffer, adjustedTrimStart, adjustedTrimEnd) => {
             const channelData = Array.from(
                 {length: renderedBuffer.numberOfChannels},
@@ -325,16 +393,18 @@ class SoundEditor extends React.Component {
         });
     }
     tooLoud () {
-        const numChunks = this.state.chunkLevels.length;
+        const numChunks = this.state.chunkLevels[0].length;
         const startIndex = this.state.trimStart === null ?
             0 : Math.floor(this.state.trimStart * numChunks);
         const endIndex = this.state.trimEnd === null ?
             numChunks - 1 : Math.ceil(this.state.trimEnd * numChunks);
-        const trimChunks = this.state.chunkLevels.slice(startIndex, endIndex);
+        const trimChunks = this.state.chunkLevels.map(channel => channel.slice(startIndex, endIndex));
         let max = 0;
-        for (const i of trimChunks) {
-            if (i > max) {
-                max = i;
+        for (const channel of trimChunks) {
+            for (const level of channel) {
+                if (level > max) {
+                    max = level;
+                }
             }
         }
         return max > MAX_RMS;
@@ -507,6 +577,9 @@ class SoundEditor extends React.Component {
     setRef (element) {
         this.ref = element;
     }
+    setTimeStepsRef (element) {
+        this.timeStepsRef = element;
+    }
     handleContainerClick (e) {
         // If the click is on the sound editor's div (and not any other element), delesect
         if (e.target === this.ref && this.state.trimStart !== null) {
@@ -520,6 +593,7 @@ class SoundEditor extends React.Component {
                 <SoundEditorComponent
                     isStereo={this.props.isStereo}
                     duration={this.props.duration}
+                    sampleRate={this.props.sampleRate}
                     size={this.props.size}
                     canPaste={this.state.copyBuffer !== null}
                     canRedo={this.redoStack.length > 0}
@@ -527,8 +601,11 @@ class SoundEditor extends React.Component {
                     chunkLevels={this.state.chunkLevels}
                     name={this.props.name}
                     playhead={this.state.playhead}
+                    playing={this.state.playing}
                     setRef={this.setRef}
+                    setTimeStepsRef={this.setTimeStepsRef}
                     tooLoud={this.tooLoud()}
+                    trimChannel={this.state.trimChannel}
                     trimEnd={this.state.trimEnd}
                     trimStart={this.state.trimStart}
                     onChangeName={this.handleChangeName}
@@ -536,6 +613,7 @@ class SoundEditor extends React.Component {
                     onCopy={this.handleCopy}
                     onCopyToNew={this.handleCopyToNew}
                     onDelete={this.handleDelete}
+                    onDeleteInverse={this.handleDeleteInverse}
                     onEcho={this.effectFactory(effectTypes.ECHO)}
                     onFadeIn={this.effectFactory(effectTypes.FADEIN)}
                     onFadeOut={this.effectFactory(effectTypes.FADEOUT)}
@@ -550,15 +628,22 @@ class SoundEditor extends React.Component {
                     onHighPassFadeOut={this.effectFactory(effectTypes.HIGHPASS_FADEOUT)}
                     onModifySound={this.handleModifyMenu}
                     onFormatSound={this.handleFormatMenu}
+                    onFlip={this.effectFactory(effectTypes.FLIP)}
                     onPaste={this.handlePaste}
+                    onPause={this.handlePause}
                     onPlay={this.handlePlay}
                     onRedo={this.handleRedo}
                     onReverse={this.effectFactory(effectTypes.REVERSE)}
                     onRobot={this.effectFactory(effectTypes.ROBOT)}
                     onSetTrim={this.handleUpdateTrim}
+                    onSetTrimChannel={this.handleSetTrimChannel}
                     onSlower={this.effectFactory(effectTypes.SLOWER)}
                     onSofter={this.effectFactory(effectTypes.SOFTER)}
                     onStop={this.handleStopPlaying}
+                    onTimeStepMouseDown={this.handleTimeStepMouseDown}
+                    onTimeStepMouseMove={this.handleTimeStepMouseMove}
+                    onUpdatePlayhead={this.handleUpdatePlayhead}
+                    onBitcrush={this.handleBitcrush}
                     onUndo={this.handleUndo}
                 />
                 {this.state.effectDialog && (

@@ -8,26 +8,37 @@ import handleIcon from '!../../lib/tw-recolor/build!./icon--handle.svg';
 
 const SelectionHandle = props => (
     <Box
-        className={classNames(styles.trimLine, props.handleStyle)}
+        className={classNames(
+            styles.trimLine,
+            props.compact && styles.compactTrimLine,
+            props.handleStyle
+        )}
         onMouseDown={props.onMouseDown}
         onTouchStart={props.onMouseDown}
     >
-        <Box className={classNames(styles.trimHandle, styles.topTrimHandle)}>
-            <TWRenderRecoloredImage
-                src={handleIcon}
-                draggable={false}
-            />
-        </Box>
-        <Box className={classNames(styles.trimHandle, styles.bottomTrimHandle)}>
-            <TWRenderRecoloredImage
-                src={handleIcon}
-                draggable={false}
-            />
-        </Box>
+        {props.compact ? (
+            <Box className={styles.selectionGrip} />
+        ) : (
+            <React.Fragment>
+                <Box className={classNames(styles.trimHandle, styles.topTrimHandle)}>
+                    <TWRenderRecoloredImage
+                        src={handleIcon}
+                        draggable={false}
+                    />
+                </Box>
+                <Box className={classNames(styles.trimHandle, styles.bottomTrimHandle)}>
+                    <TWRenderRecoloredImage
+                        src={handleIcon}
+                        draggable={false}
+                    />
+                </Box>
+            </React.Fragment>
+        )}
     </Box>
 );
 
 SelectionHandle.propTypes = {
+    compact: PropTypes.bool,
     handleStyle: PropTypes.string,
     onMouseDown: PropTypes.func
 };

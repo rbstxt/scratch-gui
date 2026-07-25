@@ -325,6 +325,29 @@ const DisableCompiler = props => (
     />
 );
 
+const DeveloperMode = props => (
+    <BooleanSetting
+        {...props}
+        label={
+            <FormattedMessage
+                defaultMessage="Developer Mode"
+                description="Developer mode setting"
+                id="turbest.settingsModal.developerMode"
+            />
+        }
+        help={
+            <FormattedMessage
+                defaultMessage={
+                    'Disables extension sandboxes and automatically allows security-sensitive actions. ' +
+                    'Only enable this while developing code you trust.'
+                }
+                description="Developer mode setting help"
+                id="turbest.settingsModal.developerModeHelp"
+            />
+        }
+    />
+);
+
 const CustomStageSize = ({
     customStageSizeEnabled,
     stageWidth,
@@ -499,6 +522,10 @@ const SettingsModalComponent = props => (
                 value={props.disableCompiler}
                 onChange={props.onDisableCompilerChange}
             />
+            <DeveloperMode
+                value={props.developerMode}
+                onChange={props.onDeveloperModeChange}
+            />
             {!props.isEmbedded && (
                 <StoreProjectOptions
                     {...props}
@@ -528,7 +555,9 @@ SettingsModalComponent.propTypes = {
     warpTimer: PropTypes.bool,
     onWarpTimerChange: PropTypes.func,
     disableCompiler: PropTypes.bool,
-    onDisableCompilerChange: PropTypes.func
+    onDisableCompilerChange: PropTypes.func,
+    developerMode: PropTypes.bool,
+    onDeveloperModeChange: PropTypes.func
 };
 
 export default injectIntl(SettingsModalComponent);

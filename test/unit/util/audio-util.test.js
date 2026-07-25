@@ -2,6 +2,7 @@ import {
     computeRMS,
     computeChunkedRMS,
     computeChunkedRMSForChannels,
+    computeChunkedRMSByChannel,
     downsampleIfNeeded,
     dropEveryOtherSample
 } from '../../../src/lib/audio/audio-util';
@@ -61,6 +62,17 @@ describe('computeChunkedRMSForChannels', () => {
         const left = new Float32Array([0, 0, 0, 0]);
         const right = new Float32Array([1, 1, 0.5, 0.5]);
         expect(computeChunkedRMSForChannels([left, right], 2)).toEqual(computeChunkedRMS(right, 2));
+    });
+});
+
+describe('computeChunkedRMSByChannel', () => {
+    test('keeps the waveform levels for each stereo channel separate', () => {
+        const left = new Float32Array([1, 1, 0, 0]);
+        const right = new Float32Array([0, 0, 0.5, 0.5]);
+        expect(computeChunkedRMSByChannel([left, right], 2)).toEqual([
+            computeChunkedRMS(left, 2),
+            computeChunkedRMS(right, 2)
+        ]);
     });
 });
 
