@@ -63,6 +63,9 @@ import {
     openFileMenu,
     closeFileMenu,
     fileMenuOpen,
+    openWorkspaceBookmarksMenu,
+    closeWorkspaceBookmarksMenu,
+    workspaceBookmarksMenuOpen,
     openEditMenu,
     closeEditMenu,
     editMenuOpen,
@@ -96,6 +99,7 @@ import editIcon from './icon--edit.svg';
 import addonsIcon from './addons.svg';
 import errorIcon from './tw-error.svg';
 import advancedIcon from './tw-advanced.svg';
+import bookmarkIcon from './bookmark.svg';
 
 import ninetiesLogo from './nineties_logo.svg';
 import catLogo from './cat_logo.svg';
@@ -107,6 +111,13 @@ import sharedMessages from '../../lib/shared-messages';
 import SeeInsideButton from './tw-see-inside.jsx';
 import {notScratchDesktop} from '../../lib/isScratchDesktop.js';
 import {APP_NAME} from '../../lib/brand.js';
+import LazyScratchBlocks from '../../lib/tw-lazy-scratch-blocks';
+import {
+    readWorkspaceBookmarksFromStage,
+    writeWorkspaceBookmarksToStage,
+    getCurrentWorkspaceBookmarkState,
+    applyWorkspaceBookmarkState
+} from '../../lib/workspace-bookmarks';
 
 const ariaMessages = defineMessages({
     tutorials: {
@@ -211,6 +222,7 @@ MenuItemLink.propTypes = {
 class MenuBar extends React.Component {
     constructor (props) {
         super(props);
+        this.state = {workspaceBookmarks: []};
         bindAll(this, [
             'handleClickSeeInside',
             'handleClickNew',
@@ -227,14 +239,106 @@ class MenuBar extends React.Component {
             'handleKeyPress',
             'handleRestoreOption',
             'getSaveToComputerHandler',
-            'restoreOptionMessage'
+            'restoreOptionMessage',
+            'loadWorkspaceBookmarksFromProject',
+            'saveWorkspaceBookmarksToProject',
+            'getCurrentWorkspaceBookmarkState',
+            'applyWorkspaceBookmarkState',
+            'showBookmarkPrompt',
+            'handleAddWorkspaceBookmark',
+            'handleSwitchWorkspaceBookmark',
+            'handleDeleteWorkspaceBookmark',
+            'handleEditWorkspaceBookmark'
         ]);
     }
     componentDidMount () {
         document.addEventListener('keydown', this.handleKeyPress);
+        this.loadWorkspaceBookmarksFromProject();
+        this.workspaceBookmarksProjectListener = this.loadWorkspaceBookmarksFromProject;
+        this.props.vm.runtime.on('PROJECT_LOADED', this.workspaceBookmarksProjectListener);
     }
     componentWillUnmount () {
         document.removeEventListener('keydown', this.handleKeyPress);
+        this.props.vm.runtime.off('PROJECT_LOADED', this.workspaceBookmarksProjectListener);
+    }
+    loadWorkspaceBookmarksFromProject () {
+        const stage = this.props.vm.runtime.getTargetForStage();
+        this.setState({workspaceBookmarks: readWorkspaceBookmarksFromStage(stage)});
+    }
+    saveWorkspaceBookmarksToProject () {
+        const stage = this.props.vm.runtime.getTargetForStage();
+        writeWorkspaceBookmarksToStage(stage, this.state.workspaceBookmarks);
+        if (this.props.vm.runtime.emitProjectChanged) {
+            this.props.vm.runtime.emitProjectChanged();
+        }
+    }
+    getCurrentWorkspaceBookmarkState () {
+        return getCurrentWorkspaceBookmarkState(this.props.vm);
+    }
+    applyWorkspaceBookmarkState (state) {
+        return applyWorkspaceBookmarkState(this.props.vm, state);
+    }
+    async showBookmarkPrompt (defaultValue) {
+        const ScratchBlocks = LazyScratchBlocks.isLoaded() ?
+            LazyScratchBlocks.get() : await LazyScratchBlocks.load();
+        return new Promise(resolve => {
+            ScratchBlocks.prompt(
+                this.props.intl.formatMessage({
+                    defaultMessage: 'Bookmark name:',
+                    description: 'Label in the standard dialog when naming a workspace bookmark',
+                    id: 'tw.workspaceBookmarks.namePrompt'
+                }),
+                defaultValue,
+                name => resolve(name),
+                this.props.intl.formatMessage({
+                    defaultMessage: 'Bookmark Name',
+                    description: 'Standard dialog title when naming a workspace bookmark',
+                    id: 'tw.workspaceBookmarks.nameTitle'
+                }),
+                ScratchBlocks.BROADCAST_MESSAGE_VARIABLE_TYPE
+            );
+        });
+    }
+    async handleAddWorkspaceBookmark () {
+        const state = await this.getCurrentWorkspaceBookmarkState();
+        if (!state) return;
+        const fallback = this.props.intl.formatMessage({
+            defaultMessage: 'Bookmark {number}',
+            description: 'Default name for a newly created workspace bookmark',
+            id: 'tw.workspaceBookmarks.defaultName'
+        }, {number: this.state.workspaceBookmarks.length + 1});
+        const name = await this.showBookmarkPrompt(fallback);
+        if (typeof name !== 'string') return;
+        this.setState(previous => ({
+            workspaceBookmarks: [...previous.workspaceBookmarks, {
+                name: name.trim() || fallback,
+                state,
+                timestamp: Date.now()
+            }]
+        }), this.saveWorkspaceBookmarksToProject);
+    }
+    handleSwitchWorkspaceBookmark (index) {
+        const bookmark = this.state.workspaceBookmarks[index];
+        if (!bookmark) return;
+        Promise.resolve(this.applyWorkspaceBookmarkState(this.props.vm, bookmark.state))
+            .then(() => this.props.onRequestCloseWorkspaceBookmarks());
+    }
+    handleDeleteWorkspaceBookmark (index, event) {
+        event.stopPropagation();
+        this.setState(previous => ({
+            workspaceBookmarks: previous.workspaceBookmarks.filter((bookmark, bookmarkIndex) => bookmarkIndex !== index)
+        }), this.saveWorkspaceBookmarksToProject);
+    }
+    async handleEditWorkspaceBookmark (index, event) {
+        event.stopPropagation();
+        const bookmark = this.state.workspaceBookmarks[index];
+        if (!bookmark) return;
+        const name = await this.showBookmarkPrompt(bookmark.name);
+        if (typeof name !== 'string' || !name.trim()) return;
+        this.setState(previous => ({
+            workspaceBookmarks: previous.workspaceBookmarks.map((item, itemIndex) =>
+                itemIndex === index ? {...item, name: name.trim()} : item)
+        }), this.saveWorkspaceBookmarksToProject);
     }
     handleClickNew () {
         // if the project is dirty, and user owns the project, we will autosave.
@@ -885,6 +989,83 @@ class MenuBar extends React.Component {
                             </MenuLabel>
                         )}
 
+                        {this.props.workspaceBookmarksEnabled && (
+                            <MenuLabel
+                                open={this.props.workspaceBookmarksMenuOpen}
+                                onOpen={this.props.onClickWorkspaceBookmarks}
+                                onClose={this.props.onRequestCloseWorkspaceBookmarks}
+                            >
+                                <img
+                                    alt=""
+                                    className={styles.workspaceBookmarksMenuIcon}
+                                    draggable={false}
+                                    src={bookmarkIcon}
+                                />
+                                <span className={styles.collapsibleLabel}>
+                                    <FormattedMessage
+                                        defaultMessage="Bookmarks"
+                                        description="Workspace bookmarks menu in the menu bar"
+                                        id="tw.workspaceBookmarks.menu"
+                                    />
+                                </span>
+                                <img
+                                    draggable={false}
+                                    height={5}
+                                    src={dropdownCaret}
+                                    width={8}
+                                />
+                                <MenuBarMenu
+                                    className={classNames(styles.menuBarMenu)}
+                                    open={this.props.workspaceBookmarksMenuOpen}
+                                    place={this.props.isRtl ? 'left' : 'right'}
+                                >
+                                    <MenuSection>
+                                        <MenuItem onClick={this.handleAddWorkspaceBookmark}>
+                                            <FormattedMessage
+                                                defaultMessage="Add current position"
+                                                description="Adds the current code workspace position as a bookmark"
+                                                id="tw.workspaceBookmarks.add"
+                                            />
+                                        </MenuItem>
+                                    </MenuSection>
+                                    <MenuSection>
+                                        {this.state.workspaceBookmarks.length === 0 ? (
+                                            <MenuItem>
+                                                <FormattedMessage
+                                                    defaultMessage="No bookmarks yet"
+                                                    description="Empty state in workspace bookmarks menu"
+                                                    id="tw.workspaceBookmarks.none"
+                                                />
+                                            </MenuItem>
+                                        ) : this.state.workspaceBookmarks.map((bookmark, index) => (
+                                            <MenuItem
+                                                key={`${bookmark.name}-${bookmark.timestamp}`}
+                                                className={styles.workspaceBookmarkItem}
+                                                onClick={() => this.handleSwitchWorkspaceBookmark(index)}
+                                            >
+                                                <span className={styles.workspaceBookmarkName}>{bookmark.name}</span>
+                                                <span className={styles.workspaceBookmarkActions}>
+                                                    <button
+                                                        className={styles.workspaceBookmarkAction}
+                                                        onClick={event => this.handleEditWorkspaceBookmark(index, event)}
+                                                        type="button"
+                                                    >
+                                                        ✎
+                                                    </button>
+                                                    <button
+                                                        className={styles.workspaceBookmarkAction}
+                                                        onClick={event => this.handleDeleteWorkspaceBookmark(index, event)}
+                                                        type="button"
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </span>
+                                            </MenuItem>
+                                        ))}
+                                    </MenuSection>
+                                </MenuBarMenu>
+                            </MenuLabel>
+                        )}
                         {this.props.onClickAddonSettings && (
                             <div
                                 className={classNames(styles.menuBarItem, styles.hoverable)}
@@ -1106,6 +1287,7 @@ MenuBar.propTypes = {
     onClickSaveAsCopy: PropTypes.func,
     onClickSettings: PropTypes.func,
     onClickSettingsModal: PropTypes.func,
+    onClickWorkspaceBookmarks: PropTypes.func,
     onLogOut: PropTypes.func,
     onOpenRegistration: PropTypes.func,
     onOpenTipLibrary: PropTypes.func,
@@ -1117,6 +1299,7 @@ MenuBar.propTypes = {
     onRequestCloseLogin: PropTypes.func,
     onRequestCloseMode: PropTypes.func,
     onRequestCloseSettings: PropTypes.func,
+    onRequestCloseWorkspaceBookmarks: PropTypes.func,
     onRequestOpenAbout: PropTypes.func,
     onSeeCommunity: PropTypes.func,
     onSetTimeTravelMode: PropTypes.func,
@@ -1128,6 +1311,8 @@ MenuBar.propTypes = {
     renderLogin: PropTypes.func,
     sessionExists: PropTypes.bool,
     settingsMenuOpen: PropTypes.bool,
+    workspaceBookmarksEnabled: PropTypes.bool,
+    workspaceBookmarksMenuOpen: PropTypes.bool,
     shouldSaveBeforeTransition: PropTypes.func,
     showSaveFilePicker: PropTypes.func,
     showComingSoon: PropTypes.bool,
@@ -1164,6 +1349,8 @@ const mapStateToProps = (state, ownProps) => {
         projectTitle: state.scratchGui.projectTitle,
         sessionExists: state.session && typeof state.session.session !== 'undefined',
         settingsMenuOpen: settingsMenuOpen(state),
+        workspaceBookmarksEnabled: Boolean(state.scratchGui.preferences.workspaceBookmarks),
+        workspaceBookmarksMenuOpen: workspaceBookmarksMenuOpen(state),
         username: user ? user.username : null,
         userOwnsProject: ownProps.authorUsername && user &&
             (ownProps.authorUsername === user.username),
@@ -1201,6 +1388,8 @@ const mapDispatchToProps = dispatch => ({
         dispatch(openSettingsModal());
     },
     onRequestCloseSettings: () => dispatch(closeSettingsMenu()),
+    onClickWorkspaceBookmarks: () => dispatch(openWorkspaceBookmarksMenu()),
+    onRequestCloseWorkspaceBookmarks: () => dispatch(closeWorkspaceBookmarksMenu()),
     onClickNew: needSave => {
         dispatch(requestNewProject(needSave));
         dispatch(setFileHandle(null));

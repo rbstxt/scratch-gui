@@ -1,6 +1,12 @@
 export default async function ({ addon, console, msg }) {
   const vm = addon.tab.traps.vm;
 
+  // turbest: Use a sentinel index that does not collide with the editor
+  // tab list. The original addon hard-coded 3, but TurboWarp forks that
+  // add additional editor tabs (e.g. Todo) shift the indices, so we use a
+  // high value that the react-tabs component will treat as out-of-range.
+  const VAR_TAB_INDEX = 999;
+
   let localVariables = [];
   let globalVariables = [];
   let preventUpdate = false;
@@ -280,7 +286,7 @@ export default async function ({ addon, console, msg }) {
   }
 
   function fullReload() {
-    if (addon.tab.redux.state?.scratchGui?.editorTab?.activeTabIndex !== 3 || preventUpdate) return;
+    if (addon.tab.redux.state?.scratchGui?.editorTab?.activeTabIndex !== VAR_TAB_INDEX || preventUpdate) return;
 
     const editingTarget = vm.runtime.getEditingTarget();
     const stage = vm.runtime.getTargetForStage();
@@ -313,7 +319,7 @@ export default async function ({ addon, console, msg }) {
   }
 
   function quickReload() {
-    if (addon.tab.redux.state?.scratchGui?.editorTab?.activeTabIndex !== 3 || preventUpdate) return;
+    if (addon.tab.redux.state?.scratchGui?.editorTab?.activeTabIndex !== VAR_TAB_INDEX || preventUpdate) return;
 
     for (const variable of localVariables) {
       variable.updateValue();
@@ -329,7 +335,7 @@ export default async function ({ addon, console, msg }) {
   }
 
   varTab.addEventListener("click", (e) => {
-    addon.tab.redux.dispatch({ type: "scratch-gui/navigation/ACTIVATE_TAB", activeTabIndex: 3 });
+    addon.tab.redux.dispatch({ type: "scratch-gui/navigation/ACTIVATE_TAB", activeTabIndex: VAR_TAB_INDEX });
   });
 
   function setVisible(visible) {
@@ -355,7 +361,7 @@ export default async function ({ addon, console, msg }) {
   addon.tab.redux.addEventListener("statechanged", ({ detail }) => {
     if (detail.action.type === "scratch-gui/navigation/ACTIVATE_TAB") {
       const varManagerWasSelected = document.body.contains(manager);
-      const switchedToVarManager = detail.action.activeTabIndex === 3;
+      const switchedToVarManager = detail.action.activeTabIndex === VAR_TAB_INDEX;
 
       if (varManagerWasSelected && !switchedToVarManager) {
         // Fixes #5773
@@ -364,7 +370,7 @@ export default async function ({ addon, console, msg }) {
 
       setVisible(switchedToVarManager);
     } else if (detail.action.type === "scratch-gui/mode/SET_PLAYER") {
-      if (!detail.action.isPlayerOnly && addon.tab.redux.state.scratchGui.editorTab.activeTabIndex === 3) {
+      if (!detail.action.isPlayerOnly && addon.tab.redux.state.scratchGui.editorTab.activeTabIndex === VAR_TAB_INDEX) {
         // DOM doesn't actually exist yet
         queueMicrotask(() => setVisible(true));
       }
@@ -398,7 +404,7 @@ export default async function ({ addon, console, msg }) {
   };
 
   addon.self.addEventListener("disabled", () => {
-    if (addon.tab.redux.state.scratchGui.editorTab.activeTabIndex === 3) {
+    if (addon.tab.redux.state.scratchGui.editorTab.activeTabIndex === VAR_TAB_INDEX) {
       addon.tab.redux.dispatch({ type: "scratch-gui/navigation/ACTIVATE_TAB", activeTabIndex: 2 });
     }
   });

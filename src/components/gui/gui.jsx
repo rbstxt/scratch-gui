@@ -13,6 +13,7 @@ import Blocks from '../../containers/blocks.jsx';
 import CostumeTab from '../../containers/costume-tab.jsx';
 import TargetPane from '../../containers/target-pane.jsx';
 import SoundTab from '../../containers/sound-tab.jsx';
+import TodoTab from '../../containers/todo-tab.jsx';
 import StageWrapper from '../../containers/stage-wrapper.jsx';
 import Loader from '../loader/loader.jsx';
 import Box from '../box/box.jsx';
@@ -41,6 +42,8 @@ import TWInvalidProjectModal from '../../containers/tw-invalid-project-modal.jsx
 import {STAGE_SIZE_MODES, FIXED_WIDTH, UNCONSTRAINED_NON_STAGE_WIDTH} from '../../lib/layout-constants';
 import {resolveStageSize} from '../../lib/screen-utils';
 import {Theme} from '../../lib/themes';
+import {openSettingsModal} from '../../reducers/modals';
+import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 
 import {isRendererSupported, isBrowserSupported} from '../../lib/tw-environment-support-prober';
 
@@ -49,6 +52,7 @@ import addExtensionIcon from './icon--extensions.svg';
 import codeIcon from '!../../lib/tw-recolor/build!./icon--code.svg';
 import costumesIcon from '!../../lib/tw-recolor/build!./icon--costumes.svg';
 import soundsIcon from '!../../lib/tw-recolor/build!./icon--sounds.svg';
+import todoIcon from '!../../lib/tw-recolor/build!./icon--todo.svg';
 
 const messages = defineMessages({
     addExtension: {
@@ -154,6 +158,8 @@ const GUIComponent = props => {
         tipsLibraryVisible,
         usernameModalVisible,
         settingsModalVisible,
+        preferences,
+        onOpenSettingsShortcut,
         customExtensionModalVisible,
         fontsModalVisible,
         unknownPlatformModalVisible,
@@ -178,6 +184,14 @@ const GUIComponent = props => {
         UNCONSTRAINED_NON_STAGE_WIDTH +
         FIXED_WIDTH +
         Math.max(0, customStageSize.width - FIXED_WIDTH)
+    );
+    registerKeyboardShortcut(
+        preferences['keybind-open-editor-settings'] ?? defaultKeyboardShortcuts['open-editor-settings'],
+        onOpenSettingsShortcut
+    );
+    registerKeyboardShortcut(
+        preferences['keybind-open-extensions'] ?? defaultKeyboardShortcuts['open-extensions'],
+        onExtensionButtonClick
     );
     return (<MediaQuery minWidth={unconstrainedWidth}>{isUnconstrained => {
         const stageSize = resolveStageSize(stageSizeMode, isUnconstrained);
@@ -336,17 +350,23 @@ const GUIComponent = props => {
                                 selectedTabPanelClassName={tabClassNames.tabPanelSelected}
                                 onSelect={onActivateTab}
                             >
-                                <TabList className={tabClassNames.tabList}>
+                                <TabList
+                                    className={classNames(tabClassNames.tabList, {
+                                        [styles.compact]: preferences['compact-tabs']
+                                    })}
+                                >
                                     <Tab className={tabClassNames.tab}>
                                         <img
                                             draggable={false}
                                             src={codeIcon()}
                                         />
-                                        <FormattedMessage
-                                            defaultMessage="Code"
-                                            description="Button to get to the code panel"
-                                            id="gui.gui.codeTab"
-                                        />
+                                        <span>
+                                            <FormattedMessage
+                                                defaultMessage="Code"
+                                                description="Button to get to the code panel"
+                                                id="gui.gui.codeTab"
+                                            />
+                                        </span>
                                     </Tab>
                                     <Tab
                                         className={tabClassNames.tab}
@@ -356,19 +376,21 @@ const GUIComponent = props => {
                                             draggable={false}
                                             src={costumesIcon()}
                                         />
-                                        {targetIsStage ? (
-                                            <FormattedMessage
-                                                defaultMessage="Backdrops"
-                                                description="Button to get to the backdrops panel"
-                                                id="gui.gui.backdropsTab"
-                                            />
-                                        ) : (
-                                            <FormattedMessage
-                                                defaultMessage="Costumes"
-                                                description="Button to get to the costumes panel"
-                                                id="gui.gui.costumesTab"
-                                            />
-                                        )}
+                                        <span>
+                                            {targetIsStage ? (
+                                                <FormattedMessage
+                                                    defaultMessage="Backdrops"
+                                                    description="Button to get to the backdrops panel"
+                                                    id="gui.gui.backdropsTab"
+                                                />
+                                            ) : (
+                                                <FormattedMessage
+                                                    defaultMessage="Costumes"
+                                                    description="Button to get to the costumes panel"
+                                                    id="gui.gui.costumesTab"
+                                                />
+                                            )}
+                                        </span>
                                     </Tab>
                                     <Tab
                                         className={tabClassNames.tab}
@@ -378,11 +400,26 @@ const GUIComponent = props => {
                                             draggable={false}
                                             src={soundsIcon()}
                                         />
-                                        <FormattedMessage
-                                            defaultMessage="Sounds"
-                                            description="Button to get to the sounds panel"
-                                            id="gui.gui.soundsTab"
+                                        <span>
+                                            <FormattedMessage
+                                                defaultMessage="Sounds"
+                                                description="Button to get to the sounds panel"
+                                                id="gui.gui.soundsTab"
+                                            />
+                                        </span>
+                                    </Tab>
+                                    <Tab className={tabClassNames.tab}>
+                                        <img
+                                            draggable={false}
+                                            src={todoIcon()}
                                         />
+                                        <span>
+                                            <FormattedMessage
+                                                defaultMessage="Todo"
+                                                description="Button to get to the todo list panel"
+                                                id="gui.gui.todoTab"
+                                            />
+                                        </span>
                                     </Tab>
                                 </TabList>
                                 <TabPanel className={tabClassNames.tabPanel}>
@@ -425,6 +462,9 @@ const GUIComponent = props => {
                                 </TabPanel>
                                 <TabPanel className={tabClassNames.tabPanel}>
                                     {soundsTabVisible ? <SoundTab vm={vm} /> : null}
+                                </TabPanel>
+                                <TabPanel className={tabClassNames.tabPanel}>
+                                    <TodoTab />
                                 </TabPanel>
                             </Tabs>
                             {backpackVisible ? (
@@ -508,6 +548,8 @@ GUIComponent.propTypes = {
     onClickLogo: PropTypes.func,
     onCloseAccountNav: PropTypes.func,
     onExtensionButtonClick: PropTypes.func,
+    onOpenSettingsShortcut: PropTypes.func,
+    preferences: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onOpenCustomExtensionModal: PropTypes.func,
     onLogOut: PropTypes.func,
     onOpenRegistration: PropTypes.func,
@@ -572,9 +614,15 @@ const mapStateToProps = state => ({
     // This is the button's mode, as opposed to the actual current state
     blocksId: state.scratchGui.timeTravel.year.toString(),
     stageSizeMode: state.scratchGui.stageSize.stageSize,
-    theme: state.scratchGui.theme.theme
+    theme: state.scratchGui.theme.theme,
+    preferences: state.scratchGui.preferences
+});
+
+const mapDispatchToProps = dispatch => ({
+    onOpenSettingsShortcut: () => dispatch(openSettingsModal())
 });
 
 export default injectIntl(connect(
-    mapStateToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(GUIComponent));

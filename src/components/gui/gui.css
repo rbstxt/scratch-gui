@@ -114,12 +114,15 @@
 
 /* Use z-indices to force left-on-top for tabs */
 .tab:nth-of-type(1) {
-    z-index: 3;
+    z-index: 4;
 }
 .tab:nth-of-type(2) {
-    z-index: 2;
+    z-index: 3;
 }
 .tab:nth-of-type(3) {
+    z-index: 2;
+}
+.tab:nth-of-type(4) {
     z-index: 1;
 }
 
@@ -139,14 +142,6 @@
     filter: grayscale(100%);
 }
 
-[dir="ltr"] .tab img {
-    margin-right: 0.125rem;
-}
-
-[dir="rtl"] .tab img {
-    margin-left: 0.125rem;
-}
-
 /* mirror blocks and sound tab icons */
 [dir="rtl"] .tab:nth-of-type(1) img {
     transform: scaleX(-1);
@@ -158,6 +153,18 @@
 
 .tab.is-selected img {
     filter: none;
+}
+
+.compact .tab span {
+    display: none;
+}
+
+[dir="ltr"] :not(.compact) > .tab img {
+    margin-right: 0.125rem;
+}
+
+[dir="rtl"] :not(.compact) > .tab img {
+    margin-left: 0.125rem;
 }
 
 /* Tab style overrides from react-tabs */
