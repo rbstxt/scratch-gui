@@ -93,38 +93,30 @@ const filterAddonsBySupport = () => {
 };
 const {supported: supportedAddons, unsupported: unsupportedAddons} = filterAddonsBySupport();
 
-const groupAddons = () => {
-    const groups = {
-        new: {
-            label: settingsTranslations.groupNew,
-            open: true,
-            addons: []
-        },
-        others: {
-            label: settingsTranslations.groupOthers,
-            open: true,
-            addons: []
-        },
-        danger: {
-            label: settingsTranslations.groupDanger,
-            open: false,
-            addons: []
-        }
-    };
-    const manifests = Object.values(supportedAddons);
-    for (let index = 0; index < manifests.length; index++) {
-        const manifest = manifests[index];
-        if (manifest.tags.includes('new')) {
-            groups.new.addons.push(index);
-        } else if (manifest.tags.includes('danger') || manifest.noCompiler) {
-            groups.danger.addons.push(index);
-        } else {
-            groups.others.addons.push(index);
+const getAllTags = () => {
+    const tags = new Set();
+    for (const manifest of Object.values(supportedAddons)) {
+        for (const tag of manifest.tags) {
+            tags.add(tag);
         }
     }
-    return groups;
+    return Array.from(tags).sort();
 };
-const groupedAddons = groupAddons();
+const allTags = getAllTags();
+
+const standardTagTranslationKeys = {
+    recommended: 'tagRecommended',
+    theme: 'tagTheme',
+    beta: 'tagBeta',
+    new: 'tagNew',
+    danger: 'tagDanger'
+};
+
+const getTagLabel = tag => (
+    settingsTranslations[`tags.${tag}`] ||
+    settingsTranslations[standardTagTranslationKeys[tag]] ||
+    tag
+);
 
 const getInitialSearch = () => {
     const hash = location.hash.substring(1);
@@ -178,6 +170,47 @@ CreditList.propTypes = {
         name: PropTypes.string,
         link: PropTypes.string
     }))
+};
+
+const TagFilter = ({tags, selectedTags, onTagToggle, onClearAll}) => {
+    if (tags.length === 0) return null;
+
+    return (
+        <div className={styles.tagFilter}>
+            <span className={styles.tagFilterLabel}>
+                {settingsTranslations.filterByTags || 'Filter by tags:'}
+            </span>
+            <div className={styles.tagList}>
+                {tags.map(tag => (
+                    <button
+                        key={tag}
+                        className={classNames(styles.tagButton, {
+                            [styles.tagButtonActive]: selectedTags.has(tag)
+                        })}
+                        onClick={() => onTagToggle(tag)}
+                        aria-pressed={selectedTags.has(tag)}
+                    >
+                        {getTagLabel(tag)}
+                    </button>
+                ))}
+                {selectedTags.size > 0 && (
+                    <button
+                        className={styles.clearTagsButton}
+                        onClick={onClearAll}
+                        title={settingsTranslations.clearTagFilters || 'Clear filters'}
+                    >
+                        {'×'}
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+};
+TagFilter.propTypes = {
+    tags: PropTypes.arrayOf(PropTypes.string).isRequired,
+    selectedTags: PropTypes.instanceOf(Set).isRequired,
+    onTagToggle: PropTypes.func.isRequired,
+    onClearAll: PropTypes.func.isRequired
 };
 
 const Switch = ({onChange, value, ...props}) => (
@@ -836,10 +869,7 @@ const addonToSearchItem = ({id, manifest}) => {
         }
     }
     for (const tag of manifest.tags) {
-        const key = `tags.${tag}`;
-        if (settingsTranslations[key]) {
-            addText(0.25, settingsTranslations[key]);
-        }
+        addText(0.25, getTagLabel(tag));
     }
     if (manifest.info) {
         for (const info of manifest.info) {
@@ -856,11 +886,25 @@ class AddonList extends React.Component {
         this.search = new Search(this.props.addons.map(addonToSearchItem));
         this.groups = [];
     }
+    filterAddonsByTags (addons) {
+        if (this.props.selectedTags.size === 0) {
+            return addons;
+        }
+        return addons.filter(addon =>
+            Array.from(this.props.selectedTags).some(tag =>
+                addon.manifest.tags.includes(tag)
+            )
+        );
+    }
     render () {
+        let filteredAddons = this.props.addons;
+        filteredAddons = this.filterAddonsByTags(filteredAddons);
+
         if (this.props.search) {
-            const addons = this.search.search(this.props.search)
+            const search = new Search(filteredAddons.map(addonToSearchItem));
+            const addons = search.search(this.props.search)
                 .slice(0, 20)
-                .map(({index}) => this.props.addons[index]);
+                .map(({index}) => filteredAddons[index]);
             if (addons.length === 0) {
                 return (
                     <div className={styles.noResults}>
@@ -877,16 +921,46 @@ class AddonList extends React.Component {
                 </div>
             );
         }
+
+        const groupedFilteredAddons = {
+            new: {
+                label: settingsTranslations.groupNew,
+                open: true,
+                addons: []
+            },
+            others: {
+                label: settingsTranslations.groupOthers,
+                open: true,
+                addons: []
+            },
+            danger: {
+                label: settingsTranslations.groupDanger,
+                open: false,
+                addons: []
+            }
+        };
+        for (const addon of filteredAddons) {
+            if (addon.manifest.tags.includes('new')) {
+                groupedFilteredAddons.new.addons.push(addon);
+            } else if (addon.manifest.tags.includes('danger') || addon.manifest.noCompiler) {
+                groupedFilteredAddons.danger.addons.push(addon);
+            } else {
+                groupedFilteredAddons.others.addons.push(addon);
+            }
+        }
+
         return (
             <div>
-                {Object.entries(groupedAddons).map(([id, {label, addons, open}]) => (
-                    <AddonGroup
-                        key={id}
-                        label={label}
-                        open={open}
-                        addons={addons.map(index => this.props.addons[index])}
-                        extended={this.props.extended}
-                    />
+                {Object.entries(groupedFilteredAddons).map(([id, {label, addons, open}]) => (
+                    addons.length > 0 && (
+                        <AddonGroup
+                            key={id}
+                            label={label}
+                            open={open}
+                            addons={addons}
+                            extended={this.props.extended}
+                        />
+                    )
                 ))}
             </div>
         );
@@ -899,6 +973,7 @@ AddonList.propTypes = {
         manifest: PropTypes.shape({}).isRequired
     })).isRequired,
     search: PropTypes.string.isRequired,
+    selectedTags: PropTypes.instanceOf(Set).isRequired,
     extended: PropTypes.bool.isRequired
 };
 
@@ -914,13 +989,16 @@ class AddonSettingsComponent extends React.Component {
         this.handleSearch = this.handleSearch.bind(this);
         this.handleClickSearchButton = this.handleClickSearchButton.bind(this);
         this.handleClickVersion = this.handleClickVersion.bind(this);
+        this.handleTagFilter = this.handleTagFilter.bind(this);
+        this.handleClearAll = this.handleClearAll.bind(this);
         this.searchRef = this.searchRef.bind(this);
         this.searchBar = null;
         this.state = {
             loading: false,
             dirty: false,
-            search: getInitialSearch(),
+            search: props.onDirty ? '' : getInitialSearch(),
             extended: false,
+            selectedTags: new Set(),
             ...this.readFullAddonState()
         };
         if (Channels.changeChannel) {
@@ -974,6 +1052,7 @@ class AddonSettingsComponent extends React.Component {
             };
             if (reloadRequired) {
                 newState.dirty = true;
+                if (this.props.onDirty) this.props.onDirty(true);
             }
             return newState;
         });
@@ -1074,6 +1153,22 @@ class AddonSettingsComponent extends React.Component {
             e.preventDefault();
         }
     }
+    handleTagFilter (tag) {
+        this.setState(state => {
+            const selectedTags = new Set(state.selectedTags);
+            if (selectedTags.has(tag)) {
+                selectedTags.delete(tag);
+            } else {
+                selectedTags.add(tag);
+            }
+            return {selectedTags};
+        });
+    }
+    handleClearAll () {
+        this.setState({
+            selectedTags: new Set()
+        });
+    }
     render () {
         const addonState = Object.entries(supportedAddons).map(([id, manifest]) => ({
             id,
@@ -1114,7 +1209,7 @@ class AddonSettingsComponent extends React.Component {
                             </span>
                         </a>
                     </div>
-                    {this.state.dirty && (
+                    {this.state.dirty && !this.props.onDirty && (
                         <Dirty
                             onReloadNow={Channels.reloadChannel ? this.handleReloadNow : null}
                         />
@@ -1123,9 +1218,16 @@ class AddonSettingsComponent extends React.Component {
                 <div className={styles.addons}>
                     {!this.state.loading && (
                         <div className={styles.section}>
+                            <TagFilter
+                                tags={allTags}
+                                selectedTags={this.state.selectedTags}
+                                onTagToggle={this.handleTagFilter}
+                                onClearAll={this.handleClearAll}
+                            />
                             <AddonList
                                 addons={addonState}
                                 search={this.state.search}
+                                selectedTags={this.state.selectedTags}
                                 extended={this.state.extended}
                             />
                             <div className={styles.footerButtons}>
@@ -1159,10 +1261,8 @@ class AddonSettingsComponent extends React.Component {
                                     onClick={this.handleClickVersion}
                                 >
                                     {this.state.extended ?
-                                        // Don't bother translating, pretty much no one will ever see this.
-                                        // eslint-disable-next-line max-len
-                                        `You have enabled debug mode. (Addons version ${upstreamMeta.commit})` :
-                                        `Addons version ${upstreamMeta.commit}`}
+                                        settingsTranslations.debugMode.replace('{version}', upstreamMeta.commit) :
+                                        settingsTranslations.version.replace('{version}', upstreamMeta.commit)}
                                 </span>
                             </footer>
                         </div>
@@ -1173,6 +1273,7 @@ class AddonSettingsComponent extends React.Component {
     }
 }
 AddonSettingsComponent.propTypes = {
+    onDirty: PropTypes.func,
     onExportSettings: PropTypes.func
 };
 

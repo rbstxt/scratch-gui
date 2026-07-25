@@ -4,6 +4,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {selectLocale} from '../reducers/locales';
 import {closeLanguageMenu} from '../reducers/menus';
+import {loadAddonLocale} from '../addons/l10n';
 
 import LanguageSelectorComponent from '../components/language-selector/language-selector.jsx';
 
@@ -15,9 +16,10 @@ class LanguageSelector extends React.Component {
         ]);
         document.documentElement.lang = props.currentLocale;
     }
-    handleChange (e) {
+    async handleChange (e) {
         const newLocale = e.target.value;
         if (this.props.messagesByLocale[newLocale]) {
+            await loadAddonLocale(newLocale);
             this.props.onChangeLanguage(newLocale);
             document.documentElement.lang = newLocale;
         }

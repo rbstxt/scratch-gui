@@ -36,7 +36,8 @@ const initialState = {
     [MODAL_RESTORE_POINTS]: false,
     [MODAL_FONTS]: false,
     [MODAL_UNKNOWN_PLATFORM]: false,
-    [MODAL_INVALID_PROJECT]: false
+    [MODAL_INVALID_PROJECT]: false,
+    settingsModalTab: 0
 };
 
 const reducer = function (state, action) {
@@ -44,7 +45,10 @@ const reducer = function (state, action) {
     switch (action.type) {
     case OPEN_MODAL:
         return Object.assign({}, state, {
-            [action.modal]: true
+            [action.modal]: true,
+            ...(action.modal === MODAL_SETTINGS && {
+                settingsModalTab: action.tab ?? 0
+            })
         });
     case CLOSE_MODAL:
         return Object.assign({}, state, {
@@ -99,8 +103,12 @@ const openTipsLibrary = function () {
 const openUsernameModal = function () {
     return openModal(MODAL_USERNAME);
 };
-const openSettingsModal = function () {
-    return openModal(MODAL_SETTINGS);
+const openSettingsModal = function (tab = 0) {
+    return {
+        type: OPEN_MODAL,
+        modal: MODAL_SETTINGS,
+        tab
+    };
 };
 const openCustomExtensionModal = function () {
     return openModal(MODAL_CUSTOM_EXTENSION);

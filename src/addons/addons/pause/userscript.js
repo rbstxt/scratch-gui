@@ -17,6 +17,9 @@ export default async function ({ addon, console, msg }) {
   addon.self.addEventListener("disabled", () => setPaused(false));
   setSrc();
   onPauseChanged(setSrc);
+  addon.tab.redux.addEventListener("statechanged", (event) => {
+    if (event.detail.action.type === "scratch-gui/locales/SELECT_LOCALE") setSrc();
+  });
 
   document.addEventListener(
     "keydown",

@@ -1,0 +1,18 @@
+@import "../../css/colors.css";
+
+.container {
+    display: block;
+    position: relative;
+    padding: 1rem;
+    text-align: center;
+    border: 4px dashed $ui-tertiary;
+    border-radius: 5px;
+    cursor: pointer;
+    background: none;
+    color: inherit;
+    width: 100%;
+}
+
+.container:focus-within {
+    border-color: $looks-secondary;
+}

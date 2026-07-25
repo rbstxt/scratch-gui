@@ -12,6 +12,7 @@ const MENU_SETTINGS = 'settingsMenu';
 const MENU_ACCENT = 'accentMenu';
 const MENU_BLOCKS_THEME = 'blocksThemeMenu';
 const MENU_ERRORS = 'errorsMenu';
+const MENU_WORKSPACE_BOOKMARKS = 'workspaceBookmarksMenu';
 
 class Menu {
     constructor (id) {
@@ -58,6 +59,7 @@ const rootMenu = new Menu('root')
             .addChild(new Menu(MENU_BLOCKS_THEME))
     )
     .addChild(new Menu(MENU_FILE))
+    .addChild(new Menu(MENU_WORKSPACE_BOOKMARKS))
     .addChild(new Menu(MENU_EDIT))
     .addChild(new Menu(MENU_MODE))
     .addChild(new Menu(MENU_SETTINGS))
@@ -76,7 +78,8 @@ const initialState = {
     [MENU_SETTINGS]: false,
     [MENU_ACCENT]: false,
     [MENU_BLOCKS_THEME]: false,
-    [MENU_ERRORS]: false
+    [MENU_ERRORS]: false,
+    [MENU_WORKSPACE_BOOKMARKS]: false
 };
 
 const reducer = function (state, action) {
@@ -132,6 +135,10 @@ const openFileMenu = () => openMenu(MENU_FILE);
 const closeFileMenu = () => closeMenu(MENU_FILE);
 const fileMenuOpen = state => state.scratchGui.menus[MENU_FILE];
 
+const openWorkspaceBookmarksMenu = () => openMenu(MENU_WORKSPACE_BOOKMARKS);
+const closeWorkspaceBookmarksMenu = () => closeMenu(MENU_WORKSPACE_BOOKMARKS);
+const workspaceBookmarksMenuOpen = state => state.scratchGui.menus[MENU_WORKSPACE_BOOKMARKS];
+
 const openLanguageMenu = () => openMenu(MENU_LANGUAGE);
 const closeLanguageMenu = () => closeMenu(MENU_LANGUAGE);
 const languageMenuOpen = state => state.scratchGui.menus[MENU_LANGUAGE];
@@ -175,6 +182,9 @@ export {
     openFileMenu,
     closeFileMenu,
     fileMenuOpen,
+    openWorkspaceBookmarksMenu,
+    closeWorkspaceBookmarksMenu,
+    workspaceBookmarksMenuOpen,
     openLanguageMenu,
     closeLanguageMenu,
     languageMenuOpen,

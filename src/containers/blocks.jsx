@@ -122,7 +122,8 @@ class Blocks extends React.Component {
             'onWorkspaceMetricsChange',
             'setBlocks',
             'setLocale',
-            'handleEnableProcedureReturns'
+            'handleEnableProcedureReturns',
+            'updateGridVisibility'
         ]);
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
@@ -159,7 +160,8 @@ class Blocks extends React.Component {
                 toolbox: this.props.toolboxXML,
                 colours: this.props.theme.getBlockColors(),
                 grid: {
-                    colour: this.props.theme.getBlockColors().gridColor
+                    colour: this.props.theme.getBlockColors().gridColor,
+                    length: this.props.theme.wallpaper.gridVisible === false ? 0 : 2
                 }
             },
             Blocks.defaultOptions
@@ -240,10 +242,15 @@ class Blocks extends React.Component {
             this.props.locale !== nextProps.locale ||
             this.props.anyModalVisible !== nextProps.anyModalVisible ||
             this.props.stageSize !== nextProps.stageSize ||
-            this.props.customStageSize !== nextProps.customStageSize
+            this.props.customStageSize !== nextProps.customStageSize ||
+            this.props.theme !== nextProps.theme
         );
     }
     componentDidUpdate (prevProps) {
+        if (this.props.theme !== prevProps.theme) {
+            this.updateGridVisibility();
+        }
+
         // If any modals are open, call hideChaff to close z-indexed field editors
         if (this.props.anyModalVisible && !prevProps.anyModalVisible) {
             this.ScratchBlocks.hideChaff();
@@ -283,6 +290,17 @@ class Blocks extends React.Component {
         } else {
             this.workspace.setVisible(false);
         }
+    }
+    updateGridVisibility () {
+        const grid = this.workspace && this.workspace.getGrid && this.workspace.getGrid();
+        if (!grid) return;
+
+        const gridVisible = this.props.theme.wallpaper.gridVisible !== false;
+        // Blockly creates the grid SVG only once. Updating the injected options
+        // therefore does not remove an already rendered pattern.
+        grid.length_ = gridVisible ? 2 : 0;
+        grid.gridPattern_.style.display = gridVisible ? '' : 'none';
+        grid.update(this.workspace.scale);
     }
     componentWillUnmount () {
         this.detachVM();

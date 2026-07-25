@@ -79,7 +79,7 @@ const BLOCKS_MAP = {
 let themeObjectsCreated = 0;
 
 class Theme {
-    constructor (accent, gui, blocks) {
+    constructor (accent, gui, blocks, wallpaper, fonts) {
         if (accent === ACCENT_UNSAND) accent = ACCENT_TURBEST;
         // do not modify these directly
         /** @readonly */
@@ -90,6 +90,10 @@ class Theme {
         this.gui = Object.prototype.hasOwnProperty.call(GUI_MAP, gui) ? gui : GUI_DEFAULT;
         /** @readonly */
         this.blocks = Object.prototype.hasOwnProperty.call(BLOCKS_MAP, blocks) ? blocks : BLOCKS_DEFAULT;
+        /** @readonly */
+        this.wallpaper = wallpaper || {url: '', opacity: 0.3, darkness: 0, gridVisible: true, history: []};
+        /** @readonly */
+        this.fonts = fonts || {system: [], google: [], history: []};
     }
 
     static light = new Theme(ACCENT_DEFAULT, GUI_LIGHT, BLOCKS_DEFAULT);
@@ -98,11 +102,15 @@ class Theme {
 
     set (what, to) {
         if (what === 'accent') {
-            return new Theme(to, this.gui, this.blocks);
+            return new Theme(to, this.gui, this.blocks, this.wallpaper, this.fonts);
         } else if (what === 'gui') {
-            return new Theme(this.accent, to, this.blocks);
+            return new Theme(this.accent, to, this.blocks, this.wallpaper, this.fonts);
         } else if (what === 'blocks') {
-            return new Theme(this.accent, this.gui, to);
+            return new Theme(this.accent, this.gui, to, this.wallpaper, this.fonts);
+        } else if (what === 'wallpaper') {
+            return new Theme(this.accent, this.gui, this.blocks, to, this.fonts);
+        } else if (what === 'fonts') {
+            return new Theme(this.accent, this.gui, this.blocks, this.wallpaper, to);
         }
         throw new Error(`Unknown theme property: ${what}`);
     }

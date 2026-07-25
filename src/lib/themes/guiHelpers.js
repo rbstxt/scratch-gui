@@ -72,6 +72,40 @@ const applyGuiColors = theme => {
         primary: guiColors['looks-secondary']
     };
     AddonHooks.recolorCallbacks.forEach(i => i());
+
+    const wallpaper = theme.wallpaper;
+    const wallpaperTarget = document.querySelector("[class*='blocks-wrapper_']") || document.body;
+    if (wallpaper.url) {
+        const darkness = Math.max(0, Math.min(0.8, wallpaper.darkness || 0));
+        wallpaperTarget.style.backgroundImage =
+            `linear-gradient(rgba(0,0,0,${darkness}), rgba(0,0,0,${darkness})), url("${wallpaper.url}")`;
+        wallpaperTarget.style.backgroundSize = 'cover';
+        wallpaperTarget.style.backgroundPosition = 'center';
+        wallpaperTarget.style.backgroundAttachment = 'fixed';
+        document.body.style.setProperty('--turbest-wallpaper-opacity', wallpaper.opacity || 0.3);
+        const blocksSvg = document.querySelector('svg.blocklySvg');
+        if (blocksSvg) blocksSvg.style.fillOpacity = 1 - (wallpaper.opacity || 0.3);
+    } else {
+        wallpaperTarget.style.backgroundImage = '';
+        document.body.style.removeProperty('--turbest-wallpaper-opacity');
+        const blocksSvg = document.querySelector('svg.blocklySvg');
+        if (blocksSvg) blocksSvg.style.fillOpacity = '';
+    }
+
+    const font = theme.fonts.google[0] || theme.fonts.system[0];
+    let fontLink = document.getElementById('turbest-theme-google-font');
+    if (theme.fonts.google[0]) {
+        if (!fontLink) {
+            fontLink = document.createElement('link');
+            fontLink.id = 'turbest-theme-google-font';
+            fontLink.rel = 'stylesheet';
+            document.head.appendChild(fontLink);
+        }
+        fontLink.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font).replace(/%20/g, '+')}`;
+    } else if (fontLink) {
+        fontLink.remove();
+    }
+    document.documentElement.style.setProperty('--turbest-theme-font', font ? `"${font}", sans-serif` : 'inherit');
 };
 
 export {

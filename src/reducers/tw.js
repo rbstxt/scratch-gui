@@ -32,7 +32,11 @@ export const initialState = {
     runtimeOptions: {
         maxClones: 300,
         miscLimits: true,
-        fencing: true
+        fencing: true,
+        disableOffscreenRendering: false,
+        disableDirectionClamping: false,
+        caseSensitiveLists: false,
+        realLayerIndexes: false
     },
     isWindowFullScreen: false,
     dimensions: [0, 0],

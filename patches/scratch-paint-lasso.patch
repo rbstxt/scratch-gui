@@ -649,3 +649,31 @@ index 000000000..c2d28b337
 +    changeVectorLassoEnabled,
 +    changeBitmapLassoEnabled
 +};
+diff --git a/src/helper/selection-tools/nudge-tool.js b/src/helper/selection-tools/nudge-tool.js
+--- a/src/helper/selection-tools/nudge-tool.js
++++ b/src/helper/selection-tools/nudge-tool.js
+@@ -6 +6,7 @@ import {BitmapModes} from '../../lib/modes';
+-const NUDGE_MORE_MULTIPLIER = 15;
++let nudgeMoreMultiplier = 15;
++
++const setNudgeMultiplier = value => {
++    nudgeMoreMultiplier = value;
++};
++
++export {setNudgeMultiplier};
+@@ -30 +32 @@ class NudgeTool {
+-        if (event.modifiers.shift) nudgeAmount *= NUDGE_MORE_MULTIPLIER;
++        if (event.modifiers.shift) nudgeAmount *= nudgeMoreMultiplier;
+diff --git a/src/containers/paint-editor.jsx b/src/containers/paint-editor.jsx
+--- a/src/containers/paint-editor.jsx
++++ b/src/containers/paint-editor.jsx
+@@ -26,0 +27 @@ import EyeDropperTool from '../helper/tools/eye-dropper';
++import {setNudgeMultiplier} from '../helper/selection-tools/nudge-tool';
+@@ -102,0 +104 @@ class PaintEditor extends React.Component {
++        setNudgeMultiplier(this.props.nudgeMultiplier || 15);
+@@ -128,0 +131,3 @@ class PaintEditor extends React.Component {
++        if (newProps.nudgeMultiplier !== this.props.nudgeMultiplier) {
++            setNudgeMultiplier(newProps.nudgeMultiplier || 15);
++        }
+@@ -408,0 +415 @@ PaintEditor.propTypes = {
++    nudgeMultiplier: PropTypes.number,

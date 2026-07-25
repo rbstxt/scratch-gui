@@ -22,6 +22,7 @@ import settingsIcon from './icon--settings.svg';
 import styles from './stage-header.css';
 
 import FullscreenAPI from '../../lib/tw-fullscreen-api';
+import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 
 const messages = defineMessages({
     largeStageSizeMessage: {
@@ -77,6 +78,7 @@ const StageHeaderComponent = function (props) {
         onSetStageFull,
         onOpenSettings,
         isEmbedded,
+        preferences,
         stageSize,
         stageSizeMode,
         vm
@@ -85,6 +87,10 @@ const StageHeaderComponent = function (props) {
     let header = null;
 
     const stageDimensions = getStageDimensions(stageSize, customStageSize, isFullScreen || isEmbedded);
+    registerKeyboardShortcut(
+        preferences['keybind-project-full-screen'] ?? defaultKeyboardShortcuts['project-full-screen'],
+        () => (isFullScreen ? onSetStageUnFullScreen() : onSetStageFullScreen())
+    );
 
     if (isFullScreen || isEmbedded) {
         const settingsButton = isEmbedded && enableSettingsButton ? (
@@ -232,7 +238,8 @@ const StageHeaderComponent = function (props) {
 
 const mapStateToProps = state => ({
     // This is the button's mode, as opposed to the actual current state
-    stageSizeMode: state.scratchGui.stageSize.stageSize
+    stageSizeMode: state.scratchGui.stageSize.stageSize,
+    preferences: state.scratchGui.preferences
 });
 
 StageHeaderComponent.propTypes = {
@@ -252,6 +259,7 @@ StageHeaderComponent.propTypes = {
     onSetStageFull: PropTypes.func.isRequired,
     onOpenSettings: PropTypes.func.isRequired,
     isEmbedded: PropTypes.bool.isRequired,
+    preferences: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)),
     stageSizeMode: PropTypes.oneOf(Object.keys(STAGE_SIZE_MODES)),
     vm: PropTypes.instanceOf(VM).isRequired

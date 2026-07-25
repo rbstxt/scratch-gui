@@ -65,6 +65,7 @@ Controls.propTypes = {
     turbo: PropTypes.bool.isRequired,
     framerate: PropTypes.number.isRequired,
     interpolation: PropTypes.bool.isRequired,
+    preferences: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     isSmall: PropTypes.bool,
     vm: PropTypes.instanceOf(VM)
 };
@@ -74,7 +75,8 @@ const mapStateToProps = state => ({
     projectRunning: state.scratchGui.vmStatus.running,
     framerate: state.scratchGui.tw.framerate,
     interpolation: state.scratchGui.tw.interpolation,
-    turbo: state.scratchGui.vmStatus.turbo
+    turbo: state.scratchGui.vmStatus.turbo,
+    preferences: state.scratchGui.preferences
 });
 // no-op function to prevent dispatch prop being passed to component
 const mapDispatchToProps = () => ({});

@@ -65,7 +65,9 @@ const detectTheme = () => {
         return new Theme(
             parsed.accent || systemPreferences.accent,
             parsed.gui || systemPreferences.gui,
-            parsed.blocks || systemPreferences.blocks
+            parsed.blocks || systemPreferences.blocks,
+            parsed.wallpaper,
+            parsed.fonts
         );
     } catch (e) {
         // ignore
@@ -90,6 +92,12 @@ const persistTheme = theme => {
     // custom blocks are managed by addon at runtime, don't save here
     if (theme.blocks !== systemPreferences.blocks && theme.blocks !== BLOCKS_CUSTOM) {
         nonDefaultSettings.blocks = theme.blocks;
+    }
+    if (theme.wallpaper.url || theme.wallpaper.history.length > 0) {
+        nonDefaultSettings.wallpaper = theme.wallpaper;
+    }
+    if (theme.fonts.system.length > 0 || theme.fonts.google.length > 0 || theme.fonts.history.length > 0) {
+        nonDefaultSettings.fonts = theme.fonts;
     }
 
     if (Object.keys(nonDefaultSettings).length === 0) {

@@ -404,5 +404,17 @@
     "paint-object-editor/@description": "コスチューム内のオブジェクトの変形、レイヤー、描画モード、線の属性を正確な値で編集する。",
     "block-pins/@name": "ブロックのピン留め",
     "block-pins/@description": "よく使うブロックをブロックパレットの上部にピン留めする。",
-    "block-pins/@info-checkbox-notice": "チェックボックスを含むピン留めされたブロックは、チェック時に予期しない動作をすることがあります。"
+    "block-pins/@info-checkbox-notice": "チェックボックスを含むピン留めされたブロックは、チェック時に予期しない動作をすることがあります。",
+    "turbest-compact-tabs/@name": "コンパクトなタブ",
+    "turbest-compact-tabs/@description": "エディターのタブ名を隠し、編集領域を広くする。",
+    "turbest-sharp-waveforms/@name": "くっきりした波形",
+    "turbest-sharp-waveforms/@description": "音声エディターの波形を鋭い角で描画する。",
+    "turbest-waveform-gradient/@name": "音量に応じた波形グラデーション",
+    "turbest-waveform-gradient/@description": "音声エディターの波形を音量に応じて色分けする。",
+    "turbest-sound-bitrate/@name": "音声エンコードのビットレート",
+    "turbest-sound-bitrate/@description": "編集した音声をMP3へエンコードするときのビットレートを変更する。",
+    "turbest-sound-bitrate/@settings-name-bitRate": "ビットレート (kbps)",
+    "turbest-paint-nudge/@name": "ペイントの移動倍率",
+    "turbest-paint-nudge/@description": "Shiftキーを押しながら選択したオブジェクトを移動する距離を変更する。",
+    "turbest-paint-nudge/@settings-name-multiplier": "移動倍率"
 }

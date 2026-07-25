@@ -68,6 +68,10 @@ const base = {
     },
     resolve: {
         symlinks: false,
+        // Webpack 4 prefers .wasm over .js by default. fonteditor-core has
+        // sibling woff2.js/woff2.wasm files and its loader intentionally
+        // requires "./woff2", so JavaScript must win that resolution.
+        extensions: ['.js', '.jsx', '.json', '.wasm'],
         alias: {
             'text-encoding$': path.resolve(__dirname, 'src/lib/tw-text-encoder'),
             'scratch-render-fonts$': path.resolve(__dirname, 'src/lib/tw-scratch-render-fonts')
@@ -168,6 +172,15 @@ module.exports = [
         },
         module: {
             rules: base.module.rules.concat([
+                {
+                    test: /\.wasm$/,
+                    type: 'javascript/auto',
+                    loader: 'file-loader',
+                    options: {
+                        name: 'static/wasm/[name].[hash].[ext]',
+                        esModule: false
+                    }
+                },
                 {
                     test: /\.(svg|png|wav|mp3|gif|jpg|woff2|hex)$/,
                     loader: 'url-loader',
@@ -283,6 +296,16 @@ module.exports = [
             },
             module: {
                 rules: base.module.rules.concat([
+                    {
+                        test: /\.wasm$/,
+                        type: 'javascript/auto',
+                        loader: 'file-loader',
+                        options: {
+                            name: 'static/wasm/[name].[hash].[ext]',
+                            publicPath: `${STATIC_PATH}/wasm/`,
+                            esModule: false
+                        }
+                    },
                     {
                         test: /\.(svg|png|wav|mp3|gif|jpg|woff2|hex)$/,
                         loader: 'url-loader',

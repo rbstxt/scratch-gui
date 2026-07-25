@@ -78,6 +78,11 @@ import _hide_stage from "../addons/hide-stage/_manifest_entry.js";
 import _tw_straighten_comments from "../addons/tw-straighten-comments/_manifest_entry.js";
 import _tw_remove_backpack from "../addons/tw-remove-backpack/_manifest_entry.js";
 import _tw_remove_feedback from "../addons/tw-remove-feedback/_manifest_entry.js";
+import _turbest_compact_tabs from "../addons/turbest-compact-tabs/_manifest_entry.js";
+import _turbest_sharp_waveforms from "../addons/turbest-sharp-waveforms/_manifest_entry.js";
+import _turbest_waveform_gradient from "../addons/turbest-waveform-gradient/_manifest_entry.js";
+import _turbest_sound_bitrate from "../addons/turbest-sound-bitrate/_manifest_entry.js";
+import _turbest_paint_nudge from "../addons/turbest-paint-nudge/_manifest_entry.js";
 import _tw_disable_vibration from "../addons/tw-disable-vibration/_manifest_entry.js";
 import _tw_disable_cloud_variables from "../addons/tw-disable-cloud-variables/_manifest_entry.js";
 import _tw_disable_compiler from "../addons/tw-disable-compiler/_manifest_entry.js";
@@ -162,6 +167,11 @@ export default {
   "tw-straighten-comments": _tw_straighten_comments,
   "tw-remove-backpack": _tw_remove_backpack,
   "tw-remove-feedback": _tw_remove_feedback,
+  "turbest-compact-tabs": _turbest_compact_tabs,
+  "turbest-sharp-waveforms": _turbest_sharp_waveforms,
+  "turbest-waveform-gradient": _turbest_waveform_gradient,
+  "turbest-sound-bitrate": _turbest_sound_bitrate,
+  "turbest-paint-nudge": _turbest_paint_nudge,
   "tw-disable-vibration": _tw_disable_vibration,
   "tw-disable-cloud-variables": _tw_disable_cloud_variables,
   "tw-disable-compiler": _tw_disable_compiler,

@@ -20,8 +20,12 @@ import dataURLToBlob from '../lib/data-uri-to-blob';
 import EventTargetShim from './event-target';
 import AddonHooks from './hooks';
 import addons from './generated/addon-manifests';
-import addonMessages from './addons-l10n/en.json';
-import l10nEntries from './generated/l10n-entries';
+import addonMessages, {
+    addAddonLocaleChangeListener,
+    getAddonLanguage,
+    loadAddonLocale,
+    resolveAddonLanguage
+} from './l10n';
 import addonEntries from './generated/addon-entries';
 import {addContextMenu} from './contextmenu';
 import * as modal from './modal';
@@ -115,26 +119,7 @@ const getEditorMode = () => {
     return 'editor';
 };
 
-/**
- * @returns {string} Locale code
- */
-const getLocale = () => {
-    const locale = reduxInstance.state.locales.locale;
-    const supportedLocale = Object.keys(l10nEntries).find(
-        candidate => candidate.toLowerCase() === locale.toLowerCase()
-    );
-    if (supportedLocale) return supportedLocale;
-    return locale.split('-')[0].toLowerCase();
-};
-const language = getLocale();
-
-const getTranslations = async () => {
-    if (Object.prototype.hasOwnProperty.call(l10nEntries, language)) {
-        const localeMessages = await l10nEntries[language]();
-        Object.assign(addonMessages, localeMessages);
-    }
-};
-const addonMessagesPromise = getTranslations();
+let addonMessagesPromise = loadAddonLocale(reduxInstance.state.locales.locale);
 
 const untilInEditor = () => {
     if (
@@ -768,7 +753,7 @@ class AddonRunner {
         if (handler) {
             translation = handler(translation);
         }
-        const messageFormat = new IntlMessageFormat(translation, language);
+        const messageFormat = new IntlMessageFormat(translation, getAddonLanguage());
         this.messageCache[namespacedKey] = messageFormat;
         return messageFormat.format(vars);
     }
@@ -960,13 +945,85 @@ class AddonRunner {
 }
 AddonRunner.instances = [];
 
+addAddonLocaleChangeListener(() => {
+    for (const runner of AddonRunner.instances) {
+        runner.messageCache = {};
+    }
+});
+
+reduxInstance.addEventListener('statechanged', event => {
+    const {action, next} = event.detail;
+    if (
+        action.type !== 'scratch-gui/locales/SELECT_LOCALE' ||
+        (action.meta && action.meta.addonTranslationsReady)
+    ) {
+        return;
+    }
+
+    const locale = next.locales.locale;
+    if (getAddonLanguage() === resolveAddonLanguage(locale)) {
+        return;
+    }
+    addonMessagesPromise = loadAddonLocale(locale).then(isLatestLocale => {
+        if (!isLatestLocale) return;
+
+        // Addons listen for SELECT_LOCALE to rebuild their injected UI. Send the
+        // same action again only after the asynchronously loaded dictionary is ready.
+        reduxInstance.dispatch({
+            type: 'scratch-gui/locales/SELECT_LOCALE',
+            locale,
+            meta: {
+                addonTranslationsReady: true
+            }
+        });
+    });
+});
+
 const runAddon = addonId => {
     const runner = new AddonRunner(addonId);
     runner.run();
 };
 
+const nitroBoltPreferenceAddons = {
+    'turbest-compact-tabs': [
+        ['compact-tabs', enabled => enabled]
+    ],
+    'turbest-sharp-waveforms': [
+        ['waveform-render-type', enabled => (enabled ? 'sharp' : 'soft')]
+    ],
+    'turbest-waveform-gradient': [
+        ['waveform-color', enabled => (enabled ? 'volume' : null)]
+    ],
+    'turbest-sound-bitrate': [
+        ['encoding-bit-rate', enabled => (enabled ?
+            SettingsStore.getAddonSetting('turbest-sound-bitrate', 'bitRate') : null)]
+    ],
+    'turbest-paint-nudge': [
+        ['paint-nudge-multiplier', enabled => (enabled ?
+            SettingsStore.getAddonSetting('turbest-paint-nudge', 'multiplier') : null)]
+    ]
+};
+
+const syncNitroBoltPreferenceAddon = addonId => {
+    const mappings = nitroBoltPreferenceAddons[addonId];
+    if (!mappings) return;
+    const enabled = SettingsStore.getAddonEnabled(addonId);
+    for (const [key, getValue] of mappings) {
+        reduxInstance.dispatch({
+            type: 'scratch-gui/preferences/SET_PREFERENCE',
+            key,
+            value: getValue(enabled)
+        });
+    }
+};
+
+SettingsStore.addEventListener('setting-changed', e => {
+    syncNitroBoltPreferenceAddon(e.detail.addonId);
+});
+
 SettingsStore.addEventListener('addon-changed', e => {
     const addonId = e.detail.addonId;
+    syncNitroBoltPreferenceAddon(addonId);
     const runner = AddonRunner.instances.find(i => i.id === addonId);
     if (runner) {
         runner.settingsChanged();
@@ -985,6 +1042,7 @@ SettingsStore.addEventListener('addon-changed', e => {
 });
 
 for (const id of Object.keys(addons)) {
+    syncNitroBoltPreferenceAddon(id);
     if (!SettingsStore.getAddonEnabled(id)) {
         continue;
     }

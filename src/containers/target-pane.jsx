@@ -267,6 +267,7 @@ TargetPane.propTypes = {
 const mapStateToProps = state => ({
     editingTarget: state.scratchGui.targets.editingTarget,
     hoveredTarget: state.scratchGui.hoveredTarget,
+    preferences: state.scratchGui.preferences,
     isRtl: state.locales.isRtl,
     spriteLibraryVisible: state.scratchGui.modals.spriteLibrary,
     sprites: state.scratchGui.targets.sprites,

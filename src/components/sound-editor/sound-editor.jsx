@@ -238,6 +238,16 @@ const messages = defineMessages({
         id: 'turbest.soundEditor.right',
         description: 'Label for the right audio channel',
         defaultMessage: 'Right'
+    },
+    bitcrushSampleRate: {
+        id: 'turbest.soundEditor.bitcrushSampleRate',
+        description: 'Accessibility label for the bitcrush sample rate selector',
+        defaultMessage: 'Bitcrush sample rate'
+    },
+    bitcrushBitDepth: {
+        id: 'turbest.soundEditor.bitcrushBitDepth',
+        description: 'Accessibility label for the bitcrush bit depth selector',
+        defaultMessage: 'Bitcrush bit depth'
     }
 });
 
@@ -438,6 +448,7 @@ class BitcrushEffect extends React.Component {
         };
     }
     render () {
+        const {intl} = this.props;
         return (
             <div className={styles.parameterEffect}>
                 <IconButton
@@ -448,7 +459,7 @@ class BitcrushEffect extends React.Component {
                 />
                 <div className={styles.bitcrushSettings}>
                     <select
-                        aria-label="Bitcrush sample rate"
+                        aria-label={intl.formatMessage(messages.bitcrushSampleRate)}
                         className={styles.effectSelect}
                         value={this.state.sampleRate}
                         onChange={event => this.setState({sampleRate: Number(event.target.value)})}
@@ -463,7 +474,7 @@ class BitcrushEffect extends React.Component {
                         ))}
                     </select>
                     <select
-                        aria-label="Bitcrush bit depth"
+                        aria-label={intl.formatMessage(messages.bitcrushBitDepth)}
                         className={styles.effectSelect}
                         value={this.state.bitDepth}
                         onChange={event => this.setState({bitDepth: Number(event.target.value)})}
@@ -484,9 +495,12 @@ class BitcrushEffect extends React.Component {
 }
 
 BitcrushEffect.propTypes = {
+    intl: intlShape.isRequired,
     onApply: PropTypes.func.isRequired,
     title: PropTypes.node.isRequired
 };
+
+const IntlBitcrushEffect = injectIntl(BitcrushEffect);
 
 const getMeterLevel = props => {
     if (!props.chunkLevels.length || !props.chunkLevels[0].length) return 0;
@@ -626,6 +640,7 @@ class SoundEditor extends React.Component {
                                         <Waveform
                                             data={levels}
                                             height={channelCount > 1 ? 80 : 160}
+                                            preferences={props.preferences}
                                             width={600}
                                         />
                                     </div>
@@ -705,7 +720,7 @@ class SoundEditor extends React.Component {
                             title={<FormattedMessage {...messages.flip} />}
                             onClick={props.onFlip}
                         />
-                        <BitcrushEffect
+                        <IntlBitcrushEffect
                             title={<FormattedMessage {...messages.bitcrush} />}
                             onApply={props.onBitcrush}
                         />
@@ -773,6 +788,7 @@ SoundEditor.propTypes = {
     chunkLevels: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
     intl: intlShape,
     name: PropTypes.string.isRequired,
+    preferences: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onChangeName: PropTypes.func.isRequired,
     onContainerClick: PropTypes.func.isRequired,
     onCopy: PropTypes.func.isRequired,

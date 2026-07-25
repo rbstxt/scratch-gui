@@ -7,6 +7,10 @@ import {closeSettingsModal} from '../reducers/modals';
 import SettingsModalComponent from '../components/tw-settings-modal/settings-modal.jsx';
 import {defaultStageSize} from '../reducers/custom-stage-size';
 import {setDeveloperMode} from '../reducers/tw';
+import {setPreference} from '../reducers/preferences';
+import {setTheme} from '../reducers/theme';
+import {persistTheme} from '../lib/themes/themePersistance';
+import {Theme} from '../lib/themes';
 
 const messages = defineMessages({
     newFramerate: {
@@ -27,6 +31,10 @@ class UsernameModal extends React.Component {
             'handleInfiniteClonesChange',
             'handleRemoveFencingChange',
             'handleRemoveLimitsChange',
+            'handleDisableOffscreenRenderingChange',
+            'handleDisableDirectionClampingChange',
+            'handleCaseSensitiveListsChange',
+            'handleRealLayerIndexesChange',
             'handleWarpTimerChange',
             'handleStageWidthChange',
             'handleStageHeightChange',
@@ -68,6 +76,27 @@ class UsernameModal extends React.Component {
             miscLimits: !e.target.checked
         });
     }
+    handleDisableOffscreenRenderingChange (e) {
+        this.props.vm.setRuntimeOptions({
+            disableOffscreenRendering: e.target.checked
+        });
+    }
+    handleDisableDirectionClampingChange (e) {
+        this.props.vm.setRuntimeOptions({
+            disableDirectionClamping: e.target.checked
+        });
+    }
+    handleCaseSensitiveListsChange (e) {
+        this.props.vm.setRuntimeOptions({
+            caseSensitiveLists: e.target.checked
+        });
+    }
+    handleRealLayerIndexesChange (e) {
+        this.props.vm.renderer.useRealLayerIndexes = e.target.checked;
+        this.props.vm.setRuntimeOptions({
+            realLayerIndexes: e.target.checked
+        });
+    }
     handleWarpTimerChange (e) {
         this.props.vm.setCompilerOptions({
             warpTimer: e.target.checked
@@ -101,6 +130,7 @@ class UsernameModal extends React.Component {
         return (
             <SettingsModalComponent
                 onClose={this.props.onClose}
+                vm={this.props.vm}
                 onFramerateChange={this.handleFramerateChange}
                 onCustomizeFramerate={this.handleCustomizeFramerate}
                 onHighQualityPenChange={this.handleHighQualityPenChange}
@@ -108,11 +138,18 @@ class UsernameModal extends React.Component {
                 onInfiniteClonesChange={this.handleInfiniteClonesChange}
                 onRemoveFencingChange={this.handleRemoveFencingChange}
                 onRemoveLimitsChange={this.handleRemoveLimitsChange}
+                onDisableOffscreenRenderingChange={this.handleDisableOffscreenRenderingChange}
+                onDisableDirectionClampingChange={this.handleDisableDirectionClampingChange}
+                onCaseSensitiveListsChange={this.handleCaseSensitiveListsChange}
+                onRealLayerIndexesChange={this.handleRealLayerIndexesChange}
                 onWarpTimerChange={this.handleWarpTimerChange}
                 onStageWidthChange={this.handleStageWidthChange}
                 onStageHeightChange={this.handleStageHeightChange}
                 onDisableCompilerChange={this.handleDisableCompilerChange}
                 onDeveloperModeChange={this.handleDeveloperModeChange}
+                activeTab={this.props.activeTab}
+                preferences={this.props.preferences}
+                onSetPreference={this.props.onSetPreference}
                 stageWidth={this.props.customStageSize.width}
                 stageHeight={this.props.customStageSize.height}
                 customStageSizeEnabled={
@@ -131,7 +168,8 @@ UsernameModal.propTypes = {
     onClose: PropTypes.func,
     vm: PropTypes.shape({
         renderer: PropTypes.shape({
-            setUseHighQualityRender: PropTypes.func
+            setUseHighQualityRender: PropTypes.func,
+            useRealLayerIndexes: PropTypes.bool
         }),
         setFramerate: PropTypes.func,
         setCompilerOptions: PropTypes.func,
@@ -147,6 +185,10 @@ UsernameModal.propTypes = {
     infiniteClones: PropTypes.bool,
     removeFencing: PropTypes.bool,
     removeLimits: PropTypes.bool,
+    disableOffscreenRendering: PropTypes.bool,
+    disableDirectionClamping: PropTypes.bool,
+    caseSensitiveLists: PropTypes.bool,
+    realLayerIndexes: PropTypes.bool,
     warpTimer: PropTypes.bool,
     customStageSize: PropTypes.shape({
         width: PropTypes.number,
@@ -154,27 +196,45 @@ UsernameModal.propTypes = {
     }),
     disableCompiler: PropTypes.bool,
     developerMode: PropTypes.bool,
-    onSetDeveloperMode: PropTypes.func
+    onSetDeveloperMode: PropTypes.func,
+    activeTab: PropTypes.number,
+    preferences: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    onSetPreference: PropTypes.func,
+    theme: PropTypes.instanceOf(Theme),
+    onChangeTheme: PropTypes.func
 };
 
 const mapStateToProps = state => ({
     vm: state.scratchGui.vm,
     isEmbedded: state.scratchGui.mode.isEmbedded,
+    isPlayerOnly: state.scratchGui.mode.isPlayerOnly,
     framerate: state.scratchGui.tw.framerate,
     highQualityPen: state.scratchGui.tw.highQualityPen,
     interpolation: state.scratchGui.tw.interpolation,
     infiniteClones: state.scratchGui.tw.runtimeOptions.maxClones === Infinity,
     removeFencing: !state.scratchGui.tw.runtimeOptions.fencing,
     removeLimits: !state.scratchGui.tw.runtimeOptions.miscLimits,
+    disableOffscreenRendering: state.scratchGui.tw.runtimeOptions.disableOffscreenRendering,
+    disableDirectionClamping: state.scratchGui.tw.runtimeOptions.disableDirectionClamping,
+    caseSensitiveLists: !!state.scratchGui.tw.runtimeOptions.caseSensitiveLists,
+    realLayerIndexes: !!state.scratchGui.tw.runtimeOptions.realLayerIndexes,
     warpTimer: state.scratchGui.tw.compilerOptions.warpTimer,
     customStageSize: state.scratchGui.customStageSize,
     disableCompiler: !state.scratchGui.tw.compilerOptions.enabled,
-    developerMode: state.scratchGui.tw.developerMode
+    developerMode: state.scratchGui.tw.developerMode,
+    activeTab: state.scratchGui.modals.settingsModalTab,
+    preferences: state.scratchGui.preferences,
+    theme: state.scratchGui.theme.theme
 });
 
 const mapDispatchToProps = dispatch => ({
     onClose: () => dispatch(closeSettingsModal()),
-    onSetDeveloperMode: enabled => dispatch(setDeveloperMode(enabled))
+    onSetDeveloperMode: enabled => dispatch(setDeveloperMode(enabled)),
+    onSetPreference: (key, value) => dispatch(setPreference(key, value)),
+    onChangeTheme: theme => {
+        persistTheme(theme);
+        dispatch(setTheme(theme));
+    }
 });
 
 export default injectIntl(connect(

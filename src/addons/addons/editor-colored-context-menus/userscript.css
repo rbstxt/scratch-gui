@@ -13,3 +13,7 @@
 .sa-contextmenu-colored .blocklyContextMenu .goog-menuitem .goog-menuitem-content {
   color: var(--sa-contextmenu-text);
 }
+.sa-contextmenu-colored .blocklyContextMenu .goog-menuitem-disabled .goog-menuitem-content {
+  color: var(--sa-contextmenu-text) !important;
+  opacity: 0.4;
+}

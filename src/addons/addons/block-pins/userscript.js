@@ -85,6 +85,12 @@ export default async function ({addon, msg, console}) {
         if (toolbox) toolbox.populate_(toolbox.workspace_.options.languageTree);
         storePins();
     };
+    addon.tab.redux.addEventListener('statechanged', event => {
+        if (event.detail.action.type === 'scratch-gui/locales/SELECT_LOCALE') {
+            category.setAttribute('name', msg('category'));
+            refreshToolbox();
+        }
+    });
 
     const organizePins = () => {
         const toolbox = Blockly.mainWorkspace.getToolbox();

@@ -9,6 +9,7 @@ import TurboMode from '../turbo-mode/turbo-mode.jsx';
 import FramerateIndicator from '../tw-framerate-indicator/framerate-indicator.jsx';
 
 import styles from './controls.css';
+import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 
 const messages = defineMessages({
     goTitle: {
@@ -34,8 +35,17 @@ const Controls = function (props) {
         framerate,
         interpolation,
         isSmall,
+        preferences,
         ...componentProps
     } = props;
+    registerKeyboardShortcut(
+        preferences['keybind-start-project'] ?? defaultKeyboardShortcuts['start-project'],
+        onGreenFlagClick
+    );
+    registerKeyboardShortcut(
+        preferences['keybind-stop-project'] ?? defaultKeyboardShortcuts['stop-project'],
+        onStopAllClick
+    );
     return (
         <div
             className={classNames(styles.controlsContainer, className)}
@@ -73,7 +83,8 @@ Controls.propTypes = {
     framerate: PropTypes.number,
     interpolation: PropTypes.bool,
     isSmall: PropTypes.bool,
-    turbo: PropTypes.bool
+    turbo: PropTypes.bool,
+    preferences: PropTypes.object // eslint-disable-line react/forbid-prop-types
 };
 
 Controls.defaultProps = {

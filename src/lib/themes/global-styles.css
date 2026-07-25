@@ -35,3 +35,14 @@
     --editorDarkMode-page: $ui-primary;
     --editorDarkMode-highlightText: $looks-secondary;
 }
+body,
+button,
+input,
+select,
+textarea {
+    font-family: var(--turbest-theme-font, inherit);
+}
+
+body[style*="background-image"] [class*="gui_body-wrapper"] {
+    background-color: rgba(255, 255, 255, calc(1 - var(--turbest-wallpaper-opacity, 0.3)));
+}

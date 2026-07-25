@@ -36,6 +36,7 @@ class PaintEditorWrapper extends React.Component {
             this.props.name !== nextProps.name ||
             this.props.theme !== nextProps.theme ||
             this.props.customStageSize !== nextProps.customStageSize ||
+            this.props.nudgeMultiplier !== nextProps.nudgeMultiplier ||
             this.state.fonts !== nextState.fonts;
     }
     componentDidUpdate (previousProps) {
@@ -111,6 +112,7 @@ PaintEditorWrapper.propTypes = {
     onManageFonts: PropTypes.func.isRequired,
     imageFormat: PropTypes.string.isRequired,
     imageId: PropTypes.string.isRequired,
+    nudgeMultiplier: PropTypes.number,
     theme: PropTypes.instanceOf(Theme),
     name: PropTypes.string,
     rotationCenterX: PropTypes.number,
@@ -130,6 +132,7 @@ const mapStateToProps = (state, {selectedCostumeIndex}) => {
     return {
         customStageSize: state.scratchGui.customStageSize,
         name: costume && costume.name,
+        nudgeMultiplier: state.scratchGui.preferences['paint-nudge-multiplier'],
         rotationCenterX: costume && costume.rotationCenterX,
         rotationCenterY: costume && costume.rotationCenterY,
         imageFormat: costume && costume.dataFormat,

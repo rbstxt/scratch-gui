@@ -1,7 +1,6 @@
 import bindAll from 'lodash.bindall';
 import PropTypes from 'prop-types';
 import React from 'react';
-import WavEncoder from 'wav-encoder';
 import VM from 'scratch-vm';
 
 import {connect} from 'react-redux';
@@ -16,6 +15,8 @@ import SoundEditorComponent from '../components/sound-editor/sound-editor.jsx';
 import AudioEffectDialog from '../components/sound-editor/audio-effect-dialog.jsx';
 import AudioBufferPlayer from '../lib/audio/audio-buffer-player.js';
 import log from '../lib/log.js';
+// eslint-disable-next-line import/default
+import EncoderWorker from 'worker-loader!../lib/nb-encode-mp3-worker.js';
 
 const UNDO_STACK_SIZE = 99;
 
@@ -162,11 +163,21 @@ class SoundEditor extends React.Component {
         });
     }
     submitNewSamples (channelData, sampleRate, skipUndo) {
-        return WavEncoder.encode({
-            sampleRate,
-            channelData
-        }, {float: true})
-            .then(wavBuffer => {
+        return new Promise((resolve, reject) => {
+            const encoderWorker = new EncoderWorker();
+            encoderWorker.onerror = reject;
+            encoderWorker.onmessage = ({data}) => {
+                encoderWorker.terminate();
+                resolve(data);
+            };
+            encoderWorker.postMessage({
+                channel1Samples: channelData[0],
+                channel2Samples: channelData[1] || null,
+                sampleRate,
+                bitRate: this.props.preferences['encoding-bit-rate'] ?? 128
+            });
+        })
+            .then(mp3Buffer => {
                 if (!skipUndo) {
                     this.redoStack = [];
                     if (this.undoStack.length >= UNDO_STACK_SIZE) {
@@ -178,7 +189,7 @@ class SoundEditor extends React.Component {
                 this.props.vm.updateSoundBuffer(
                     this.props.soundIndex,
                     this.audioBufferPlayer.buffer,
-                    new Uint8Array(wavBuffer));
+                    new Uint8Array(mp3Buffer));
                 return true; // Edit was successful
             })
             .catch(e => {
@@ -600,6 +611,7 @@ class SoundEditor extends React.Component {
                     canUndo={this.undoStack.length > 0}
                     chunkLevels={this.state.chunkLevels}
                     name={this.props.name}
+                    preferences={this.props.preferences}
                     playhead={this.state.playhead}
                     playing={this.state.playing}
                     setRef={this.setRef}
@@ -671,6 +683,9 @@ SoundEditor.propTypes = {
     sampleRate: PropTypes.number,
     soundId: PropTypes.string,
     soundIndex: PropTypes.number,
+    preferences: PropTypes.shape({
+        'encoding-bit-rate': PropTypes.number
+    }).isRequired,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 
@@ -692,6 +707,7 @@ const mapStateToProps = (state, {soundIndex}) => {
         ),
         isFullScreen: state.scratchGui.mode.isFullScreen,
         name: sound.name,
+        preferences: state.scratchGui.preferences,
         vm: state.scratchGui.vm
     };
 };

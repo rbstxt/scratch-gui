@@ -40,6 +40,7 @@ const TargetPane = ({
     onSelectSprite,
     onSpriteUpload,
     onSurpriseSpriteClick,
+    preferences,
     raiseSprites,
     stage,
     stageSize,
@@ -59,6 +60,7 @@ const TargetPane = ({
             selectedId={editingTarget}
             spriteFileInput={fileInputRef}
             sprites={sprites}
+            preferences={preferences}
             stageSize={stageSize}
             onChangeSpriteDirection={onChangeSpriteDirection}
             onChangeSpriteName={onChangeSpriteName}
@@ -153,6 +155,7 @@ TargetPane.propTypes = {
     onSelectSprite: PropTypes.func,
     onSpriteUpload: PropTypes.func,
     onSurpriseSpriteClick: PropTypes.func,
+    preferences: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     raiseSprites: PropTypes.bool,
     spriteLibraryVisible: PropTypes.bool,
     sprites: PropTypes.objectOf(spriteShape),
