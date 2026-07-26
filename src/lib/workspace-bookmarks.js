@@ -60,6 +60,11 @@ export const getCurrentWorkspaceBookmarkState = async vm => {
 
 export const applyWorkspaceBookmarkState = async (vm, state) => {
     if (!vm || !state) return;
+    const scale = Number(state.scale);
+    const scrollX = Number(state.scrollX);
+    const scrollY = Number(state.scrollY);
+    if (!Number.isFinite(scale) || scale <= 0 ||
+        !Number.isFinite(scrollX) || !Number.isFinite(scrollY)) return;
     if (state.targetId && vm.editingTarget && state.targetId !== vm.editingTarget.id) {
         const target = vm.runtime.getTargetById(state.targetId);
         if (target) vm.setEditingTarget(state.targetId);
@@ -68,9 +73,9 @@ export const applyWorkspaceBookmarkState = async (vm, state) => {
         LazyScratchBlocks.get() : await LazyScratchBlocks.load();
     const workspace = ScratchBlocks.getMainWorkspace();
     if (!workspace || !workspace.scrollbar) return;
-    workspace.setScale(state.scale);
+    workspace.setScale(scale);
     const metrics = workspace.getMetrics();
-    workspace.scrollbar.set(state.scrollX - metrics.contentLeft, state.scrollY - metrics.contentTop);
+    workspace.scrollbar.set(scrollX - metrics.contentLeft, scrollY - metrics.contentTop);
 };
 
 export const findWorkspaceBookmarkByName = (bookmarks, name) => {

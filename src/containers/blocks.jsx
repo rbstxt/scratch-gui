@@ -20,6 +20,7 @@ import DropAreaHOC from '../lib/drop-area-hoc.jsx';
 import DragConstants from '../lib/drag-constants';
 import defineDynamicBlock from '../lib/define-dynamic-block';
 import {Theme} from '../lib/themes';
+import {applyWallpaper} from '../lib/themes/guiHelpers';
 import {injectExtensionBlockTheme, injectExtensionCategoryTheme} from '../lib/themes/blockHelpers';
 
 import {connect} from 'react-redux';
@@ -123,7 +124,8 @@ class Blocks extends React.Component {
             'setBlocks',
             'setLocale',
             'handleEnableProcedureReturns',
-            'updateGridVisibility'
+            'updateGridVisibility',
+            'applyWallpaperFromTheme'
         ]);
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
@@ -231,6 +233,15 @@ class Blocks extends React.Component {
         }
 
         gentlyRequestPersistentStorage();
+
+        // The theme manager HOC runs applyGuiColors in its constructor,
+        // before React has rendered any DOM. By the time Blocks mounts the
+        // blocks-wrapper is in the document, so we can re-run the wallpaper
+        // pass against the real target. The grid check also needs to happen
+        // once on mount (componentDidUpdate's theme-difference check is a
+        // no-op on the initial pass).
+        this.applyWallpaperFromTheme();
+        this.updateGridVisibility();
     }
     shouldComponentUpdate (nextProps, nextState) {
         return (
@@ -249,6 +260,12 @@ class Blocks extends React.Component {
     componentDidUpdate (prevProps) {
         if (this.props.theme !== prevProps.theme) {
             this.updateGridVisibility();
+            // The wallpaper (opacity, darkness, url) might have changed too.
+            // Re-run the full wallpaper application so the blocks-wrapper
+            // gets updated regardless of who made the change.
+            if (this.props.theme.wallpaper !== prevProps.theme.wallpaper) {
+                this.applyWallpaperFromTheme();
+            }
         }
 
         // If any modals are open, call hideChaff to close z-indexed field editors
@@ -291,17 +308,6 @@ class Blocks extends React.Component {
             this.workspace.setVisible(false);
         }
     }
-    updateGridVisibility () {
-        const grid = this.workspace && this.workspace.getGrid && this.workspace.getGrid();
-        if (!grid) return;
-
-        const gridVisible = this.props.theme.wallpaper.gridVisible !== false;
-        // Blockly creates the grid SVG only once. Updating the injected options
-        // therefore does not remove an already rendered pattern.
-        grid.length_ = gridVisible ? 2 : 0;
-        grid.gridPattern_.style.display = gridVisible ? '' : 'none';
-        grid.update(this.workspace.scale);
-    }
     componentWillUnmount () {
         this.detachVM();
         this.unmounted = true;
@@ -312,6 +318,62 @@ class Blocks extends React.Component {
         this.props.vm.clearFlyoutBlocks();
 
         AddonHooks.blocklyWorkspace = null;
+    }
+    updateGridVisibility () {
+        const grid = this.workspace && this.workspace.getGrid && this.workspace.getGrid();
+        if (!grid) return;
+
+        const gridVisible = this.props.theme.wallpaper.gridVisible !== false;
+        const gridColor = (this.props.theme.getBlockColors && this.props.theme.getBlockColors().gridColor) ||
+            '#ddd';
+        const SVG_NS = 'http://www.w3.org/2000/svg';
+
+        // Blockly creates the grid SVG only once. When the initial grid length
+        // was 0, Blockly.Grid.createDom omits the second <line> entirely, so
+        // grid.line2_ is null. Mutating grid.length_ + calling grid.update()
+        // alone cannot recreate that missing line -- we have to add it back
+        // ourselves so toggling the grid back on after an initial-off state
+        // actually renders the dots.
+        grid.length_ = gridVisible ? 2 : 0;
+
+        const pattern = grid.gridPattern_;
+        if (pattern) {
+            if (gridVisible) {
+                // Make sure both lines exist and carry the right stroke colour.
+                while (pattern.firstChild) pattern.removeChild(pattern.firstChild);
+                const line1 = document.createElementNS(SVG_NS, 'line');
+                line1.setAttribute('stroke', gridColor);
+                pattern.appendChild(line1);
+                const line2 = document.createElementNS(SVG_NS, 'line');
+                line2.setAttribute('stroke', gridColor);
+                pattern.appendChild(line2);
+                grid.line1_ = line1;
+                grid.line2_ = line2;
+                pattern.style.display = '';
+            } else {
+                pattern.style.display = 'none';
+            }
+        }
+
+        const background = this.workspace && this.workspace.svgBackground_;
+        if (background) {
+            background.style.fill = gridVisible ?
+                `url(#${grid.getPatternId ? grid.getPatternId() : ''})` :
+                // Keep the background painted (but invisible) so Blockly can
+                // start panning gestures from empty wallpaper areas.
+                'transparent';
+        }
+        grid.update(this.workspace.scale);
+    }
+    applyWallpaperFromTheme () {
+        // Re-run wallpaper application now that the blocks workspace is
+        // actually mounted. The theme manager HOC runs in its constructor,
+        // so its initial apply may have ended up on document.body if the
+        // blocks-wrapper wasn't in the DOM yet. We can re-target cleanly
+        // here, and applyWallpaper's retry helper handles the case where
+        // it's still not available.
+        if (!this.props.theme || !this.props.theme.wallpaper) return;
+        applyWallpaper(this.props.theme.wallpaper);
     }
     requestToolboxUpdate () {
         clearTimeout(this.toolboxUpdateTimeout);

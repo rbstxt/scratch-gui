@@ -91,7 +91,7 @@ class Theme {
         /** @readonly */
         this.blocks = Object.prototype.hasOwnProperty.call(BLOCKS_MAP, blocks) ? blocks : BLOCKS_DEFAULT;
         /** @readonly */
-        this.wallpaper = wallpaper || {url: '', opacity: 0.3, darkness: 0, gridVisible: true, history: []};
+        this.wallpaper = wallpaper || {url: '', opacity: 0.7, darkness: 0, gridVisible: true, history: []};
         /** @readonly */
         this.fonts = fonts || {system: [], google: [], history: []};
     }

@@ -1,0 +1,190 @@
+- generic:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7] [cursor=pointer]: 設定
+        - generic [ref=e11] [cursor=pointer]: ファイル
+        - generic [ref=e15] [cursor=pointer]: 編集
+        - generic [ref=e19] [cursor=pointer]: アドオン
+        - generic [ref=e22] [cursor=pointer]: 高度な設定
+      - textbox [ref=e1616]:
+        - /placeholder: プロジェクトのタイトルを入力
+        - text: プロジェクト
+      - button [ref=e1617] [cursor=pointer]:
+        - generic [ref=e31]: プロジェクトページを見る
+    - generic [ref=e33]:
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - tablist [ref=e36]:
+            - tab [selected] [ref=e1618] [cursor=pointer]:
+              - generic [ref=e39]: コード
+            - tab [ref=e1619] [cursor=pointer]:
+              - generic [ref=e42]: コスチューム
+            - tab [ref=e1620] [cursor=pointer]:
+              - generic [ref=e45]: 音
+            - tab [ref=e1621] [cursor=pointer]:
+              - generic [ref=e48]: Todo
+            - searchbox [ref=e52]
+          - tabpanel [ref=e1622]:
+            - generic [ref=e1811]:
+              - generic [ref=e1813]:
+                - generic [ref=e1814]: ピン留め
+                - generic [ref=e1818]: 動き
+                - generic [ref=e1822]: 見た目
+                - generic [ref=e1826]: 音
+                - generic [ref=e1830]: イベント
+                - generic [ref=e1834]: 制御
+                - generic [ref=e1838]: 調べる
+                - generic [ref=e1842]: 演算
+                - generic [ref=e1846]: 変数
+                - generic [ref=e1850]: ブロック定義
+              - img [ref=e1870]:
+                - generic [ref=e1873]:
+                  - generic [ref=e1875]:
+                    - generic [ref=e1877]: "10"
+                    - generic [ref=e1881]: 歩動かす
+                  - generic [ref=e1883]:
+                    - generic [ref=e1885]: "15"
+                    - generic [ref=e1891]: 度回す
+                  - generic [ref=e1893]:
+                    - generic [ref=e1895]: "15"
+                    - generic [ref=e1901]: 度回す
+                  - generic [ref=e1903]:
+                    - generic [ref=e1905]: どこかの場所
+                    - generic [ref=e1910]: へ行く
+                  - generic [ref=e1912]:
+                    - generic [ref=e1914]: "0"
+                    - generic [ref=e1918]: "0"
+                    - generic [ref=e1922]: x座標を
+                    - generic [ref=e1923]: 、y座標を
+                    - generic [ref=e1924]: にする
+                  - generic [ref=e1926]:
+                    - generic [ref=e1928]: "1"
+                    - generic [ref=e1932]: どこかの場所
+                    - generic [ref=e1937]: 秒で
+                    - generic [ref=e1938]: へ行く
+                  - generic [ref=e1940]:
+                    - generic [ref=e1942]: "1"
+                    - generic [ref=e1946]: "0"
+                    - generic [ref=e1950]: "0"
+                    - generic [ref=e1954]: 秒でx座標を
+                    - generic [ref=e1955]: に、y座標を
+                    - generic [ref=e1956]: に変える
+                  - generic [ref=e1958]:
+                    - generic [ref=e1960]: "90"
+                    - generic [ref=e1964]: 度に向ける
+                  - generic [ref=e1966]:
+                    - generic [ref=e1968]: マウスのポインター
+                    - generic [ref=e1973]: へ向ける
+                  - generic [ref=e1975]:
+                    - generic [ref=e1977]: "10"
+                    - generic [ref=e1981]: x座標を
+                    - generic [ref=e1982]: ずつ変える
+                  - generic [ref=e2154]: ピン留め
+                  - generic [ref=e2157]: ピン留めされたブロックはありません
+                  - generic [ref=e2160]: 動き
+                  - generic [ref=e2163]: 見た目
+                  - generic [ref=e2166]: 音
+                  - generic [ref=e2169]: イベント
+                  - generic [ref=e2172]: 制御
+                  - generic [ref=e2175]: 調べる
+                  - generic [ref=e2178]: 演算
+                  - generic [ref=e2181]: 変数
+                  - generic [ref=e2184]: 変数を作る
+                  - generic [ref=e2188]: リストを作る
+                  - generic [ref=e2192]: ブロック定義
+                  - generic [ref=e2195]: ブロックを作る
+            - button [ref=e1623] [cursor=pointer]
+        - generic [ref=e345]: バックパック
+      - generic [ref=e347]:
+        - generic [ref=e355]:
+          - generic [ref=e357]:
+            - button [ref=e1627] [cursor=pointer]
+            - button [pressed] [ref=e1628] [cursor=pointer]
+          - button [ref=e1629] [cursor=pointer]
+        - generic [ref=e372]:
+          - generic [ref=e373]:
+            - generic [ref=e374]:
+              - generic [ref=e375]:
+                - generic [ref=e377]:
+                  - generic [ref=e378]: スプライト
+                  - textbox [ref=e1631]:
+                    - /placeholder: 名前
+                    - text: スプライト1
+                - generic [ref=e382]:
+                  - generic [ref=e383]: x
+                  - spinbutton [ref=e1632]: "0"
+                - generic [ref=e387]:
+                  - generic [ref=e388]: "y"
+                  - spinbutton [ref=e1633]: "0"
+              - generic [ref=e390]:
+                - generic [ref=e391]:
+                  - generic [ref=e392]: 表示する
+                  - generic [ref=e394]:
+                    - button [pressed] [ref=e1634] [cursor=pointer]
+                    - button [ref=e1635] [cursor=pointer]
+                - generic [ref=e400]:
+                  - generic [ref=e401]: 大きさ
+                  - spinbutton [ref=e1636]: "100"
+                - generic [ref=e404]:
+                  - generic [ref=e405]: 向き
+                  - spinbutton [ref=e1637]: "90"
+            - generic [ref=e410] [cursor=pointer]:
+              - generic [ref=e413]: スプライト1
+              - button [ref=e1638]
+              - menu:
+                - menuitem: 複製
+                - menuitem: 書き出し
+                - menuitem: 削除
+            - generic [ref=e418]:
+              - button [ref=e1639] [cursor=pointer]
+              - generic [ref=e421]:
+                - button [ref=e1640] [cursor=pointer]
+                - button [ref=e1641] [cursor=pointer]
+                - button [ref=e1642] [cursor=pointer]
+                - button [ref=e1643] [cursor=pointer]
+          - generic [ref=e435] [cursor=pointer]:
+            - generic [ref=e436]: ステージ
+            - generic [ref=e439]: 背景
+            - generic [ref=e440]: "1"
+            - generic [ref=e441]:
+              - button [ref=e1644]
+              - generic [ref=e444]:
+                - button [ref=e1645]
+                - button [ref=e1646]
+                - button [ref=e1647]
+                - button [ref=e1648]
+  - dialog "エディター設定" [active] [ref=e1650]:
+    - generic [ref=e1651]:
+      - generic [ref=e1652]:
+        - generic [ref=e1653]: エディター設定
+        - button "Close" [ref=e1655] [cursor=pointer]
+      - generic [ref=e1657]:
+        - generic [ref=e1659]:
+          - generic [ref=e1660] [cursor=pointer]: 高度な設定
+          - generic [ref=e1662] [cursor=pointer]: アドオン
+          - generic [ref=e1664] [cursor=pointer]: キーマップ
+          - generic [ref=e1666] [cursor=pointer]: 拡張機能
+          - generic [ref=e1668] [cursor=pointer]: 追加機能
+          - generic [ref=e1670] [cursor=pointer]: 壁紙
+        - generic [ref=e1672]:
+          - heading "壁紙" [level=1] [ref=e1788]
+          - generic [ref=e1789]:
+            - generic [ref=e1790]: 壁紙
+            - generic [ref=e1793]:
+              - generic [ref=e1794]: 画像をアップロード
+              - button "画像をアップロード" [ref=e1795]
+            - generic [ref=e1796]:
+              - generic [ref=e1797]: "不透明度:"
+              - 'slider "不透明度: 70%" [ref=e1798]': "0.7"
+              - text: 70%
+            - generic [ref=e1799]:
+              - generic [ref=e1800]: "暗さ:"
+              - 'slider "暗さ: 0%" [ref=e1801]': "0"
+              - text: 0%
+            - generic [ref=e1802]:
+              - checkbox "グリッドを表示" [ref=e1803]
+              - generic [ref=e1804]: グリッドを表示
+            - generic [ref=e1805]:
+              - button "壁紙なし" [ref=e1806] [cursor=pointer]
+              - button "壁紙 1" [ref=e1808] [cursor=pointer]

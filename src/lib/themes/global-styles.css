@@ -43,6 +43,29 @@ textarea {
     font-family: var(--turbest-theme-font, inherit);
 }
 
-body[style*="background-image"] [class*="gui_body-wrapper"] {
+/*
+ * When the blocks-wrapper gets a wallpaper via applyWallpaper(), we want the
+ * rest of the editor chrome to stay opaque but the Blockly workspace itself
+ * to fade enough that the image is visible behind the grid. The wrapper itself
+ * is the target of the inline backgroundImage; the SVG above it gets a
+ * semi-transparent tint from guiHelpers.applyBlocksWorkspaceTransparency.
+ *
+ * The legacy rule below only fired when body itself had an inline background
+ * image, which is no longer the case. Keep it disabled so it cannot leak a
+ * white veil over unrelated elements.
+ */
+/* body[style*="background-image"] [class*="gui_body-wrapper"] {
     background-color: rgba(255, 255, 255, calc(1 - var(--turbest-wallpaper-opacity, 0.3)));
+} */
+
+/*
+ * Make sure the Blockly SVG cannot sit on top of the wallpaper with an
+ * opaque background. guiHelpers sets style.backgroundColor to a tinted rgba
+ * when the wallpaper is active, but defensive CSS here prevents the
+ * injected `.blocklySvg { background-color: ... }` rule from being the only
+ * layer between the wallpaper image and the user when something resets the
+ * inline style (e.g. a theme change that re-runs Css.inject).
+ */
+[class*="gui_blocks-wrapper_"][style*="background-image"] svg.blocklySvg {
+    background-color: transparent;
 }

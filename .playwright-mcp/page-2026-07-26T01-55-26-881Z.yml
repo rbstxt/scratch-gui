@@ -1,0 +1,139 @@
+- generic [ref=e3]:
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7] [cursor=pointer]: 設定
+      - generic [ref=e11] [cursor=pointer]: ファイル
+      - generic [ref=e15] [cursor=pointer]: 編集
+      - generic [ref=e19] [cursor=pointer]: アドオン
+      - generic [ref=e22] [cursor=pointer]: 高度な設定
+    - textbox "プロジェクトのタイトルを入力" [ref=e27]: プロジェクト
+    - button "プロジェクトページを見る" [ref=e29] [cursor=pointer]
+  - generic [ref=e33]:
+    - generic [ref=e34]:
+      - generic [ref=e35]:
+        - tablist [ref=e36]:
+          - tab "コード" [selected] [ref=e37] [cursor=pointer]
+          - tab "コスチューム" [ref=e40] [cursor=pointer]
+          - tab "音" [ref=e43] [cursor=pointer]
+          - tab "Todo" [ref=e46] [cursor=pointer]
+          - searchbox [ref=e52]
+        - tabpanel "コード" [ref=e53]:
+          - generic [ref=e56]:
+            - generic [ref=e58]:
+              - generic [ref=e59]: 動き
+              - generic [ref=e63]: 見た目
+              - generic [ref=e67]: 音
+              - generic [ref=e71]: イベント
+              - generic [ref=e75]: 制御
+              - generic [ref=e79]: 調べる
+              - generic [ref=e83]: 演算
+              - generic [ref=e87]: 変数
+              - generic [ref=e91]: ブロック定義
+            - img [ref=e111]:
+              - generic [ref=e114]:
+                - generic [ref=e116]:
+                  - generic [ref=e123]: 背景を
+                  - generic [ref=e124]: にする
+                - generic [ref=e126]:
+                  - generic [ref=e133]: 背景を
+                  - generic [ref=e134]: にして待つ
+                - generic [ref=e136]: 次の背景にする
+                - generic [ref=e140]:
+                  - generic [ref=e142]: "25"
+                  - generic [ref=e146]: 色
+                  - generic [ref=e150]: の効果を
+                  - generic [ref=e151]: ずつ変える
+                - generic [ref=e153]:
+                  - generic [ref=e155]: "0"
+                  - generic [ref=e159]: 色
+                  - generic [ref=e163]: の効果を
+                  - generic [ref=e164]: にする
+                - generic [ref=e166]: 画像効果をなくす
+                - generic [ref=e174]:
+                  - generic [ref=e176]: 背景の
+                  - generic [ref=e177]: 番号
+                - generic [ref=e182]:
+                  - generic [ref=e189]: 終わるまで
+                  - generic [ref=e190]: の音を鳴らす
+                - generic [ref=e192]: の音を鳴らす
+                - generic [ref=e296]: 動き
+                - generic [ref=e299]: "Stage selected: no motion blocks"
+                - generic [ref=e302]: 見た目
+                - generic [ref=e305]: 音
+                - generic [ref=e308]: イベント
+                - generic [ref=e311]: 制御
+                - generic [ref=e314]: 調べる
+                - generic [ref=e317]: 演算
+                - generic [ref=e320]: 変数
+                - generic [ref=e323]: 変数を作る
+                - generic [ref=e327]: リストを作る
+                - generic [ref=e331]: ブロック定義
+                - generic [ref=e334]: ブロックを作る
+          - button "拡張機能を追加" [ref=e343] [cursor=pointer]
+      - generic [ref=e345]: バックパック
+    - generic [ref=e347]:
+      - generic [ref=e350]:
+        - generic [ref=e351]:
+          - img "実行" [ref=e352] [cursor=pointer]
+          - img "一時停止" [ref=e353] [cursor=pointer]
+          - img "止める" [ref=e354] [cursor=pointer]
+        - generic [ref=e355]:
+          - generic [ref=e357]:
+            - button "小さいステージに切り替える" [ref=e358] [cursor=pointer]
+            - button "フルステージに切り替える" [pressed] [ref=e360] [cursor=pointer]
+          - button [ref=e363] [cursor=pointer]:
+            - img "フルステージに切り替える" [ref=e365]
+      - generic [ref=e372]:
+        - generic [ref=e373]:
+          - generic [ref=e374]:
+            - generic [ref=e375]:
+              - generic [ref=e377]:
+                - generic [ref=e378]: スプライト
+                - textbox "スプライト" [ref=e379]:
+                  - /placeholder: 名前
+                  - text: スプライト1
+              - generic [ref=e382]:
+                - generic [ref=e383]: x
+                - spinbutton "x" [ref=e384]: "0"
+              - generic [ref=e387]:
+                - generic [ref=e388]: "y"
+                - spinbutton "y" [ref=e389]: "0"
+            - generic [ref=e390]:
+              - generic [ref=e391]:
+                - generic [ref=e392]: 表示する
+                - generic [ref=e394]:
+                  - button "スプライトを表示する" [pressed] [ref=e395] [cursor=pointer]
+                  - button "スプライトを隠す" [ref=e397] [cursor=pointer]
+              - generic [ref=e400]:
+                - generic [ref=e401]: 大きさ
+                - spinbutton "大きさ" [ref=e402]: "100"
+              - generic [ref=e404]:
+                - generic [ref=e405]: 向き
+                - spinbutton "向き" [ref=e406]: "90"
+          - generic [ref=e410] [cursor=pointer]:
+            - generic [ref=e413]: スプライト1
+            - button "Delete" [ref=e415]
+            - menu:
+              - menuitem "複製"
+              - menuitem "書き出し"
+              - menuitem "削除"
+          - generic [ref=e418]:
+            - button "スプライトを選ぶ" [ref=e419] [cursor=pointer]
+            - generic [ref=e421]:
+              - generic:
+                - button "スプライトをアップロード" [ref=e423] [cursor=pointer]
+                - button "サプライズ" [ref=e426] [cursor=pointer]
+                - button "描く" [ref=e429] [cursor=pointer]
+                - button "スプライトを選ぶ" [ref=e432] [cursor=pointer]
+        - generic [ref=e435] [cursor=pointer]:
+          - generic [ref=e436]: ステージ
+          - generic [ref=e439]: 背景
+          - generic [ref=e440]: "1"
+          - generic [ref=e441]:
+            - button "背景を選ぶ" [ref=e442]
+            - generic [ref=e444]:
+              - generic:
+                - button "背景をアップロード" [ref=e446]
+                - button "サプライズ" [ref=e449]
+                - button "描く" [ref=e452]
+                - button "背景を選ぶ" [ref=e455]

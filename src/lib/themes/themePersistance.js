@@ -93,7 +93,12 @@ const persistTheme = theme => {
     if (theme.blocks !== systemPreferences.blocks && theme.blocks !== BLOCKS_CUSTOM) {
         nonDefaultSettings.blocks = theme.blocks;
     }
-    if (theme.wallpaper.url || theme.wallpaper.history.length > 0) {
+    // Persist the wallpaper whenever the user has either uploaded an image or
+    // opted out of the Blockly grid. The previous check missed the
+    // gridVisible=false case, so toggling the grid off and reloading reset it.
+    const hasUploadedImage = theme.wallpaper.url || theme.wallpaper.history.length > 0;
+    const gridIsNonDefault = theme.wallpaper.gridVisible === false;
+    if (hasUploadedImage || gridIsNonDefault) {
         nonDefaultSettings.wallpaper = theme.wallpaper;
     }
     if (theme.fonts.system.length > 0 || theme.fonts.google.length > 0 || theme.fonts.history.length > 0) {

@@ -1113,7 +1113,9 @@ SettingsModalComponent.propTypes = {
     onDeveloperModeChange: PropTypes.func,
     activeTab: PropTypes.number,
     preferences: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-    onSetPreference: PropTypes.func.isRequired
+    onSetPreference: PropTypes.func.isRequired,
+    theme: PropTypes.instanceOf(Theme),
+    onChangeTheme: PropTypes.func
 };
 
 export default injectIntl(SettingsModalComponent);

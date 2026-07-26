@@ -1,0 +1,250 @@
+- generic:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7] [cursor=pointer]: 設定
+        - generic [ref=e11] [cursor=pointer]: ファイル
+        - generic [ref=e15] [cursor=pointer]: 編集
+        - generic [ref=e19] [cursor=pointer]: アドオン
+        - generic [ref=e22] [cursor=pointer]: 高度な設定
+      - textbox [ref=e1616]:
+        - /placeholder: プロジェクトのタイトルを入力
+        - text: プロジェクト
+      - button [ref=e1617] [cursor=pointer]:
+        - generic [ref=e31]: プロジェクトページを見る
+    - generic [ref=e33]:
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - tablist [ref=e36]:
+            - tab [selected] [ref=e1618] [cursor=pointer]:
+              - generic [ref=e39]: コード
+            - tab [ref=e1619] [cursor=pointer]:
+              - generic [ref=e42]: コスチューム
+            - tab [ref=e1620] [cursor=pointer]:
+              - generic [ref=e45]: 音
+            - tab [ref=e1621] [cursor=pointer]:
+              - generic [ref=e48]: Todo
+            - searchbox [ref=e52]
+          - tabpanel [ref=e1622]:
+            - generic [ref=e1189]:
+              - generic [ref=e1191]:
+                - generic [ref=e1192]: ピン留め
+                - generic [ref=e1196]: 動き
+                - generic [ref=e1200]: 見た目
+                - generic [ref=e1204]: 音
+                - generic [ref=e1208]: イベント
+                - generic [ref=e1212]: 制御
+                - generic [ref=e1216]: 調べる
+                - generic [ref=e1220]: 演算
+                - generic [ref=e1224]: 変数
+                - generic [ref=e1228]: ブロック定義
+              - img [ref=e1248]:
+                - generic [ref=e1251]:
+                  - generic [ref=e1253]:
+                    - generic [ref=e1255]: "10"
+                    - generic [ref=e1259]: 歩動かす
+                  - generic [ref=e1261]:
+                    - generic [ref=e1263]: "15"
+                    - generic [ref=e1269]: 度回す
+                  - generic [ref=e1271]:
+                    - generic [ref=e1273]: "15"
+                    - generic [ref=e1279]: 度回す
+                  - generic [ref=e1281]:
+                    - generic [ref=e1283]: どこかの場所
+                    - generic [ref=e1288]: へ行く
+                  - generic [ref=e1290]:
+                    - generic [ref=e1292]: "0"
+                    - generic [ref=e1296]: "0"
+                    - generic [ref=e1300]: x座標を
+                    - generic [ref=e1301]: 、y座標を
+                    - generic [ref=e1302]: にする
+                  - generic [ref=e1304]:
+                    - generic [ref=e1306]: "1"
+                    - generic [ref=e1310]: どこかの場所
+                    - generic [ref=e1315]: 秒で
+                    - generic [ref=e1316]: へ行く
+                  - generic [ref=e1318]:
+                    - generic [ref=e1320]: "1"
+                    - generic [ref=e1324]: "0"
+                    - generic [ref=e1328]: "0"
+                    - generic [ref=e1332]: 秒でx座標を
+                    - generic [ref=e1333]: に、y座標を
+                    - generic [ref=e1334]: に変える
+                  - generic [ref=e1336]:
+                    - generic [ref=e1338]: "90"
+                    - generic [ref=e1342]: 度に向ける
+                  - generic [ref=e1344]:
+                    - generic [ref=e1346]: マウスのポインター
+                    - generic [ref=e1351]: へ向ける
+                  - generic [ref=e1353]:
+                    - generic [ref=e1355]: "10"
+                    - generic [ref=e1359]: x座標を
+                    - generic [ref=e1360]: ずつ変える
+                  - generic [ref=e1532]: ピン留め
+                  - generic [ref=e1535]: ピン留めされたブロックはありません
+                  - generic [ref=e1538]: 動き
+                  - generic [ref=e1541]: 見た目
+                  - generic [ref=e1544]: 音
+                  - generic [ref=e1547]: イベント
+                  - generic [ref=e1550]: 制御
+                  - generic [ref=e1553]: 調べる
+                  - generic [ref=e1556]: 演算
+                  - generic [ref=e1559]: 変数
+                  - generic [ref=e1562]: 変数を作る
+                  - generic [ref=e1566]: リストを作る
+                  - generic [ref=e1570]: ブロック定義
+                  - generic [ref=e1573]: ブロックを作る
+            - button [ref=e1623] [cursor=pointer]
+        - generic [ref=e345]: バックパック
+      - generic [ref=e347]:
+        - generic [ref=e355]:
+          - generic [ref=e357]:
+            - button [ref=e1627] [cursor=pointer]
+            - button [pressed] [ref=e1628] [cursor=pointer]
+          - button [ref=e1629] [cursor=pointer]
+        - generic [ref=e372]:
+          - generic [ref=e373]:
+            - generic [ref=e374]:
+              - generic [ref=e375]:
+                - generic [ref=e377]:
+                  - generic [ref=e378]: スプライト
+                  - textbox [ref=e1631]:
+                    - /placeholder: 名前
+                    - text: スプライト1
+                - generic [ref=e382]:
+                  - generic [ref=e383]: x
+                  - spinbutton [ref=e1632]: "0"
+                - generic [ref=e387]:
+                  - generic [ref=e388]: "y"
+                  - spinbutton [ref=e1633]: "0"
+              - generic [ref=e390]:
+                - generic [ref=e391]:
+                  - generic [ref=e392]: 表示する
+                  - generic [ref=e394]:
+                    - button [pressed] [ref=e1634] [cursor=pointer]
+                    - button [ref=e1635] [cursor=pointer]
+                - generic [ref=e400]:
+                  - generic [ref=e401]: 大きさ
+                  - spinbutton [ref=e1636]: "100"
+                - generic [ref=e404]:
+                  - generic [ref=e405]: 向き
+                  - spinbutton [ref=e1637]: "90"
+            - generic [ref=e410] [cursor=pointer]:
+              - generic [ref=e413]: スプライト1
+              - button [ref=e1638]
+              - menu:
+                - menuitem: 複製
+                - menuitem: 書き出し
+                - menuitem: 削除
+            - generic [ref=e418]:
+              - button [ref=e1639] [cursor=pointer]
+              - generic [ref=e421]:
+                - button [ref=e1640] [cursor=pointer]
+                - button [ref=e1641] [cursor=pointer]
+                - button [ref=e1642] [cursor=pointer]
+                - button [ref=e1643] [cursor=pointer]
+          - generic [ref=e435] [cursor=pointer]:
+            - generic [ref=e436]: ステージ
+            - generic [ref=e439]: 背景
+            - generic [ref=e440]: "1"
+            - generic [ref=e441]:
+              - button [ref=e1644]
+              - generic [ref=e444]:
+                - button [ref=e1645]
+                - button [ref=e1646]
+                - button [ref=e1647]
+                - button [ref=e1648]
+  - dialog "エディター設定" [active] [ref=e1650]:
+    - generic [ref=e1651]:
+      - generic [ref=e1652]:
+        - generic [ref=e1653]: エディター設定
+        - button "Close" [ref=e1655] [cursor=pointer]
+      - generic [ref=e1657]:
+        - generic [ref=e1659]:
+          - generic [ref=e1660] [cursor=pointer]: 高度な設定
+          - generic [ref=e1662] [cursor=pointer]: アドオン
+          - generic [ref=e1664] [cursor=pointer]: キーマップ
+          - generic [ref=e1666] [cursor=pointer]: 拡張機能
+          - generic [ref=e1668] [cursor=pointer]: 追加機能
+          - generic [ref=e1670] [cursor=pointer]: 壁紙
+        - generic [ref=e1672]:
+          - heading "高度な設定" [level=1] [ref=e1673]
+          - generic [ref=e1674]:
+            - generic [ref=e1675]: おすすめ
+            - generic [ref=e1679]:
+              - generic [ref=e1680]:
+                - checkbox "60 FPS (カスタム FPS)" [ref=e1681]
+                - generic [ref=e1682]: 60 FPS (カスタム FPS)
+              - button "クリックしてヘルプ" [ref=e1683] [cursor=pointer]
+            - generic [ref=e1686]:
+              - generic [ref=e1687]:
+                - checkbox "補完機能" [ref=e1688]
+                - generic [ref=e1689]: 補完機能
+              - button "クリックしてヘルプ" [ref=e1690] [cursor=pointer]
+            - generic [ref=e1693]:
+              - generic [ref=e1694]:
+                - checkbox "ペンできれいに描画する" [ref=e1695]
+                - generic [ref=e1696]: ペンできれいに描画する
+              - button "クリックしてヘルプ" [ref=e1697] [cursor=pointer]
+            - generic [ref=e1700]:
+              - generic [ref=e1701]:
+                - checkbox "Warpタイマー" [checked] [ref=e1702]
+                - generic [ref=e1703]: Warpタイマー
+              - button "クリックしてヘルプ" [ref=e1704] [cursor=pointer]
+            - generic [ref=e1706]: 制限を解除する
+            - generic [ref=e1710]:
+              - generic [ref=e1711]:
+                - checkbox "クローンの制限を解除" [ref=e1712]
+                - generic [ref=e1713]: クローンの制限を解除
+              - button "クリックしてヘルプ" [ref=e1714] [cursor=pointer]
+            - generic [ref=e1717]:
+              - generic [ref=e1718]:
+                - checkbox "動く範囲と大きさの制限を解除する" [ref=e1719]
+                - generic [ref=e1720]: 動く範囲と大きさの制限を解除する
+              - button "クリックしてヘルプ" [ref=e1721] [cursor=pointer]
+            - generic [ref=e1724]:
+              - generic [ref=e1725]:
+                - checkbox "向きの制限を解除する" [ref=e1726]
+                - generic [ref=e1727]: 向きの制限を解除する
+              - button "クリックしてヘルプ" [ref=e1728] [cursor=pointer]
+            - generic [ref=e1731]:
+              - generic [ref=e1732]:
+                - checkbox "その他の制限を解除" [ref=e1733]
+                - generic [ref=e1734]: その他の制限を解除
+              - button "クリックしてヘルプ" [ref=e1735] [cursor=pointer]
+            - generic [ref=e1737]: 危険区域
+            - generic [ref=e1741]:
+              - generic [ref=e1742]:
+                - generic [ref=e1743]: "ステージの大きさを変える:"
+                - spinbutton [ref=e1744]: "480"
+                - generic [ref=e1745]: ×
+                - spinbutton [ref=e1746]: "360"
+              - button "クリックしてヘルプ" [ref=e1747] [cursor=pointer]
+            - generic [ref=e1750]:
+              - generic [ref=e1751]:
+                - checkbox "コンパイラを無効にする" [ref=e1752]
+                - generic [ref=e1753]: コンパイラを無効にする
+              - button "クリックしてヘルプ" [ref=e1754] [cursor=pointer]
+            - generic [ref=e1757]:
+              - generic [ref=e1758]:
+                - checkbox "開発者モード" [ref=e1759]
+                - generic [ref=e1760]: 開発者モード
+              - button "クリックしてヘルプ" [ref=e1761] [cursor=pointer]
+            - generic [ref=e1764]:
+              - generic [ref=e1765]:
+                - checkbox "オフスクリーンレンダリングを無効にする" [ref=e1766]
+                - generic [ref=e1767]: オフスクリーンレンダリングを無効にする
+              - button "クリックしてヘルプ" [ref=e1768] [cursor=pointer]
+            - generic [ref=e1771]:
+              - generic [ref=e1772]:
+                - checkbox "大文字小文字を区別するリスト" [ref=e1773]
+                - generic [ref=e1774]: 大文字小文字を区別するリスト
+              - button "クリックしてヘルプ" [ref=e1775] [cursor=pointer]
+            - generic [ref=e1778]:
+              - generic [ref=e1779]:
+                - checkbox "実際のレイヤーインデックス" [ref=e1780]
+                - generic [ref=e1781]: 実際のレイヤーインデックス
+              - button "クリックしてヘルプ" [ref=e1782] [cursor=pointer]
+            - generic [ref=e1785]:
+              - button "高度な設定を保存する" [ref=e1786] [cursor=pointer]
+              - paragraph [ref=e1787]: 選択した設定をプロジェクトに保存し、TurboWarpがこのプロジェクトを読み込んだときに自動的に適用されるようにします。Warpタイマーとコンパイラの無効化の設定は保存されません。

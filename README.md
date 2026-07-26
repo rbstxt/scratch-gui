@@ -30,7 +30,13 @@ NODE_ENV=production ROOT=/ ROUTING_STYLE=wildcard npm run build
 ```
 
 - **Build output directory:** `build/`
-- **Build command:** `NODE_ENV=production ROOT=/ ROUTING_STYLE=wildcard npm run build`
+- **Build command:** `npm ci && NODE_ENV=production ROOT=/ ROUTING_STYLE=wildcard npm run build`
+
+> **Important:** Do not prefix `NODE_ENV=production` onto the build command itself or export it
+> before `npm ci`. With `NODE_ENV=production` in scope during install, npm skips `devDependencies`
+> (webpack, webpack-cli, babel-loader, etc.), and the subsequent webpack run then breaks on
+> `node_modules/scratch-paint/src/containers/paint-editor.jsx` with a spurious `Unexpected keyword 'this'`
+> syntax error reported against line 104. Splitting install from build avoids the problem.
 
 The `build/_redirects` file (copied from `static/_redirects`) handles SPA-style routing for Cloudflare Pages.
 

@@ -1,0 +1,119 @@
+[     263ms] [INFO] %cDownload the React DevTools for a better development experience: https://fb.me/react-devtools font-weight:bold @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:28076
+[     321ms] [ERROR] [React Intl] Missing message: "gui.gui.todoTab" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     323ms] [ERROR] [React Intl] Missing message: "gui.todoTab.filterAll" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     323ms] [ERROR] [React Intl] Missing message: "gui.todoTab.filterActive" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     323ms] [ERROR] [React Intl] Missing message: "gui.todoTab.filterDone" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     323ms] [ERROR] [React Intl] Missing message: "gui.todoTab.addGoal" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     323ms] [ERROR] [React Intl] Missing message: "gui.todoTab.emptyState" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     343ms] [WARNING] Warning: componentWillMount has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.
+
+* Move code with side effects to componentDidMount, and set initial state in the constructor.
+* Rename componentWillMount to UNSAFE_componentWillMount to suppress this warning in non-strict mode. In React 17.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.
+
+Please update the following components: %s MediaQuery, ProjectSaverComponent @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:3170
+[     343ms] [WARNING] Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.
+
+* Move data fetching code or side effects to componentDidUpdate.
+* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://fb.me/react-derived-state
+* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 17.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.
+
+Please update the following components: %s CloudManager, Connect(Alerts), Connect(Backpack), Connect(CloudManager), Connect(Controls), Connect(DragLayer), Connect(DropAreaWrapper), Connect(FontLoaderComponent), Connect(FullScreenResizer), Connect(GUI), Connect(GUIComponent), Connect(GreenFlagOverlay), Connect(Interface), Connect(IntlProvider), Connect(LoadScratchBlocks), Connect(LocalizationWrapper), Connect(MenuBar), Connect(MenuBarContainer), Connect(MonitorList), Connect(PackagerIntegrationComponent), Connect(ProjectFetcherComponent), Connect(ProjectMetaFetcherComponent), Connect(ProjectSaverComponent), Connect(ProjectTitleInput), Connect(SB3Downloader), Connect(SBFileUploaderComponent), Connect(SortableWrapper), Connect(Stage), Connect(StageHeader), Connect(StageHeaderComponent), Connect(StateManagerComponent), Connect(TWRenderRecoloredImage), Connect(TWRestorePointManager), Connect(TWSaveStatus), Connect(TWSecurityManagerComponent), Connect(TWThemeManagerComponent), Connect(TargetHighlight), Connect(TargetPane), Connect(ThrottledPropertyWrapper), Connect(TitledComponent), Connect(TodoTab), Connect(VMListener), Connect(VMManager), DropAreaWrapper, MediaQuery, MonitorList, Popover, Provider, ReactTooltip, SortableWrapper, TWRestorePointManager, Tabs @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:3170
+[     344ms] [WARNING] Warning: componentWillUpdate has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.
+
+* Move data fetching code or side effects to componentDidUpdate.
+* Rename componentWillUpdate to UNSAFE_componentWillUpdate to suppress this warning in non-strict mode. In React 17.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.
+
+Please update the following components: %s Connect(Alerts), Connect(Backpack), Connect(CloudManager), Connect(Controls), Connect(DragLayer), Connect(DropAreaWrapper), Connect(FontLoaderComponent), Connect(FullScreenResizer), Connect(GUI), Connect(GUIComponent), Connect(GreenFlagOverlay), Connect(Interface), Connect(IntlProvider), Connect(LoadScratchBlocks), Connect(LocalizationWrapper), Connect(MenuBar), Connect(MenuBarContainer), Connect(MonitorList), Connect(PackagerIntegrationComponent), Connect(ProjectFetcherComponent), Connect(ProjectMetaFetcherComponent), Connect(ProjectSaverComponent), Connect(ProjectTitleInput), Connect(SB3Downloader), Connect(SBFileUploaderComponent), Connect(SortableWrapper), Connect(Stage), Connect(StageHeader), Connect(StageHeaderComponent), Connect(StateManagerComponent), Connect(TWRenderRecoloredImage), Connect(TWRestorePointManager), Connect(TWSaveStatus), Connect(TWSecurityManagerComponent), Connect(TWThemeManagerComponent), Connect(TargetHighlight), Connect(TargetPane), Connect(ThrottledPropertyWrapper), Connect(TitledComponent), Connect(TodoTab), Connect(VMListener), Connect(VMManager), MediaQuery @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:3170
+[     662ms] [ERROR] [React Intl] Missing message: "gui.todoTab.goalProgress" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     662ms] [ERROR] [React Intl] Missing message: "gui.todoTab.collapse" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     662ms] [ERROR] [React Intl] Missing message: "gui.todoTab.deleteGoal" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     677ms] [ERROR] [React Intl] Missing message: "gui.todoTab.noTasks" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     677ms] [ERROR] [React Intl] Missing message: "gui.todoTab.addTask" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     680ms] [WARNING] Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.
+
+* Move data fetching code or side effects to componentDidUpdate.
+* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://fb.me/react-derived-state
+* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 17.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.
+
+Please update the following components: %s Connect(InjectIntl(LoaderComponent)) @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:3170
+[     680ms] [WARNING] Warning: componentWillUpdate has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.
+
+* Move data fetching code or side effects to componentDidUpdate.
+* Rename componentWillUpdate to UNSAFE_componentWillUpdate to suppress this warning in non-strict mode. In React 17.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.
+
+Please update the following components: %s Connect(InjectIntl(LoaderComponent)) @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:3170
+[     775ms] [WARNING] Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.
+
+* Move data fetching code or side effects to componentDidUpdate.
+* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://fb.me/react-derived-state
+* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 17.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.
+
+Please update the following components: %s Connect(DropAreaWrapper), DropAreaWrapper @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:3170
+[     775ms] [WARNING] Warning: componentWillUpdate has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.
+
+* Move data fetching code or side effects to componentDidUpdate.
+* Rename componentWillUpdate to UNSAFE_componentWillUpdate to suppress this warning in non-strict mode. In React 17.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.
+
+Please update the following components: %s Connect(DropAreaWrapper) @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:3170
+[     953ms] [WARNING] Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.
+
+* Move data fetching code or side effects to componentDidUpdate.
+* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://fb.me/react-derived-state
+* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 17.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.
+
+Please update the following components: %s Connect(DropAreaWrapper), Connect(SpriteSelectorItem), Connect(StageSelector), DropAreaWrapper @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:3170
+[     953ms] [WARNING] Warning: componentWillUpdate has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.
+
+* Move data fetching code or side effects to componentDidUpdate.
+* Rename componentWillUpdate to UNSAFE_componentWillUpdate to suppress this warning in non-strict mode. In React 17.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.
+
+Please update the following components: %s Connect(DropAreaWrapper), Connect(SpriteSelectorItem), Connect(StageSelector) @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:3170
+[     964ms] [ERROR] [React Intl] Missing message: "gui.todoTab.goalProgress" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     964ms] [ERROR] [React Intl] Missing message: "gui.todoTab.collapse" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     964ms] [ERROR] [React Intl] Missing message: "gui.todoTab.deleteGoal" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     965ms] [ERROR] [React Intl] Missing message: "gui.todoTab.noTasks" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     966ms] [ERROR] [React Intl] Missing message: "gui.todoTab.addTask" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     966ms] [ERROR] [React Intl] Missing message: "gui.todoTab.goalProgress" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     966ms] [ERROR] [React Intl] Missing message: "gui.todoTab.collapse" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     966ms] [ERROR] [React Intl] Missing message: "gui.todoTab.deleteGoal" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[     972ms] [WARNING] Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.
+
+* Move data fetching code or side effects to componentDidUpdate.
+* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://fb.me/react-derived-state
+* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 17.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.
+
+Please update the following components: %s Connect(ProjectWatcher) @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:3170
+[     972ms] [WARNING] Warning: componentWillUpdate has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.
+
+* Move data fetching code or side effects to componentDidUpdate.
+* Rename componentWillUpdate to UNSAFE_componentWillUpdate to suppress this warning in non-strict mode. In React 17.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.
+
+Please update the following components: %s Connect(ProjectWatcher) @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:3170
+[   55551ms] [ERROR] [React Intl] Missing message: "tw.accent.turbest" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508
+[   55552ms] [WARNING] Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.
+
+* Move data fetching code or side effects to componentDidUpdate.
+* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://fb.me/react-derived-state
+* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 17.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.
+
+Please update the following components: %s Connect(AccentThemeMenu), Connect(BlocksThemeMenu), Connect(GuiThemeMenu), Connect(LanguageMenu) @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:3170
+[   55553ms] [WARNING] Warning: componentWillUpdate has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.
+
+* Move data fetching code or side effects to componentDidUpdate.
+* Rename componentWillUpdate to UNSAFE_componentWillUpdate to suppress this warning in non-strict mode. In React 17.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.
+
+Please update the following components: %s Connect(AccentThemeMenu), Connect(BlocksThemeMenu), Connect(GuiThemeMenu), Connect(LanguageMenu) @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:3170
+[   55560ms] [WARNING] Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.
+
+* Move data fetching code or side effects to componentDidUpdate.
+* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://fb.me/react-derived-state
+* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 17.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.
+
+Please update the following components: %s Connect(Modal), Connect(UsernameModal) @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:3170
+[   55560ms] [WARNING] Warning: componentWillUpdate has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.
+
+* Move data fetching code or side effects to componentDidUpdate.
+* Rename componentWillUpdate to UNSAFE_componentWillUpdate to suppress this warning in non-strict mode. In React 17.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.
+
+Please update the following components: %s Connect(Modal), Connect(UsernameModal) @ http://localhost:8601/js/vendors~addon-settings~credits~editor~embed~fullscreen~player.js:3170
+[  140904ms] [ERROR] [React Intl] Missing message: "tw.accent.turbest" for locale: "ja", using default message as fallback. @ http://localhost:8601/js/vendors~editor~embed~fullscreen~player.js:143508

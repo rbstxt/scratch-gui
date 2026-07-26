@@ -320,7 +320,7 @@ class MenuBar extends React.Component {
     handleSwitchWorkspaceBookmark (index) {
         const bookmark = this.state.workspaceBookmarks[index];
         if (!bookmark) return;
-        Promise.resolve(this.applyWorkspaceBookmarkState(this.props.vm, bookmark.state))
+        Promise.resolve(this.applyWorkspaceBookmarkState(bookmark.state))
             .then(() => this.props.onRequestCloseWorkspaceBookmarks());
     }
     handleDeleteWorkspaceBookmark (index, event) {
