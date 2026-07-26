@@ -15,7 +15,8 @@ import {
     activateTab,
     BLOCKS_TAB_INDEX,
     COSTUMES_TAB_INDEX,
-    SOUNDS_TAB_INDEX
+    SOUNDS_TAB_INDEX,
+    NOTES_TAB_INDEX
 } from '../reducers/editor-tab';
 
 import {
@@ -146,15 +147,19 @@ GUI.defaultProps = {
 
 const mapStateToProps = state => {
     const loadingState = state.scratchGui.projectState.loadingState;
+    const rawActiveTabIndex = state.scratchGui.editorTab.activeTabIndex;
+    const notesTabEnabled = Boolean(state.scratchGui.preferences.notesTab);
+    const activeTabIndex = !notesTabEnabled && rawActiveTabIndex === NOTES_TAB_INDEX ?
+        BLOCKS_TAB_INDEX : rawActiveTabIndex;
     return {
-        activeTabIndex: state.scratchGui.editorTab.activeTabIndex,
+        activeTabIndex,
         alertsVisible: state.scratchGui.alerts.visible,
         backdropLibraryVisible: state.scratchGui.modals.backdropLibrary,
-        blocksTabVisible: state.scratchGui.editorTab.activeTabIndex === BLOCKS_TAB_INDEX,
+        blocksTabVisible: activeTabIndex === BLOCKS_TAB_INDEX,
         cardsVisible: state.scratchGui.cards.visible,
         connectionModalVisible: state.scratchGui.modals.connectionModal,
         costumeLibraryVisible: state.scratchGui.modals.costumeLibrary,
-        costumesTabVisible: state.scratchGui.editorTab.activeTabIndex === COSTUMES_TAB_INDEX,
+        costumesTabVisible: activeTabIndex === COSTUMES_TAB_INDEX,
         error: state.scratchGui.projectState.error,
         isError: getIsError(loadingState),
         isEmbedded: state.scratchGui.mode.isEmbedded,
@@ -164,7 +169,7 @@ const mapStateToProps = state => {
         isShowingProject: getIsShowingProject(loadingState),
         loadingStateVisible: state.scratchGui.modals.loadingProject,
         projectId: state.scratchGui.projectState.projectId,
-        soundsTabVisible: state.scratchGui.editorTab.activeTabIndex === SOUNDS_TAB_INDEX,
+        soundsTabVisible: activeTabIndex === SOUNDS_TAB_INDEX,
         targetIsStage: (
             state.scratchGui.targets.stage &&
             state.scratchGui.targets.stage.id === state.scratchGui.targets.editingTarget

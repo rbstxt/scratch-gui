@@ -170,6 +170,7 @@ const GUIComponent = props => {
     if (children) {
         return <Box {...componentProps}>{children}</Box>;
     }
+    const notesTabEnabled = Boolean(preferences && preferences.notesTab);
 
     const tabClassNames = {
         tabs: styles.tabs,
@@ -408,19 +409,21 @@ const GUIComponent = props => {
                                             />
                                         </span>
                                     </Tab>
-                                    <Tab className={tabClassNames.tab}>
-                                        <img
-                                            draggable={false}
-                                            src={todoIcon()}
-                                        />
-                                        <span>
-                                            <FormattedMessage
-                                                defaultMessage="Todo"
-                                                description="Button to get to the todo list panel"
-                                                id="gui.gui.todoTab"
+                                    {notesTabEnabled ? (
+                                        <Tab className={tabClassNames.tab}>
+                                            <img
+                                                draggable={false}
+                                                src={todoIcon()}
                                             />
-                                        </span>
-                                    </Tab>
+                                            <span>
+                                                <FormattedMessage
+                                                    defaultMessage="Notes"
+                                                    description="Button to get to the notes panel"
+                                                    id="gui.gui.notesTab"
+                                                />
+                                            </span>
+                                        </Tab>
+                                    ) : null}
                                 </TabList>
                                 <TabPanel className={tabClassNames.tabPanel}>
                                     <Box className={styles.blocksWrapper}>
@@ -463,9 +466,11 @@ const GUIComponent = props => {
                                 <TabPanel className={tabClassNames.tabPanel}>
                                     {soundsTabVisible ? <SoundTab vm={vm} /> : null}
                                 </TabPanel>
-                                <TabPanel className={tabClassNames.tabPanel}>
-                                    <TodoTab />
-                                </TabPanel>
+                                {notesTabEnabled ? (
+                                    <TabPanel className={tabClassNames.tabPanel}>
+                                        <TodoTab />
+                                    </TabPanel>
+                                ) : null}
                             </Tabs>
                             {backpackVisible ? (
                                 <Backpack host={backpackHost} />

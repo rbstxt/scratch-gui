@@ -698,6 +698,27 @@ const ExtraFeaturesSettings = props => (
                 description="Opt-in setting for workspace bookmarks"
                 id="tw.workspaceBookmarks.feature"
             />}
+            help={<FormattedMessage
+                // eslint-disable-next-line max-len
+                defaultMessage="Adds an optional Bookmarks menu for saving and jumping to workspace positions. This feature is currently in alpha; bookmark data is stored in project background comments and may be lost or changed in future updates. Please keep a backup of important projects."
+                description="Help text for the workspace bookmarks alpha feature"
+                id="tw.workspaceBookmarks.featureHelp"
+            />}
+        />
+        <BooleanSetting
+            value={Boolean((props.preferences || {}).notesTab)}
+            onChange={event => props.onSetPreference('notesTab', event.target.checked)}
+            label={<FormattedMessage
+                defaultMessage="Notes"
+                description="Opt-in setting for the notes editor tab"
+                id="gui.notes.feature"
+            />}
+            help={<FormattedMessage
+                // eslint-disable-next-line max-len
+                defaultMessage="Adds an optional Notes tab with multiple Markdown notes powered by Atomic Editor. This feature is currently in alpha; note data is stored in project background comments and may be lost or changed in future updates. Please keep a backup of important projects."
+                description="Help text for the notes alpha feature"
+                id="gui.notes.featureHelp"
+            />}
         />
     </Box>
 );

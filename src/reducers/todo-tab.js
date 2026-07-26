@@ -1,175 +1,122 @@
-const HYDRATE_TODOS = 'scratch-gui/todo-tab/HYDRATE_TODOS';
-const ADD_GOAL = 'scratch-gui/todo-tab/ADD_GOAL';
-const UPDATE_GOAL = 'scratch-gui/todo-tab/UPDATE_GOAL';
-const DELETE_GOAL = 'scratch-gui/todo-tab/DELETE_GOAL';
-const TOGGLE_GOAL_EXPANDED = 'scratch-gui/todo-tab/TOGGLE_GOAL_EXPANDED';
-const ADD_TASK = 'scratch-gui/todo-tab/ADD_TASK';
-const UPDATE_TASK = 'scratch-gui/todo-tab/UPDATE_TASK';
-const DELETE_TASK = 'scratch-gui/todo-tab/DELETE_TASK';
-const TOGGLE_TASK = 'scratch-gui/todo-tab/TOGGLE_TASK';
-const REORDER_GOALS = 'scratch-gui/todo-tab/REORDER_GOALS';
-const SET_FILTER = 'scratch-gui/todo-tab/SET_FILTER';
-
-export const TODO_FILTER_ALL = 'all';
-export const TODO_FILTER_ACTIVE = 'active';
-export const TODO_FILTER_DONE = 'done';
+const HYDRATE_NOTES = 'scratch-gui/todo-tab/HYDRATE_NOTES';
+const SELECT_NOTE = 'scratch-gui/todo-tab/SELECT_NOTE';
+const ADD_NOTE = 'scratch-gui/todo-tab/ADD_NOTE';
+const UPDATE_NOTE = 'scratch-gui/todo-tab/UPDATE_NOTE';
+const RENAME_NOTE = 'scratch-gui/todo-tab/RENAME_NOTE';
+const DUPLICATE_NOTE = 'scratch-gui/todo-tab/DUPLICATE_NOTE';
+const DELETE_NOTE = 'scratch-gui/todo-tab/DELETE_NOTE';
 
 const initialState = {
-    goals: [],
-    filter: TODO_FILTER_ALL,
+    notes: [],
+    activeNoteId: null,
+    documentId: 0,
     loaded: false
 };
 
 const reducer = function (state, action) {
     if (typeof state === 'undefined') state = initialState;
     switch (action.type) {
-    case HYDRATE_TODOS:
+    case HYDRATE_NOTES:
         return Object.assign({}, state, {
-            goals: Array.isArray(action.goals) ? action.goals : [],
+            notes: action.notes,
+            activeNoteId: action.activeNoteId,
+            documentId: state.documentId + 1,
             loaded: true
         });
-    case ADD_GOAL:
+    case SELECT_NOTE:
+        if (action.noteId === state.activeNoteId) return state;
         return Object.assign({}, state, {
-            goals: [...state.goals, action.goal]
+            activeNoteId: action.noteId,
+            documentId: state.documentId + 1
         });
-    case UPDATE_GOAL:
+    case ADD_NOTE:
         return Object.assign({}, state, {
-            goals: state.goals.map(goal => (
-                goal.id === action.goalId ? Object.assign({}, goal, action.patch) : goal))
+            notes: [...state.notes, action.note],
+            activeNoteId: action.note.id,
+            documentId: state.documentId + 1
         });
-    case DELETE_GOAL:
+    case UPDATE_NOTE:
         return Object.assign({}, state, {
-            goals: state.goals.filter(goal => goal.id !== action.goalId)
+            notes: state.notes.map(note => (
+                note.id === action.noteId ?
+                    Object.assign({}, note, {markdown: action.markdown}) :
+                    note
+            ))
         });
-    case TOGGLE_GOAL_EXPANDED:
+    case RENAME_NOTE:
         return Object.assign({}, state, {
-            goals: state.goals.map(goal => (
-                goal.id === action.goalId ? Object.assign({}, goal, {expanded: !goal.expanded}) : goal))
+            notes: state.notes.map(note => (
+                note.id === action.noteId ?
+                    Object.assign({}, note, {name: action.name}) :
+                    note
+            ))
         });
-    case ADD_TASK:
+    case DUPLICATE_NOTE:
         return Object.assign({}, state, {
-            goals: state.goals.map(goal => {
-                if (goal.id !== action.goalId) return goal;
-                return Object.assign({}, goal, {
-                    tasks: [...goal.tasks, action.task]
-                });
-            })
+            notes: [...state.notes, action.note],
+            activeNoteId: action.note.id,
+            documentId: state.documentId + 1
         });
-    case UPDATE_TASK:
+    case DELETE_NOTE: {
         return Object.assign({}, state, {
-            goals: state.goals.map(goal => {
-                if (goal.id !== action.goalId) return goal;
-                return Object.assign({}, goal, {
-                    tasks: goal.tasks.map(task => (
-                        task.id === action.taskId ? Object.assign({}, task, action.patch) : task))
-                });
-            })
+            notes: action.notes,
+            activeNoteId: action.activeNoteId,
+            documentId: state.documentId + 1
         });
-    case DELETE_TASK:
-        return Object.assign({}, state, {
-            goals: state.goals.map(goal => {
-                if (goal.id !== action.goalId) return goal;
-                return Object.assign({}, goal, {
-                    tasks: goal.tasks.filter(task => task.id !== action.taskId)
-                });
-            })
-        });
-    case TOGGLE_TASK:
-        return Object.assign({}, state, {
-            goals: state.goals.map(goal => {
-                if (goal.id !== action.goalId) return goal;
-                return Object.assign({}, goal, {
-                    tasks: goal.tasks.map(task => (
-                        task.id === action.taskId ? Object.assign({}, task, {done: !task.done}) : task))
-                });
-            })
-        });
-    case REORDER_GOALS:
-        return Object.assign({}, state, {
-            goals: action.goals
-        });
-    case SET_FILTER:
-        return Object.assign({}, state, {
-            filter: action.filter
-        });
+    }
     default:
         return state;
     }
 };
 
-const hydrateTodos = goals => ({
-    type: HYDRATE_TODOS,
-    goals
+const hydrateNotes = (notes, activeNoteId) => ({
+    type: HYDRATE_NOTES,
+    notes,
+    activeNoteId
 });
 
-const addGoal = goal => ({
-    type: ADD_GOAL,
-    goal
+const selectNote = noteId => ({
+    type: SELECT_NOTE,
+    noteId
 });
 
-const updateGoal = (goalId, patch) => ({
-    type: UPDATE_GOAL,
-    goalId,
-    patch
+const addNote = note => ({
+    type: ADD_NOTE,
+    note
 });
 
-const deleteGoal = goalId => ({
-    type: DELETE_GOAL,
-    goalId
+const updateNote = (noteId, markdown) => ({
+    type: UPDATE_NOTE,
+    noteId,
+    markdown
 });
 
-const toggleGoalExpanded = goalId => ({
-    type: TOGGLE_GOAL_EXPANDED,
-    goalId
+const renameNote = (noteId, name) => ({
+    type: RENAME_NOTE,
+    noteId,
+    name
 });
 
-const addTask = (goalId, task) => ({
-    type: ADD_TASK,
-    goalId,
-    task
+const duplicateNote = note => ({
+    type: DUPLICATE_NOTE,
+    note
 });
 
-const updateTask = (goalId, taskId, patch) => ({
-    type: UPDATE_TASK,
-    goalId,
-    taskId,
-    patch
-});
-
-const deleteTask = (goalId, taskId) => ({
-    type: DELETE_TASK,
-    goalId,
-    taskId
-});
-
-const toggleTask = (goalId, taskId) => ({
-    type: TOGGLE_TASK,
-    goalId,
-    taskId
-});
-
-const reorderGoals = goals => ({
-    type: REORDER_GOALS,
-    goals
-});
-
-const setFilter = filter => ({
-    type: SET_FILTER,
-    filter
+const deleteNote = (noteId, activeNoteId, notes) => ({
+    type: DELETE_NOTE,
+    noteId,
+    activeNoteId,
+    notes
 });
 
 export {
     reducer as default,
     initialState as todoTabInitialState,
-    hydrateTodos,
-    addGoal,
-    updateGoal,
-    deleteGoal,
-    toggleGoalExpanded,
-    addTask,
-    updateTask,
-    deleteTask,
-    toggleTask,
-    reorderGoals,
-    setFilter
+    hydrateNotes,
+    selectNote,
+    addNote,
+    updateNote,
+    renameNote,
+    duplicateNote,
+    deleteNote
 };

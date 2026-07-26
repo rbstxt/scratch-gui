@@ -1,4 +1,6 @@
 // Adapted from MistWarp's workspace bookmark persistence.
+import uid from 'scratch-vm/src/util/uid';
+
 import LazyScratchBlocks from './tw-lazy-scratch-blocks';
 
 export const WORKSPACE_BOOKMARKS_COMMENT_PREFIX = 'WORKSPACE_BOOKMARKS:';
@@ -37,7 +39,7 @@ export const writeWorkspaceBookmarksToStage = (stage, bookmarks) => {
     }
 
     if (typeof stage.createComment === 'function') {
-        void stage.createComment(null, null, text, -1000, -1000, 200, 100, true);
+        stage.createComment(uid(), null, text, -1000, -1000, 200, 100, true);
         return true;
     }
     return false;

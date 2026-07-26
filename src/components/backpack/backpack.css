@@ -2,7 +2,7 @@
 @import "../../css/colors.css";
 
 .backpack-container {
-    flex-shrink: 1;
+    flex-shrink: 0;
     position: relative;
 }
 

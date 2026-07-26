@@ -49,6 +49,7 @@
     "pm.settingsModal.noDirWrapHelp": "有効にすると、方向を-179から180の範囲に制限しません。",
     "tw.settingsModal.extraFeatures": "追加機能",
     "tw.workspaceBookmarks.feature": "ブックマーク機能",
+    "tw.workspaceBookmarks.featureHelp": "ワークスペースの位置を保存・移動できる「ブックマーク」メニューを追加します。この機能は現在アルファ版です。ブックマークはプロジェクトの背景コメントに保存されるため、今後の更新でデータが失われたり形式が変わったりする可能性があります。重要なプロジェクトは必ずバックアップしてください。",
     "tw.workspaceBookmarks.menu": "ブックマーク",
     "tw.workspaceBookmarks.add": "現在の位置を追加",
     "tw.workspaceBookmarks.none": "ブックマークはありません",
@@ -91,5 +92,18 @@
     "tw.menuBar.fonts": "フォント",
     "tw.fonts.apply": "適用",
     "tw.fonts.googleFont": "Google Fontsから読み込む",
-    "tw.fonts.default": "デフォルト"
+    "tw.fonts.default": "デフォルト",
+    "gui.gui.notesTab": "メモ",
+    "gui.notes.feature": "メモ機能",
+    "gui.notes.featureHelp": "Atomic Editorを使った複数のMarkdownメモを編集できる「メモ」タブを追加します。この機能は現在アルファ版です。メモはプロジェクトの背景コメントに保存されるため、今後の更新でデータが失われたり形式が変わったりする可能性があります。重要なプロジェクトは必ずバックアップしてください。",
+    "gui.notes.add": "新規メモ",
+    "gui.notes.untitled": "メモ {number}",
+    "gui.notes.bookmarkMissing": "ブックマーク「{name}」が見つかりません。",
+    "gui.notes.rename": "名前を変更",
+    "gui.notes.renamePrompt": "メモの名前",
+    "gui.notes.duplicate": "複製",
+    "gui.notes.duplicateName": "{name}のコピー",
+    "gui.notes.delete": "削除",
+    "gui.notes.deleteTitle": "メモを削除しますか？",
+    "gui.notes.deleteMessage": "「{name}」を削除しますか？この操作は取り消せません。"
 }

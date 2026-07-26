@@ -19,7 +19,12 @@ jest.mock('../../../src/lib/tw-lazy-scratch-blocks', () => ({
     }
 }));
 
-import {applyWorkspaceBookmarkState} from '../../../src/lib/workspace-bookmarks';
+import {
+    WORKSPACE_BOOKMARKS_COMMENT_PREFIX,
+    applyWorkspaceBookmarkState,
+    readWorkspaceBookmarksFromStage,
+    writeWorkspaceBookmarksToStage
+} from '../../../src/lib/workspace-bookmarks';
 
 describe('workspace bookmarks', () => {
     beforeEach(() => {
@@ -56,5 +61,27 @@ describe('workspace bookmarks', () => {
 
         expect(mockWorkspace.setScale).not.toHaveBeenCalled();
         expect(mockWorkspace.scrollbar.set).not.toHaveBeenCalled();
+    });
+
+    test('creates a persistable stage comment with a unique ID', () => {
+        const stage = {
+            comments: {},
+            createComment: jest.fn((id, blockId, text) => {
+                stage.comments[id] = {text};
+            })
+        };
+        const bookmarks = [{
+            name: 'Link target',
+            state: {scale: 1, scrollX: 0, scrollY: 0}
+        }];
+
+        expect(writeWorkspaceBookmarksToStage(stage, bookmarks)).toBe(true);
+        expect(stage.createComment).toHaveBeenCalledTimes(1);
+        const commentId = stage.createComment.mock.calls[0][0];
+        expect(typeof commentId).toBe('string');
+        expect(commentId).not.toHaveLength(0);
+        expect(commentId).not.toBe('null');
+        expect(stage.createComment.mock.calls[0][2]).toContain(WORKSPACE_BOOKMARKS_COMMENT_PREFIX);
+        expect(readWorkspaceBookmarksFromStage(stage)).toEqual(bookmarks);
     });
 });

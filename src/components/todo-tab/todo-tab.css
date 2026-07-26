@@ -1,498 +1,171 @@
-@import "../../css/units.css";
 @import "../../css/colors.css";
 
 .wrapper {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-grow: 1;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
     background-color: $ui-primary;
     color: $text-primary;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     user-select: text;
-    overflow: hidden;
 }
 
 .rtl {
     direction: rtl;
 }
 
-.header {
-    flex-shrink: 0;
+.sidebar {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid $ui-black-transparent;
+    flex: 0 0 10.5rem;
+    flex-direction: column;
+    min-width: 0;
+    border-right: 1px solid $ui-black-transparent;
     background-color: $ui-secondary;
-    gap: 0.5rem;
 }
 
-.filterGroup {
+.rtl .sidebar {
+    border-right: 0;
+    border-left: 1px solid $ui-black-transparent;
+}
+
+.note-list {
     display: flex;
+    flex: 1;
+    flex-direction: column;
     gap: 0.25rem;
-}
-
-.filterButton,
-.addGoalButton {
-    font-family: inherit;
-    font-size: 0.75rem;
-    font-weight: bold;
-    color: $text-primary;
-    background-color: $ui-tertiary;
-    border: 1px solid $ui-black-transparent;
-    border-radius: 0.25rem;
-    padding: 0.25rem 0.75rem;
-    cursor: pointer;
-    transition: 0.15s ease-out;
-}
-
-.filterButton:hover,
-.addGoalButton:hover {
-    border-color: $motion-primary;
-    background-color: $ui-primary;
-}
-
-.filterButtonActive {
-    background-color: $motion-primary;
-    color: $ui-white;
-    border-color: $motion-primary;
-}
-
-.filterButtonActive:hover {
-    background-color: $motion-tertiary;
-    border-color: $motion-tertiary;
-}
-
-.addGoalButton {
-    background-color: $motion-primary;
-    color: $ui-white;
-    border-color: $motion-primary;
-}
-
-.addGoalButton:hover {
-    background-color: $motion-tertiary;
-    border-color: $motion-tertiary;
-}
-
-.list {
-    flex-grow: 1;
+    min-height: 0;
+    padding: 0.5rem;
+    overflow-x: hidden;
     overflow-y: auto;
-    padding: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
 }
 
-.empty {
-    margin: auto;
-    text-align: center;
-    color: $text-primary-transparent;
-    font-style: italic;
-    padding: 2rem;
-}
-
-.goalCard {
-    background-color: $ui-white;
-    border: 1px solid $ui-black-transparent;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    box-shadow: 0 1px 2px 0 $ui-black-transparent;
-}
-
-.goalCollapsed .goalBody {
-    display: none;
-}
-
-.goalHeader {
-    display: flex;
-    align-items: stretch;
-    background-color: $ui-secondary;
-    border-bottom: 1px solid $ui-black-transparent;
-}
-
-.goalToggle {
-    flex-shrink: 0;
-    width: 2rem;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: $text-primary;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-}
-
-.goalToggle:hover {
-    background-color: $ui-black-transparent;
-}
-
-.caret {
-    display: inline-block;
-    transition: transform 0.15s ease-out;
-    font-size: 0.625rem;
-}
-
-.caretOpen {
-    transform: rotate(90deg);
-}
-
-.goalTitleArea {
-    flex-grow: 1;
-    padding: 0.5rem 0.75rem;
-    min-width: 0;
-}
-
-.goalTitleText {
-    font-size: 1rem;
-    font-weight: bold;
-    color: $text-primary;
-    word-wrap: break-word;
-    cursor: text;
-    border-radius: 0.25rem;
-    padding: 0.125rem 0.25rem;
-    margin: -0.125rem -0.25rem;
-    transition: background-color 0.15s ease-out;
-}
-
-.goalTitleText:hover {
-    background-color: $ui-black-transparent;
-}
-
-.goalTitleInput {
+.note-tab,
+.add-note-button {
     width: 100%;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: bold;
-    padding: 0.125rem 0.25rem;
-    margin: -0.125rem -0.25rem;
-    border: 1px solid $looks-secondary;
-    border-radius: 0.25rem;
-    background-color: $ui-primary;
+    border: 0;
     color: $text-primary;
-    resize: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.note-context-trigger {
+    display: block;
+    flex-shrink: 0;
+}
+
+.note-tab {
+    flex-shrink: 0;
+    padding: 0.625rem 0.75rem;
     overflow: hidden;
-    min-height: 1.75rem;
-    box-sizing: border-box;
-}
-
-.goalMeta {
-    margin-top: 0.25rem;
-    font-size: 0.6875rem;
-    color: $text-primary-transparent;
-}
-
-.goalActions {
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    gap: 0.25rem;
-    padding: 0.5rem;
-    justify-content: center;
-}
-
-.goalActionButton {
-    font-family: inherit;
-    font-size: 0.875rem;
-    line-height: 1;
-    color: $text-primary-transparent;
-    background-color: transparent;
-    border: 1px solid transparent;
-    border-radius: 0.25rem;
-    padding: 0.125rem 0.375rem;
-    cursor: pointer;
+    border-radius: 0.5rem;
+    background: transparent;
+    text-overflow: ellipsis;
     white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.15s ease-out;
 }
 
-.goalHeader:hover .goalActionButton {
-    opacity: 1;
+.note-tab:hover {
+    background-color: $ui-tertiary;
 }
 
-.goalActionButton:hover {
-    border-color: $motion-primary;
-    color: $text-primary;
-}
-
-.goalActionDanger {
-    color: $error-primary;
-}
-
-.goalActionDanger:hover {
-    background-color: $error-transparent;
-    border-color: $error-primary;
-    color: $error-primary;
-}
-
-.goalBody {
-    padding: 0.5rem 0.75rem 0.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.375rem;
-}
-
-.taskEmpty {
-    color: $text-primary-transparent;
-    font-size: 0.75rem;
-    padding: 0.25rem 0;
-}
-
-.taskItem {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.375rem;
-    background-color: $ui-primary;
-    border: 1px solid transparent;
-    transition: background-color 0.15s ease-out;
-}
-
-.taskItem:hover {
-    background-color: $ui-secondary;
-}
-
-.taskItem.taskEditing {
-    background-color: $ui-secondary;
-    border-color: $looks-secondary;
-    padding: 0.25rem;
-}
-
-.taskItem.taskDone .taskBody {
-    opacity: 0.5;
-    text-decoration: line-through;
-}
-
-.taskCheckbox {
-    flex-shrink: 0;
-    width: 1.25rem;
-    height: 1.25rem;
-    border: 1px solid $ui-black-transparent;
-    border-radius: 0.25rem;
-    background-color: $ui-white;
-    cursor: pointer;
-    color: $motion-primary;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    margin-top: 0.125rem;
-}
-
-.taskCheckbox:hover {
-    border-color: $motion-primary;
-}
-
-.taskCheckboxChecked {
+.note-tab-selected,
+.note-tab-selected:hover {
     background-color: $motion-primary;
     color: $ui-white;
-    border-color: $motion-primary;
+    font-weight: 600;
 }
 
-.taskBody {
-    flex-grow: 1;
-    min-width: 0;
-    word-wrap: break-word;
-}
-
-.taskContent {
-    cursor: text;
-    font-size: 0.875rem;
-    border-radius: 0.25rem;
-    padding: 0.125rem 0.25rem;
-    margin: -0.125rem -0.25rem;
-    transition: background-color 0.15s ease-out;
-}
-
-.taskItem:hover .taskContent {
-    background-color: $ui-black-transparent;
-}
-
-.taskInput {
-    width: 100%;
-    font-family: inherit;
-    font-size: 0.875rem;
-    padding: 0.25rem 0.5rem;
-    border: 1px solid $looks-secondary;
-    border-radius: 0.25rem;
-    background-color: $ui-white;
-    color: $text-primary;
-    resize: none;
-    overflow: hidden;
-    min-height: 1.5rem;
-    box-sizing: border-box;
-}
-
-.taskActions {
+.add-note-button {
     display: flex;
     flex-shrink: 0;
-    gap: 0.25rem;
-    align-items: flex-start;
-}
-
-.taskActionButton {
-    font-family: inherit;
-    font-size: 0.875rem;
-    line-height: 1;
-    color: $text-primary-transparent;
-    background-color: transparent;
-    border: 1px solid transparent;
-    border-radius: 0.25rem;
-    padding: 0.125rem 0.375rem;
-    cursor: pointer;
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.15s ease-out;
-}
-
-.taskItem:hover .taskActionButton {
-    opacity: 1;
-}
-
-.taskActionButton:hover {
-    border-color: $motion-primary;
-    color: $text-primary;
-}
-
-.taskActionDanger {
-    color: $error-primary;
-}
-
-.taskActionDanger:hover {
-    background-color: $error-transparent;
-    border-color: $error-primary;
-    color: $error-primary;
-}
-
-.addTaskButton {
-    align-self: flex-start;
-    font-family: inherit;
-    font-size: 0.75rem;
-    color: $motion-primary;
-    background: transparent;
-    border: 1px dashed $motion-primary;
-    border-radius: 0.25rem;
-    padding: 0.25rem 0.75rem;
-    cursor: pointer;
-    margin-top: 0.25rem;
-}
-
-.addTaskButton:hover {
-    background-color: $ui-tertiary;
-}
-
-/* Markdown rendering */
-.markdown {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    color: $text-primary;
-    line-height: 1.4;
-}
-
-.markdown h1 {
-    font-size: 1.25rem;
-    margin: 0.4rem 0;
-}
-
-.markdown h2 {
-    font-size: 1.075rem;
-    margin: 0.35rem 0;
-}
-
-.markdown h3 {
-    font-size: 0.95rem;
-    margin: 0.3rem 0;
-}
-
-.markdown h4,
-.markdown h5,
-.markdown h6 {
-    font-size: 0.875rem;
-    margin: 0.3rem 0;
-}
-
-.markdown p {
-    margin: 0.35rem 0;
-}
-
-.markdown ul,
-.markdown ol {
-    margin: 0.35rem 0 0.35rem 1.25rem;
-    padding: 0;
-}
-
-.markdown li {
-    margin: 0.1rem 0;
-}
-
-.markdown code {
-    background-color: $ui-tertiary;
-    padding: 0 0.25rem;
-    border-radius: 0.125rem;
-    font-family: monospace;
-    font-size: 0.85em;
-}
-
-.markdown pre {
-    background-color: $ui-tertiary;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
     padding: 0.5rem;
-    border-radius: 0.25rem;
-    overflow-x: auto;
-}
-
-.markdown pre code {
-    background: transparent;
-    padding: 0;
-}
-
-.markdown blockquote {
-    border-left: 3px solid $ui-tertiary;
-    margin: 0.35rem 0;
-    padding-left: 0.5rem;
-    color: $text-primary-transparent;
-}
-
-.markdown hr {
-    border: none;
     border-top: 1px solid $ui-black-transparent;
-    margin: 0.5rem 0;
+    background-color: $ui-secondary;
+    font-weight: 600;
 }
 
-.markdown input[type="checkbox"] {
-    margin-right: 0.35rem;
-    cursor: pointer;
-    width: 0.875rem;
-    height: 0.875rem;
-    accent-color: $motion-primary;
-    vertical-align: -0.1rem;
+.add-note-button:hover {
+    background-color: $ui-tertiary;
 }
 
-.markdown li {
-    cursor: text;
+.editor-surface {
+    --atomic-editor-font: var(--turbest-theme-font, "Helvetica Neue", Helvetica, Arial, sans-serif);
+    --atomic-editor-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --atomic-editor-body-size: 0.9375rem;
+    --atomic-editor-body-leading: 1.65;
+    --atomic-editor-measure: 76ch;
+    --atomic-editor-fg: var(--text-primary);
+    --atomic-editor-fg-muted: var(--ui-text-primary-transparent);
+    --atomic-editor-fg-faint: var(--ui-text-primary-transparent);
+    --atomic-editor-bg: var(--ui-primary);
+    --atomic-editor-bg-panel: var(--ui-secondary);
+    --atomic-editor-bg-surface: var(--ui-tertiary);
+    --atomic-editor-border: var(--ui-black-transparent);
+    --atomic-editor-accent: var(--motion-primary);
+    --atomic-editor-accent-bright: var(--motion-tertiary);
+    --atomic-editor-accent-soft: var(--motion-primary);
+    --atomic-editor-link: var(--motion-primary);
+    --atomic-editor-link-hover: var(--motion-tertiary);
+    --atomic-editor-code-bg: var(--ui-tertiary);
+    --atomic-editor-code-rail: var(--motion-primary);
+    --atomic-editor-selection-bg: color-mix(in srgb, var(--motion-primary) 28%, transparent);
+    --atomic-editor-search-bg: color-mix(in srgb, var(--motion-primary) 28%, transparent);
+    --atomic-editor-search-bg-active: color-mix(in srgb, var(--motion-primary) 60%, transparent);
+
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    background-color: $ui-primary;
 }
 
-.bookmarkLink {
-    color: $motion-primary;
-    text-decoration: underline;
-    cursor: pointer;
+/* Give the first line of a note a little breathing room from the tab bar. */
+.editor-surface :global(.atomic-cm-editor .cm-content) {
+    padding-top: 1rem;
 }
 
-.bookmarkLink:hover {
-    color: $motion-tertiary;
+.delete-modal {
+    width: 360px;
 }
 
-.bookmarkMissing {
-    color: $error-primary;
-    text-decoration: line-through;
-    cursor: help;
+.delete-modal-body {
+    padding: 1.5rem 2.25rem;
+    background: $ui-modal-background;
 }
 
-.markdown a {
-    color: $link-color;
-    text-decoration: underline;
+.delete-modal-body p {
+    margin: 0 0 1.5rem;
 }
 
-.markdown a:hover {
-    color: $motion-primary;
+.delete-modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.delete-modal-buttons button {
+    padding: 0.75rem 1rem;
+    border: 1px solid $ui-black-transparent;
+    border-radius: 0.25rem;
+    background: $ui-white;
+    color: $text-primary;
+    font-weight: 600;
+}
+
+.delete-modal-buttons .delete-confirm-button {
+    border-color: $error-primary;
+    background: $error-primary;
+    color: $ui-white;
+}
+
+[dir="rtl"] .note-tab,
+[dir="rtl"] .add-note-button {
+    text-align: right;
 }

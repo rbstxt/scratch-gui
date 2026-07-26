@@ -37,8 +37,20 @@ const base = {
         disableHostCheck: true,
         compress: true,
         port: process.env.PORT || 8601,
+        // Keep legacy editor.html links canonical in development too. The
+        // production host performs this at the edge, but webpack-dev-server
+        // needs an explicit redirect before history fallback serves the SPA.
+        before: app => {
+            app.get('/editor.html', (request, response) => {
+                const query = request.originalUrl.slice('/editor.html'.length);
+                response.redirect(302, `/editor${query}`);
+            });
+        },
         // allows ROUTING_STYLE=wildcard to work properly
         historyApiFallback: {
+            // editor.html contains a dot, so it would otherwise be excluded
+            // from history fallback before the redirect middleware can help.
+            disableDotRule: true,
             rewrites: [
                 {from: /^\/$/, to: '/index-page.htm'},
                 {from: /^\/editor\/?$/, to: '/editor-page.htm'},
@@ -83,6 +95,7 @@ const base = {
             loader: 'babel-loader',
             include: [
                 path.resolve(__dirname, 'src'),
+                /node_modules[\\/]@atomic-editor[\\/]editor[\\/]dist/,
                 /node_modules[\\/]scratch-[^\\/]+[\\/]src/,
                 /node_modules[\\/]pify/,
                 /node_modules[\\/]@vernier[\\/]godirect/
@@ -100,6 +113,19 @@ const base = {
         },
         {
             test: /\.css$/,
+            include: path.resolve(__dirname, 'node_modules/@atomic-editor/editor'),
+            use: [{
+                loader: 'style-loader'
+            }, {
+                loader: 'css-loader',
+                options: {
+                    modules: false
+                }
+            }]
+        },
+        {
+            test: /\.css$/,
+            exclude: path.resolve(__dirname, 'node_modules/@atomic-editor/editor'),
             use: [{
                 loader: 'style-loader'
             }, {

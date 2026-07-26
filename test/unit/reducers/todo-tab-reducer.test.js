@@ -1,119 +1,70 @@
 /* eslint-env jest */
 import todoTabReducer, {
-    hydrateTodos,
-    addGoal,
-    updateGoal,
-    deleteGoal,
-    toggleGoalExpanded,
-    addTask,
-    updateTask,
-    deleteTask,
-    toggleTask,
-    setFilter,
-    TODO_FILTER_ALL,
-    TODO_FILTER_ACTIVE,
-    TODO_FILTER_DONE
+    hydrateNotes,
+    selectNote,
+    addNote,
+    updateNote,
+    renameNote,
+    duplicateNote,
+    deleteNote
 } from '../../../src/reducers/todo-tab';
 
-const makeGoal = (id, title, tasks = []) => ({
-    id,
-    title,
-    expanded: true,
-    tasks: tasks.map(task => ({
-        id: task.id,
-        content: task.content,
-        done: task.done || false,
-        createdAt: task.createdAt || 0
-    })),
-    createdAt: 0
-});
+const firstNote = {id: 'first', markdown: '# First'};
+const secondNote = {id: 'second', markdown: '# Second'};
 
 test('initialState is defined', () => {
-    expect(todoTabReducer(undefined, {type: 'anything'})).toBeDefined();
+    const state = todoTabReducer(undefined, {type: 'anything'});
+    expect(state).toEqual({
+        notes: [],
+        activeNoteId: null,
+        documentId: 0,
+        loaded: false
+    });
 });
 
-test('hydrateTodos replaces state', () => {
-    const state = todoTabReducer(undefined, {type: 'init'});
-    const goals = [makeGoal('g1', 'Goal 1')];
-    const newState = todoTabReducer(state, hydrateTodos(goals));
-    expect(newState.goals).toEqual(goals);
-    expect(newState.loaded).toBe(true);
+test('hydrates all notes and the active note', () => {
+    const state = todoTabReducer(undefined, hydrateNotes([firstNote, secondNote], 'first'));
+    expect(state.notes).toEqual([firstNote, secondNote]);
+    expect(state.activeNoteId).toBe('first');
+    expect(state.documentId).toBe(1);
+    expect(state.loaded).toBe(true);
 });
 
-test('addGoal appends a goal', () => {
-    const state = todoTabReducer(undefined, {type: 'init'});
-    const goal = makeGoal('g1', 'Goal 1');
-    const newState = todoTabReducer(state, addGoal(goal));
-    expect(newState.goals).toEqual([goal]);
+test('selecting a note remounts Atomic Editor', () => {
+    const state = todoTabReducer(undefined, hydrateNotes([firstNote, secondNote], 'first'));
+    const selected = todoTabReducer(state, selectNote('second'));
+    expect(selected.activeNoteId).toBe('second');
+    expect(selected.documentId).toBe(2);
 });
 
-test('updateGoal merges patch', () => {
-    const goal = makeGoal('g1', 'Original');
-    const state = todoTabReducer(undefined, hydrateTodos([goal]));
-    const newState = todoTabReducer(state, updateGoal('g1', {title: 'Updated'}));
-    expect(newState.goals[0].title).toBe('Updated');
-    expect(newState.goals[0].id).toBe('g1');
+test('adds and selects a new note', () => {
+    const state = todoTabReducer(undefined, hydrateNotes([firstNote], 'first'));
+    const added = todoTabReducer(state, addNote(secondNote));
+    expect(added.notes).toEqual([firstNote, secondNote]);
+    expect(added.activeNoteId).toBe('second');
 });
 
-test('deleteGoal removes goal', () => {
-    const state = todoTabReducer(undefined, hydrateTodos([
-        makeGoal('g1', 'A'),
-        makeGoal('g2', 'B')
-    ]));
-    const newState = todoTabReducer(state, deleteGoal('g1'));
-    expect(newState.goals).toHaveLength(1);
-    expect(newState.goals[0].id).toBe('g2');
+test('updates one note without remounting Atomic Editor', () => {
+    const state = todoTabReducer(undefined, hydrateNotes([firstNote, secondNote], 'first'));
+    const updated = todoTabReducer(state, updateNote('first', '# Changed'));
+    expect(updated.notes[0].markdown).toBe('# Changed');
+    expect(updated.notes[1]).toBe(secondNote);
+    expect(updated.documentId).toBe(state.documentId);
 });
 
-test('toggleGoalExpanded flips expanded', () => {
-    const state = todoTabReducer(undefined, hydrateTodos([makeGoal('g1', 'A')]));
-    const newState = todoTabReducer(state, toggleGoalExpanded('g1'));
-    expect(newState.goals[0].expanded).toBe(false);
-    expect(todoTabReducer(newState, toggleGoalExpanded('g1')).goals[0].expanded).toBe(true);
+test('renames a note without modifying its Markdown', () => {
+    const state = todoTabReducer(undefined, hydrateNotes([firstNote], 'first'));
+    const renamed = todoTabReducer(state, renameNote('first', 'Renamed'));
+    expect(renamed.notes[0]).toEqual({...firstNote, name: 'Renamed'});
+    expect(renamed.documentId).toBe(state.documentId);
 });
 
-test('addTask appends to the right goal', () => {
-    const state = todoTabReducer(undefined, hydrateTodos([
-        makeGoal('g1', 'A', []),
-        makeGoal('g2', 'B', [])
-    ]));
-    const newState = todoTabReducer(state, addTask('g2', {id: 't1', content: 'task', done: false, createdAt: 0}));
-    expect(newState.goals[0].tasks).toHaveLength(0);
-    expect(newState.goals[1].tasks).toHaveLength(1);
-    expect(newState.goals[1].tasks[0].id).toBe('t1');
-});
-
-test('updateTask merges patch into the right task', () => {
-    const state = todoTabReducer(undefined, hydrateTodos([
-        makeGoal('g1', 'A', [{id: 't1', content: 'old', done: false}])
-    ]));
-    const newState = todoTabReducer(state, updateTask('g1', 't1', {content: 'new'}));
-    expect(newState.goals[0].tasks[0].content).toBe('new');
-    expect(newState.goals[0].tasks[0].id).toBe('t1');
-});
-
-test('deleteTask removes the task', () => {
-    const state = todoTabReducer(undefined, hydrateTodos([
-        makeGoal('g1', 'A', [
-            {id: 't1', content: 'a', done: false},
-            {id: 't2', content: 'b', done: false}
-        ])
-    ]));
-    const newState = todoTabReducer(state, deleteTask('g1', 't1'));
-    expect(newState.goals[0].tasks).toHaveLength(1);
-    expect(newState.goals[0].tasks[0].id).toBe('t2');
-});
-
-test('toggleTask flips done', () => {
-    const state = todoTabReducer(undefined, hydrateTodos([
-        makeGoal('g1', 'A', [{id: 't1', content: 'a', done: false}])
-    ]));
-    expect(todoTabReducer(state, toggleTask('g1', 't1')).goals[0].tasks[0].done).toBe(true);
-});
-
-test('setFilter changes the filter', () => {
-    const state = todoTabReducer(undefined, {type: 'init'});
-    expect(todoTabReducer(state, setFilter(TODO_FILTER_ACTIVE)).filter).toBe(TODO_FILTER_ACTIVE);
-    expect(todoTabReducer(state, setFilter(TODO_FILTER_DONE)).filter).toBe(TODO_FILTER_DONE);
-    expect(todoTabReducer(state, setFilter(TODO_FILTER_ALL)).filter).toBe(TODO_FILTER_ALL);
+test('duplicates and deletes notes with the supplied active note', () => {
+    const state = todoTabReducer(undefined, hydrateNotes([firstNote], 'first'));
+    const duplicated = todoTabReducer(state, duplicateNote(secondNote));
+    expect(duplicated.notes).toEqual([firstNote, secondNote]);
+    expect(duplicated.activeNoteId).toBe('second');
+    const deleted = todoTabReducer(duplicated, deleteNote('second', 'first', [firstNote]));
+    expect(deleted.notes).toEqual([firstNote]);
+    expect(deleted.activeNoteId).toBe('first');
 });

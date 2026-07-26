@@ -11,7 +11,7 @@
   },
   "main": "./dist/scratch-gui.js",
   "scripts": {
-    "postinstall": "node scripts/apply-scratch-paint-lasso.mjs",
+    "postinstall": "node scripts/apply-scratch-paint-lasso.mjs && node scripts/apply-atomic-editor-react16.mjs",
     "prebuild": "node scripts/apply-scratch-paint-lasso.mjs",
     "prestart": "node scripts/apply-scratch-paint-lasso.mjs",
     "build": "npm run clean && webpack --colors --bail",
@@ -32,6 +32,17 @@
     }
   },
   "dependencies": {
+    "@atomic-editor/editor": "0.6.2",
+    "@codemirror/autocomplete": "^6.20.3",
+    "@codemirror/commands": "^6.10.4",
+    "@codemirror/lang-markdown": "^6.5.1",
+    "@codemirror/language": "^6.12.4",
+    "@codemirror/search": "^6.7.1",
+    "@codemirror/state": "^6.7.1",
+    "@codemirror/view": "^6.43.6",
+    "@lezer/common": "^1.5.2",
+    "@lezer/highlight": "^1.2.3",
+    "@lezer/markdown": "^1.7.2",
     "@microbit/microbit-universal-hex": "0.2.2",
     "@turbowarp/jszip": "^3.11.1",
     "@turbowarp/nanolog": "^1.0.1",
