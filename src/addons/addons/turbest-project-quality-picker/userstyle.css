@@ -1,0 +1,11 @@
+.turbest-project-quality-picker {
+    width: 3.5rem;
+    height: 1.75rem;
+    margin-left: 0.25rem;
+    padding: 0 0.15rem;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.25rem;
+    background: white;
+    color: #575e75;
+    font-size: 0.7rem;
+}

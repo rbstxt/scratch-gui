@@ -416,5 +416,7 @@
     "turbest-sound-bitrate/@settings-name-bitRate": "ビットレート (kbps)",
     "turbest-paint-nudge/@name": "ペイントの移動倍率",
     "turbest-paint-nudge/@description": "Shiftキーを押しながら選択したオブジェクトを移動する距離を変更する。",
-    "turbest-paint-nudge/@settings-name-multiplier": "移動倍率"
+    "turbest-paint-nudge/@settings-name-multiplier": "移動倍率",
+    "turbest-project-quality-picker/@name": "プロジェクト画質ピッカー",
+    "turbest-project-quality-picker/@description": "ステージの描画解像度を変更する小さなコントロールを追加する。"
 }
